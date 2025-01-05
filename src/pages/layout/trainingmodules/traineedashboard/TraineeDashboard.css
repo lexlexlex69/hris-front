@@ -1,0 +1,18 @@
+#training-app-div table{
+    width: 100%;
+}
+#training-app-div .training-app-table thead, .training-app-table tr,.training-app-table th,.training-app-table td{
+    border: solid 1px;
+    padding: 5px;
+    font-size: .9rem;
+}
+#training-app-div .training-app-table th{
+    text-align: center;
+}
+.hr-black{
+    border: solid 1px #000 !important;
+}
+.custom-underline{
+    border-bottom: solid 1px;
+    padding-bottom: 1px;
+}

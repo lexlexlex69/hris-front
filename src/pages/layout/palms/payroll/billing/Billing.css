@@ -1,0 +1,5 @@
+#billing .table-html > tbody > tr > td{
+    color:red;
+    /* max-height: 10vh !important;
+    overflow-y: scroll !important; */
+}

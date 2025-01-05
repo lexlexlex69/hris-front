@@ -1,0 +1,457 @@
+import React, { useEffect, useState } from 'react';
+import Container from '@mui/material/Container'
+import Box from '@mui/material/Box'
+import Grid from '@mui/material/Grid'
+import TextField from '@mui/material/TextField'
+import Typography from '@mui/material/Typography'
+import List from '@mui/material/List';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+import Collapse from '@mui/material/Collapse';
+import ExpandLess from '@mui/icons-material/ExpandLess';
+import ExpandMore from '@mui/icons-material/ExpandMore';
+import TableContainer from '@mui/material/TableContainer'
+import Paper from '@mui/material/Paper'
+import Table from '@mui/material/Table'
+import TableRow from '@mui/material/TableRow'
+import TableBody from '@mui/material/TableBody'
+import TableCell from '@mui/material/TableCell'
+import FormControl from '@mui/material/FormControl';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
+import Button from '@mui/material/Button';
+import Alert from '@mui/material/Alert';
+
+import CustomBackdrop from './CustomBackdrop';
+
+import StarIcon from '@mui/icons-material/Star';
+import axios from 'axios';
+import Ratingdone from '../../../../../../assets/img/done_rating.svg'
+import { toast } from 'react-toastify';
+import Skeleton from '@mui/material/Skeleton'
+
+const ManualRateApplicant = ({ data, interviewerInfo, setInterviewerInfo, setList, list }) => {
+    const [backdropState, setBackdropState] = useState(false)
+    const [vacancyProfileInfo, setVacancyProfileInfo] = useState('')
+    const [loader, setLoader] = useState(true)
+    const [ratingData, setRatingData] = useState([
+        {
+            title: 'EXEMPLIFYING INTEGRITY',
+            definition: 'The ability to show by example in the faithful adherence to moral and ethical standards. It illutrates a person\'s level of honesty, moral commitments, and willingness to do what is right.',
+            radioName: 'exemplfying',
+        },
+        {
+            title: 'SOLVING PROBLEMS AND DECISION MAKING',
+            definition: 'The ability to show by example in the faithful adherence to moral and ethical standards. It illutrates a person\'s level of honesty, moral commitments, and willingness to do what is right.',
+            radioName: 'solving'
+        },
+        {
+            title: 'DELIVERING SERVICE EXCELLENCE',
+            definition: 'The ability to show by example in the faithful adherence to moral and ethical standards. It illutrates a person\'s level of honesty, moral commitments, and willingness to do what is right.',
+            radioName: 'service'
+        },
+        {
+            title: 'BUILDING COLLABORATIVE, INCLUSIVE WORKING RELATIONSHIPS',
+            definition: 'The ability to show by example in the faithful adherence to moral and ethical standards. It illutrates a person\'s level of honesty, moral commitments, and willingness to do what is right.',
+            radioName: 'relationship'
+        },
+    ])
+
+    const [actualRatingData, setActualRatingData] = useState({
+        profile_id: '',
+        vacancy_id: '',
+        panel_id: '',
+        exemplifying_integrity: '',
+        exemplifying_integrity_situation: '',
+        exemplifying_integrity_action: '',
+        exemplifying_integrity_result: '',
+        solving_problems: '',
+        solving_problems_situation: '',
+        solving_problems_action: '',
+        solving_problems_result: '',
+        delivering_service: '',
+        delivering_service_situation: '',
+        delivering_service_action: '',
+        delivering_service_result: '',
+        working_relationship: '',
+        working_relationship_situation: '',
+        working_relationship_action: '',
+        working_relationship_result: '',
+        average: '',
+        is_consolidated: ''
+    })
+
+    const [open, setOpen] = useState([
+        { value: false },
+        { value: false },
+        { value: false },
+        { value: false },
+    ])
+
+    const handleClick = (index) => {
+        console.log(index)
+        let newOpen = open.map((item, i) => {
+            if (index === i) {
+                return { ...item, value: !item.value }
+            }
+            else
+                return item
+        })
+        setOpen(newOpen)
+    };
+
+    const handleChange = (e) => {
+        setActualRatingData(prev => ({ ...prev, [e.target.name]: e.target.value }))
+    }
+
+    const privateSaveAddedRating = (indexMain, itemIndex, interviewerIndex, tempStore) => {
+        let newList = [...list[itemIndex]?.interviewers].map((item, index) => { // checker for list of interviewer
+            if (index === interviewerIndex) {
+                if (indexMain === 0) {
+                    return {
+                        ...item,
+                        exemplifying_integrity: tempStore.data,
+                        exemplifying_integrity_situation: tempStore.situation,
+                        exemplifying_integrity_action: tempStore.action,
+                        exemplifying_integrity_result: tempStore.result,
+                    }
+                }
+                else if (indexMain === 1) {
+                    return {
+                        ...item,
+                        solving_problems: tempStore.data,
+                        solving_problems_situation: tempStore.situation,
+                        solving_problems_action: tempStore.action,
+                        solving_problems_result: tempStore.result,
+                    }
+                }
+                else if (indexMain === 2) {
+                    return {
+                        ...item,
+                        delivering_service: tempStore.data,
+                        delivering_service_situation: tempStore.situation,
+                        delivering_service_action: tempStore.action,
+                        delivering_service_result: tempStore.result,
+                    }
+                }
+                else if (indexMain === 3) {
+                    return {
+                        ...item,
+                        working_relationship: tempStore.data,
+                        working_relationship_situation: tempStore.situation,
+                        working_relationship_action: tempStore.action,
+                        working_relationship_result: tempStore.result,
+                    }
+                }
+
+            }
+            else {
+                return item
+            }
+        })
+        let newList2 = [...list].map((item, index) => { // checker for first iterator which the list of the iterviewee
+            if (index === interviewerInfo?.itemIndex) {
+                return {
+                    ...item,
+                    interviewers: newList
+                }
+            }
+            else {
+                return item
+            }
+        })
+
+        setList(newList2)
+    }
+
+
+
+    const handleSubmit = async (index) => {
+        let tempStore = {}
+        if (index === 0) {
+            tempStore = {
+                situation: actualRatingData.exemplifying_integrity_situation,
+                action: actualRatingData.exemplifying_integrity_action,
+                result: actualRatingData.exemplifying_integrity_result,
+                data: actualRatingData.exemplifying_integrity
+            }
+        }
+        else if (index === 1) {
+            tempStore = {
+                situation: actualRatingData.solving_problems_situation,
+                action: actualRatingData.solving_problems_action,
+                result: actualRatingData.solving_problems_result,
+                data: actualRatingData.solving_problems
+            }
+        }
+        else if (index === 2) {
+            tempStore = {
+                situation: actualRatingData.delivering_service_situation,
+                action: actualRatingData.delivering_service_action,
+                result: actualRatingData.delivering_service_result,
+                data: actualRatingData.delivering_service
+            }
+        }
+        else if (index === 3) {
+            tempStore = {
+                situation: actualRatingData.working_relationship_situation,
+                action: actualRatingData.working_relationship_action,
+                result: actualRatingData.working_relationship_result,
+                data: actualRatingData.working_relationship
+            }
+        }
+        tempStore.panel_id = interviewerInfo?.interviewer?.panel_id
+        tempStore.vacancy_id = interviewerInfo?.interviewer?.vacancy_id
+        tempStore.profile_id = interviewerInfo?.interviewee?.profile_id
+        tempStore.index = index
+
+        setBackdropState(true)
+
+        let res = await axios.post(`/api/recruitment/interview/employee/setIntervieweeRating`, tempStore)
+        setBackdropState(false)
+        console.log('info', interviewerInfo)
+        console.log('interviewers', list[interviewerInfo?.itemIndex].interviewers[interviewerInfo?.interviewerIndex])
+        console.log('YAWA')
+        if (res.data.status === 200) {
+            let message = index === 0 ? 'EXEMPLIFYING INTEGRITY' : index === 1 ? 'SOLVING PROBLEMS AND DECISION MAKING' : index === 2 ? 'DELIVERING SERVICE EXCELLENCE' : index === 3 ? 'BUILDING COLLABORATION, INCLUSIVE WORKING RELATIONSHIPS' : ''
+            privateSaveAddedRating(index, interviewerInfo?.itemIndex, interviewerInfo?.interviewerIndex, tempStore)
+            toast.success(message + ' Updated!')
+        }
+        if (res.data.status === 500) {
+            toast.error(res.data.message)
+        }
+    }
+
+    const getJobVacancyInfo = async () => {
+        let res = await axios.get(`/api/recruitment/jobPosting/status/interview-result/getJobVacancyInfo?vacancy_id=${interviewerInfo.interviewer.vacancy_id}&&profile_id=${interviewerInfo.interviewee.profile_id}`)
+        console.log(res)
+        setVacancyProfileInfo(res.data)
+        setLoader(false)
+    }
+
+    useEffect(() => {
+        getJobVacancyInfo()
+    }, [])
+
+    useEffect(() => {
+        setActualRatingData({
+            profile_id: '',
+            vacancy_id: '',
+            panel_id: '',
+            exemplifying_integrity: interviewerInfo.interviewer.exemplifying_integrity || '',
+            exemplifying_integrity_situation: interviewerInfo.interviewer.exemplifying_integrity_situation || '',
+            exemplifying_integrity_action: interviewerInfo.interviewer.exemplifying_integrity_action || '',
+            exemplifying_integrity_result: interviewerInfo.interviewer.exemplifying_integrity_result || '',
+            solving_problems: interviewerInfo.interviewer.solving_problems || '',
+            solving_problems_situation: interviewerInfo.interviewer.solving_problems_situation || '',
+            solving_problems_action: interviewerInfo.interviewer.solving_problems_action || '',
+            solving_problems_result: interviewerInfo.interviewer.solving_problems_result || '',
+            delivering_service: interviewerInfo.interviewer.delivering_service || '',
+            delivering_service_situation: interviewerInfo.interviewer.delivering_service_situation || '',
+            delivering_service_action: interviewerInfo.interviewer.delivering_service_action || '',
+            delivering_service_result: interviewerInfo.interviewer.delivering_service_result || '',
+            working_relationship: interviewerInfo.interviewer.working_relationship || '',
+            working_relationship_situation: interviewerInfo.interviewer.working_relationship_situation || '',
+            working_relationship_action: interviewerInfo.interviewer.working_relationship_action || '',
+            working_relationship_result: interviewerInfo.interviewer.working_relationship_result || '',
+            average: '',
+            is_consolidated: ''
+        })
+    }, [interviewerInfo])
+
+    return (
+        <Container sx={{ py: 2, height: '100%', overflowY: 'scroll' }}>
+            <Grid container spacing={2}>
+                <CustomBackdrop open={backdropState} title="please wait . . ." />
+                <Grid item xs={12} sm={12} md={6} lg={6}>
+                    <TextField
+                        id=""
+                        label="Name of Interviewee"
+                        fullWidth
+                        size='small'
+                        focused
+                        value={interviewerInfo?.interviewee?.fname + ' ' + interviewerInfo?.interviewee?.mname + ' ' + interviewerInfo?.interviewee?.lname}
+                    />
+                </Grid>
+                <Grid item xs={12} sm={12} md={6} lg={6}>
+                    <TextField
+                        id=""
+                        label="Position Applied For"
+                        fullWidth
+                        size='small'
+                        focused
+                        value={vacancyProfileInfo?.job_vacancy?.position_title}
+                    />
+                </Grid>
+                <Grid item xs={12} sm={12} md={6} lg={6}>
+                    <TextField
+                        id=""
+                        label="Name of Interviewer"
+                        fullWidth
+                        size='small'
+                        focused
+                        value={interviewerInfo?.interviewer?.fname + ' ' + interviewerInfo?.interviewer?.mname + ' ' + interviewerInfo?.interviewer?.lname}
+                    />
+                </Grid>
+                <Grid item xs={12} sm={12} md={6} lg={6}>
+                    <TextField
+                        id=""
+                        label="Date of Interview"
+                        fullWidth
+                        size='small'
+                        focused
+                        value={vacancyProfileInfo?.profile_info?.interview_date}
+                    />
+                </Grid>
+                <Grid md={12} lg={12} item>
+                    <Typography variant="body1" align='center' fontWeight='bold' gutterBottom>BEHAVIORAL-BASED INTERVIEW (BBI) RATING</Typography>
+                </Grid>
+                <Grid md={12} lg={12} item>
+                    {loader ? (
+                        <Box display="flex" sx={{ width: '100%', px: { xs: 0, md: 10 }, flexDirection: 'column', gap: 2 }} >
+                            {Array.from(Array(8)).map((item, i) => (
+                                <Skeleton variant="text" width="100%" height={35} animation="pulse" />
+                            ))}
+                        </Box>
+                    ) : (
+                        <>
+                            {actualRatingData.is_consolidated ? (
+                                <Box sx={{ width: '100%' }}>
+                                    <Alert severity='success' align="center">RATING DURATION IS FINISHED!</Alert>
+                                    <Box display="flex" sx={{ justifyContent: 'center' }}>
+                                        <img src={Ratingdone} width="40%" />
+                                    </Box>
+                                </Box>
+                            ) : (
+                                <List
+                                    sx={{ width: '100%', bgcolor: 'bakcground.paper', borderRadius: .5, px: 1, border: '1px solid #BEBEBE', overflowY: 'scroll' }}
+                                >
+                                    {ratingData && ratingData.map((item, i) => (
+                                        <>
+                                            <ListItemButton onClick={() => handleClick(i)}>
+                                                <ListItemIcon>
+                                                </ListItemIcon>
+                                                <ListItemText primary={
+                                                    <Box display='flex' sx={{ justifyContent: 'space-between' }}>
+                                                        <Typography>{item.title}</Typography>
+                                                        <StarIcon />
+                                                    </Box>
+                                                }
+                                                    sx={{ color: '#fff', bgcolor: (i === 0 && actualRatingData.exemplifying_integrity) || (i === 1 && actualRatingData.solving_problems) || (i === 2 && actualRatingData.delivering_service) || (i === 3 && actualRatingData.working_relationship) ? 'success.main' : 'primary.main', p: 1, borderRadius: 1 }} />
+                                                {open[i].value ? <ExpandLess sx={{ color: 'primary.light' }} /> : <ExpandMore sx={{ color: 'primary.light' }} />}
+                                            </ListItemButton>
+                                            <Collapse in={open[i].value} timeout="auto" unmountOnExit>
+                                                <List component="div" sx={{ bgcolor: '#fff', borderRadius: .5, px: 5, position: 'relative' }}>
+                                                    <TableContainer component={Paper}>
+                                                        <Table aria-label="simple table">
+                                                            <TableBody>
+                                                                <TableRow>
+                                                                    <TableCell component="th" scope="row" width="20%">Definition</TableCell>
+                                                                    <TableCell align="left">{item.definition}</TableCell>
+                                                                </TableRow>
+                                                                <TableRow>
+                                                                    <TableCell component="th" scope="row">Situation or Task/s</TableCell>
+                                                                    <TableCell align="right">
+                                                                        <TextField
+                                                                            id=""
+                                                                            label=" "
+                                                                            name={i === 0 ? 'exemplifying_integrity_situation' : i === 1 ? 'solving_problems_situation' : i === 2 ? 'delivering_service_situation' : i === 3 ? 'working_relationship_situation' : null} // i === 4 ? 'strategic_creativity_situation' : i === 5 ? 'high_performance_organization_situation' : i === 6 ? 'leading_change_situation' : i === 7 ? 'coaching_result_situation' : null}
+                                                                            value={i === 0 ? actualRatingData.exemplifying_integrity_situation : i === 1 ? actualRatingData.solving_problems_situation : i === 2 ? actualRatingData.delivering_service_situation : i === 3 ? actualRatingData.working_relationship_situation : null} // i === 4 ? actualRatingData.strategic_creativity_situation : i === 5 ? actualRatingData.high_performance_organization_situation : i === 6 ? actualRatingData.leading_change_situation : i === 7 ? actualRatingData.coaching_result_situation : null}
+                                                                            onChange={handleChange}
+                                                                            multiline
+                                                                            rows={4}
+                                                                            fullWidth
+                                                                        />
+                                                                    </TableCell>
+                                                                </TableRow>
+                                                                <TableRow>
+                                                                    <TableCell component="th" scope="row">Action/s</TableCell>
+                                                                    <TableCell align="right">
+                                                                        <TextField
+                                                                            id=""
+                                                                            label=" "
+                                                                            name={i === 0 ? 'exemplifying_integrity_action' : i === 1 ? 'solving_problems_action' : i === 2 ? 'delivering_service_action' : i === 3 ? 'working_relationship_action' : null} // i === 4 ? 'strategic_creativity_action' : i === 5 ? 'high_performance_organization_action' : i === 6 ? 'leading_change_action' : i === 7 ? 'coaching_result_action' : ''}
+                                                                            value={i === 0 ? actualRatingData.exemplifying_integrity_action : i === 1 ? actualRatingData.solving_problems_action : i === 2 ? actualRatingData.delivering_service_action : i === 3 ? actualRatingData.working_relationship_action : null} // i === 4 ? actualRatingData.strategic_creativity_situation : i === 5 ? actualRatingData.high_performance_organization_action : i === 6 ? actualRatingData.leading_change_action : i === 7 ? actualRatingData.coaching_result_action : null}
+                                                                            onChange={handleChange}
+                                                                            fullWidth
+                                                                            multiline
+                                                                            rows={4}
+                                                                        />
+                                                                    </TableCell>
+                                                                </TableRow>
+                                                                <TableRow>
+                                                                    <TableCell component="th" scope="row">Result/s</TableCell>
+                                                                    <TableCell align="right">
+                                                                        <TextField
+                                                                            id=""
+                                                                            label=" "
+                                                                            fullWidth
+                                                                            name={i === 0 ? 'exemplifying_integrity_result' : i === 1 ? 'solving_problems_result' : i === 2 ? 'delivering_service_result' : i === 3 ? 'working_relationship_result' : null} // i === 4 ? 'strategic_creativity_result' : i === 5 ? 'high_performance_organization_result' : i === 6 ? 'leading_change_result' : i === 7 ? 'coaching_result_result' : ''}
+                                                                            value={i === 0 ? actualRatingData.exemplifying_integrity_result : i === 1 ? actualRatingData.solving_problems_result : i === 2 ? actualRatingData.delivering_service_result : i === 3 ? actualRatingData.working_relationship_result : null} // i === 4 ? actualRatingData.strategic_creativity_situation : i === 5 ? actualRatingData.high_performance_organization_result : i === 6 ? actualRatingData.leading_change_result : i === 7 ? actualRatingData.coaching_result_result : null}
+                                                                            onChange={handleChange}
+                                                                            multiline
+                                                                            rows={4}
+                                                                        />
+                                                                    </TableCell>
+                                                                </TableRow>
+                                                                <TableRow>
+                                                                    <TableCell component="th" scope="row">Rating  scale</TableCell>
+                                                                    <TableCell align="right">
+                                                                        <Box display='flex' sx={{ flexWrap: 'wrap', justifyContent: 'space-around' }} >
+                                                                            <Typography variant="body1" color="initial">5 - Significant; </Typography>
+                                                                            <Typography variant="body1" color="initial">4 - More than acceptable; </Typography>
+                                                                            <Typography variant="body1" color="initial">3 - Acceptable;</Typography>
+                                                                            <Typography variant="body1" color="initial">2 - Less Acceptable; </Typography>
+                                                                            <Typography variant="body1" color="initial">and 1 - Not Acceptable</Typography>
+                                                                        </Box>
+                                                                    </TableCell>
+                                                                </TableRow>
+                                                                <TableRow>
+                                                                    <TableCell component="th" scope="row">Rating</TableCell>
+                                                                    <TableCell align="right">
+                                                                        <Box>
+                                                                            <FormControl sx={{ width: '100%' }}
+                                                                            >
+                                                                                <RadioGroup
+                                                                                    row
+                                                                                    aria-labelledby="demo-row-radio-buttons-group-label"
+                                                                                    name={i === 0 ? 'exemplifying_integrity' : i === 1 ? 'solving_problems' : i === 2 ? 'delivering_service' : i === 3 ? 'working_relationship' : null}// i === 4 ? 'strategic_creativity' : i === 5 ? 'high_performance_organization' : i === 6 ? 'leading_change' : i === 7 ? 'coaching_result' : null}
+                                                                                    value={i === 0 ? actualRatingData.exemplifying_integrity : i === 1 ? actualRatingData.solving_problems : i === 2 ? actualRatingData.delivering_service : i === 3 ? actualRatingData.working_relationship : null} // i === 4 ? actualRatingData.strategic_creativity : i === 5 ? actualRatingData.high_performance_organization : i === 6 ? actualRatingData.leading_change : i === 7 ? actualRatingData.coaching_result : null}
+                                                                                    onChange={handleChange}
+                                                                                    sx={{ display: 'flex', justifyContent: 'space-around', width: '100%' }}
+                                                                                >
+                                                                                    <FormControlLabel value="5" control={<Radio />} label="5" />
+                                                                                    <FormControlLabel value="4" control={<Radio />} label="4" />
+                                                                                    <FormControlLabel value="3" control={<Radio />} label="3" />
+                                                                                    <FormControlLabel value="2" control={<Radio />} label="2" />
+                                                                                    <FormControlLabel value="1" control={<Radio />} label="1" />
+                                                                                </RadioGroup>
+                                                                            </FormControl>
+                                                                        </Box>
+                                                                    </TableCell>
+                                                                </TableRow>
+                                                            </TableBody>
+                                                        </Table>
+                                                    </TableContainer>
+                                                    <Box display="flex" sx={{ justifyContent: 'flex-end', mt: 1 }}>
+                                                        <Button variant='contained' color="success" sx={{ borderRadius: '2rem' }} startIcon={<StarIcon />} onClick={() => handleSubmit(i)}>Rate</Button>
+                                                    </Box>
+                                                </List>
+
+                                            </Collapse>
+                                        </>
+                                    ))}
+
+                                </List>
+                            )}
+                        </>
+                    )}
+                </Grid>
+            </Grid>
+        </Container>
+    );
+};
+
+export default React.memo(ManualRateApplicant);

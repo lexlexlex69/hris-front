@@ -1,0 +1,117 @@
+html {
+    height: 100%;
+}
+#dtr-form2{
+    font-family: 'Times New Roman', Times, serif;
+    font-weight: 500;
+    /* margin:10px; */
+}
+#dtr-form2 .custom-table table,.custom-table tr, .custom-table th,.custom-table td{
+    font-size: 12px ;
+    padding: 0 !important;
+    text-align: center;
+    border:solid 1px !important;
+
+}
+@media only screen and (max-width: 600px) {
+    #dtr-form2 .custom-table table,.custom-table tr, .custom-table th,.custom-table td{
+    font-size: 10px ;
+    padding: 0 !important;
+    text-align: center;
+    border:solid 1px !important;
+
+    }
+}
+#dtr-form2 table{
+    /* border:solid 1px !important; */
+}
+#dtr-form2 .leave-text{
+    font-size: 10px;
+    padding:1px;
+}
+
+.custom-paper{
+    box-shadow:0px 2px 1px -1px rgb(0 0 0 / 20%), 0px 1px 1px 0px rgb(0 0 0 / 14%), 0px 1px 3px 0px rgb(0 0 0 / 12%);
+}
+/* .rmdp-input{
+    width: 100%;
+    height: 55px !important;
+  } */
+.mui-input-style{
+    position: absolute;
+    color:rgba(0, 0, 0, 0.6);
+    z-index: 2;
+    font-family: "Roboto","Helvetica","Arial",sans-serif;
+    font-weight: 400;
+    font-size: .81rem !important;
+    top: -10px;
+    left: 13px;
+    background: #fff;
+    padding: 0 5px 0 5px;
+}
+.icon{
+    right:14px !important;
+}
+.rotate-infinite{
+    /* transition:0.4s ease-in-out infinite; */
+    animation: rotating 2s linear infinite;
+    transition-delay: 1s;
+}
+@keyframes rotating {
+    from{
+        -webkit-transform: rotate(0deg);
+    }
+    to{
+        -webkit-transform: rotate(360deg);
+    }
+}
+
+@-webkit-keyframes rotating {
+    from{
+        -webkit-transform: rotate(0deg);
+    }
+    to{
+        -webkit-transform: rotate(360deg);
+    }
+}
+.on-hover-dtr:hover{
+    background: red !important;
+    cursor: pointer;
+}
+.rectification-details{
+    font-size: 14px !important;
+}
+.approved-rectification-icon{
+    cursor: pointer;
+    color:green !important;
+}
+.approved-rectification-icon:hover{
+    color:#07ba07 !important;
+}
+.pending-rectification-icon{
+    color:red !important;
+    cursor: pointer;
+}
+.pending-rectification-icon:hover{
+    color:#ff5454 !important;
+}
+.hover-date:hover{
+    cursor: pointer;
+    background: blue !important;
+    color:#fff;
+}
+.dtr-header{
+    font-size: 16px !important;
+}
+.dtr-header-sm{
+    font-size: 14px !important;
+}
+.dtr-header1{
+    font-size: 13px !important;
+}
+.dtr-header1-sm{
+    font-size: 11px !important;
+}
+.hover-row:hover{
+    background: #c5c5c5;
+}

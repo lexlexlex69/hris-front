@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 24.2.1, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" id="all" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 500 500" style="enable-background:new 0 0 500 500;" xml:space="preserve">
+<style type="text/css">
+	.st0{fill:#4262AD;}
+	#all {
+		animation: rotate 10s infinite ease-in-out alternate;
+		transform-box: fill-box;
+  		transform-origin: center;
+		  transition:' all .3s';
+	}
+	#c1 {
+		animation: up 1s infinite alternate;
+			fill:blue;
+	}
+	#c2 {
+		animation: down 1s infinite alternate;
+		fill:blue;
+	}
+	#c3 {
+		animation: left 1s infinite alternate;
+		fill:green;
+	}
+	#c4 {
+		animation: right 1s infinite alternate;
+		fill:green;
+	}
+	#ca1 {
+		animation: upa 1s .1s infinite alternate;
+		fill:purple;
+	}
+	#ca4 {
+		animation: downa 1s .1s infinite alternate;
+		fill:purple;
+	}
+	#ca2 {
+		animation: lefta 1s .1s infinite alternate;
+		fill:purple;
+	}
+	#ca3 {
+		animation: righta 1s .1s infinite alternate;
+		fill:purple;
+	}
+	@keyframes rotate {
+		from {
+			transform:rotate(0deg);
+		}
+		to {
+			transform:rotate(360deg);
+		}
+	}
+	@keyframes up {
+		from{
+			transform:translate(0px,0px);
+			opacity:1;
+		}
+		to {
+			transform:translate(0px,50px);
+			opacity:0;
+		}
+	}
+	@keyframes down {
+		from{
+			transform:translate(0px,0px);
+			opacity:1;
+		}
+		to {
+			transform:translate(0px,-50px);
+			opacity:0;
+		}
+	}
+	@keyframes left {
+		from{
+			transform:translate(0px,0px);
+			opacity:1;
+		}
+		to {
+			transform:translate(-50px,0px);
+			opacity:0;
+		}
+	}
+	@keyframes right {
+		from{
+			transform:translate(0px,0px);
+			opacity:1;
+		}
+		to {
+			transform:translate(50px,0px);
+			opacity:0;
+		}
+	}
+	@keyframes upa {
+		from{
+			transform:translate(0px,0px);
+			opacity:1;
+		}
+		to {
+			transform:translate(-70px,-70px);
+			opacity:0;
+		}
+	}
+	@keyframes downa {
+		from{
+			transform:translate(0px,0px);
+			opacity:1;
+		}
+		to {
+			transform:translate(70px,70px);
+			opacity:0;
+		}
+	}
+	@keyframes lefta {
+		from{
+			transform:translate(0px,0px);
+			opacity:1;
+		}
+		to {
+			transform:translate(-70px,70px);
+			opacity:0;
+		}
+	}
+	@keyframes righta {
+		from{
+			transform:translate(0px,0px);
+			opacity:1;
+		}
+		to {
+			transform:translate(70px,-70px);
+			opacity:0;
+		}
+	}
+</style>
+<circle id="c1" class="st0" cx="242.5" cy="70.5" r="49.7"/>
+<circle id="c2" class="st0" cx="242.5" cy="430.5" r="49.7"/>
+<circle id="c3" class="st0" cx="430" cy="249.9" r="49.7"/>
+<circle id="c4" class="st0" cx="70" cy="249.9" r="49.7"/>
+<circle id="ca1" class="st0" cx="203.2" cy="199.9" r="24.9"/>
+<circle id="ca2" class="st0" cx="203.2" cy="279.9" r="24.9"/>
+<circle id="ca3" class="st0" cx="283.2" cy="199.9" r="24.9"/>
+<circle id="ca4" class="st0" cx="283.2" cy="279.9" r="24.9"/>
+</svg>

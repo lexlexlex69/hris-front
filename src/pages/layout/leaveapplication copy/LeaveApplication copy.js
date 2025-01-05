@@ -1,0 +1,6189 @@
+import { Container, Typography,Grid,Box, Button,InputLabel,MenuItem,FormControl,Select,Modal,TextField,FormControlLabel,FormGroup,LinearProgress,Tooltip,Checkbox,Radio,FormLabel,RadioGroup,Alert,Fab,Fade,CircularProgress, Stack,Skeleton,Badge    } from '@mui/material';
+import React, { useEffect,useLayoutEffect,useRef } from 'react';
+import DataTable from 'react-data-table-component';
+// media query
+import { useTheme } from '@mui/material/styles';
+import useMediaQuery from '@mui/material/useMediaQuery';
+// leave application request
+import { getTypesOfLeave,getEmployeeInfo,getLeaveDetails,addLeaveApplication,getLeaveApplicationData,cancelLeaveApplication,refreshData,getMonetizationInfo,getLastDayOfDuty,getCTOAlreadyAppliedHours,getLeaveBalance,updateLeaveBalance } from './LeaveApplicationRequest';
+// import DatePicker from 'react-date-picker';
+import DatePicker, { DateObject, getAllDatesInRange } from "react-multi-date-picker"
+import DatePanel from "react-multi-date-picker/plugins/date_panel"
+//icon
+import InputIcon from "react-multi-date-picker/components/input_icon"
+import moment from 'moment';
+import CloseIcon from '@mui/icons-material/Close';
+import CheckIcon from '@mui/icons-material/Check';
+import WarningIcon from '@mui/icons-material/Warning';
+import PriorityHighIcon from '@mui/icons-material/PriorityHigh';
+
+import ReactToPrint,{useReactToPrint} from 'react-to-print';
+import { PreviewLeaveApplicationForm } from './PreviewLeaveApplicationForm';
+import Swal from 'sweetalert2';
+import { toast } from 'react-toastify';
+import { blue, green, red, yellow } from '@mui/material/colors'
+
+//icon
+import PrintIcon from '@mui/icons-material/Print';
+import StickyNote2Icon from '@mui/icons-material/StickyNote2';
+import CancelIcon from '@mui/icons-material/Cancel';
+import CachedIcon from '@mui/icons-material/Cached';
+import InfoIcon from '@mui/icons-material/Info';
+import AttachFileIcon from '@mui/icons-material/AttachFile';
+import AttachmentIcon from '@mui/icons-material/Attachment';
+import PendingIcon from '@mui/icons-material/Pending';
+import AddIcon from '@mui/icons-material/Add';
+import HourglassBottomIcon from '@mui/icons-material/HourglassBottom';
+
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell,{ tableCellClasses } from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Paper from '@mui/material/Paper';
+import { styled } from '@mui/material/styles';
+import { PreviewCTOApplicationForm } from './PreviewCTOApplicationForm';
+import axios from 'axios';
+import { faBedPulse } from '@fortawesome/free-solid-svg-icons';
+import AllocationOfMaternityLeaveForm from './AllocationOfMaternityLeaveForm';
+import AllocationOfMaternityLeaveFillout from './AllocationOfMaternityLeaveFillout';
+import { DeleteForever } from '@mui/icons-material';
+import Accordion from '@mui/material/Accordion';
+import AccordionSummary from '@mui/material/AccordionSummary';
+import AccordionDetails from '@mui/material/AccordionDetails';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import $ from 'jquery'
+//animation css
+import 'animate.css';
+var momentBusinessDays = require("moment-business-days");
+
+  
+
+export default function LeaveApplication(props,ref){
+    // media query
+    const theme = useTheme();
+    const matches = useMediaQuery(theme.breakpoints.down('sm'));
+    const StyledBalanceTableCell = styled(TableCell)(({ theme }) => ({
+        [`&.${tableCellClasses.head}`]: {
+          backgroundColor: theme.palette.info.dark,
+          color: theme.palette.common.white,
+          fontSize:matches?'12px':'17px',
+    
+    
+        },
+        [`&.${tableCellClasses.body}`]: {
+            fontSize: matches?'10px':'14px',
+        },
+      }));
+      
+      const StyledTableRow = styled(TableRow)(({ theme }) => ({
+        '&:nth-of-type(odd)': {
+          backgroundColor: theme.palette.action.hover,
+        },
+        // hide last border
+        '&:last-child td, &:last-child th': {
+          border: 0,
+        },
+      }));
+    const [isLoading,setIsLoading] = React.useState(true)
+    const historyColumnsStyles = {
+        rows: {
+            style: {
+                minHeight: '72px', // override the row height
+                // background:'#f4f4f4',
+                // textAlign:'center',
+                fontSize: matches?'11px':'14px',
+                fontFamily: '"Roboto","Helvetica","Arial",sans-serif',
+    
+            },
+        },
+        headCells: {
+            style: {
+                // padding:'15px 0 15px 15px',
+                background:'#2196f3',
+                color:'#fff',
+                fontSize:matches?'13px':'16px',
+                fontFamily: '"Roboto","Helvetica","Arial",sans-serif',
+                fontWeight: '500'
+                // textAlign:'center',
+    
+            },
+        },
+        cells: {
+            style: {
+                paddingLeft: '8px', // override the cell padding for data cells
+                paddingRight: '8px',
+                textAlign:'left',
+    
+            },
+        },
+    };
+    const pendingCustomStyles = {
+        rows: {
+            style: {
+                minHeight: '72px', // override the row height
+                // background:'#f4f4f4',
+                fontSize: matches?'11px':'14px',
+                fontFamily: '"Roboto","Helvetica","Arial",sans-serif',
+    
+    
+            },
+        },
+        headCells: {
+            style: {
+                // padding:'15px 0 15px 15px',
+                background:'#fda400',
+                color:'#fff',
+                fontSize:matches?'13px':'16px',
+                fontFamily: '"Roboto","Helvetica","Arial",sans-serif',
+                fontWeight: '500'
+                // textAlign:'center',
+    
+            },
+        },
+        cells: {
+            style: {
+                paddingLeft: '8px', // override the cell padding for data cells
+                paddingRight: '8px',
+                textAlign:'left',
+                fontFamily: '"Roboto","Helvetica","Arial",sans-serif',
+    
+            },
+        },
+    };
+    const [inclusiveDatesOpen,setInclusiveDatesOpen] = React.useState(false)
+
+    //all balance fetch from DB
+    const [balanceData,setBalanceData] = React.useState([]);
+
+    //all types of leave fetch from DB
+    const [typeOfLeaveData,setTypeOfLeaveData] = React.useState([]);
+
+    //employee info fetch from DB
+    const [employeeInfo,setEmployeeInfo] = React.useState([]);
+
+    //signatory data fetch from DB
+    const [signatory,setSignatory] = React.useState([]);
+
+    //all pending application data fetch from DB
+    const [pendingLeaveApplicationData,setPendingLeaveApplicationData] = React.useState([]);
+
+    //all application history data fetch from DB
+    const [historyLeaveApplicationData,setHistoryLeaveApplicationData] = React.useState([]);
+
+    const [selectedCTOInclusiveDates, setCTOInclusiveDates] = React.useState([]);
+    const [tempSelectedCTOInclusiveDates, setTempSelectedCTOInclusiveDates] = React.useState([]);
+    const [tempSelectedSPLInclusiveDates, setTempSelectedSPLInclusiveDates] = React.useState([]);
+
+    //officehead of officeassign
+    const [officeHead,setOfficeHead] = React.useState([]);
+    //admin officer of officeassign
+    const [officeAO,setOfficeAO] = React.useState([]);
+
+    const specifyRef = useRef('');
+    const [CTOHoursDropdown,setCTOHoursDropdown] = React.useState([]);
+    const [alreadyAppliedDays,setAlreadyAppliedDays] = React.useState([]);
+    const [onProcess,setonProcess] = React.useState([]);
+    const [availableVL,setavailableVL] = React.useState(0)
+    const [availableSL,setavailableSL] = React.useState(0)
+    const [availableCOC,setavailableCOC] = React.useState(0)
+    const [lastDayOfDuty,setlastDayOfDuty] = React.useState('')
+    const [slNoPay,setslNoPay] = React.useState('')
+    const [slWithPay,setslWithPay] = React.useState('')
+    const [slRangeDatesWithPay,setslRangeDatesWithPay] = React.useState([])
+    //fetch data from DB when component rendered
+    useEffect(()=>{
+        //request to get the info of current employee login
+        let appliedDays;
+        getLeaveBalance()
+        .then(response=>{
+            const response_data = response.data.response;
+            if(response_data.length !==0){
+                var data2 = {
+                    vl:response_data[0].VL,
+                    sl:response_data[0].SL,
+                }
+                updateLeaveBalance(data2)
+                .then(response=>{
+                    console.log(response)
+                    getEmployeeInfo()
+                    .then((response)=>{
+                        const data = response.data
+                        // console.log(data.info)
+                        setEmployeeInfo(data.info)
+                        setSignatory(data.signatory)
+                        setonProcess(data.on_process)
+                        // console.log(data.on_process)
+                        setBalanceData(data.balance)
+                        setOfficeHead(data.office_assign_info)
+                        setOfficeAO(data.office_ao_info)
+                        setAlreadyAppliedDays(data.applied_dates)
+                        setAvailabelSPL(data.spl_days_balance)
+                        setOnprocessSPL(data.spl_days_onprocess)
+                        appliedDays = data.applied_dates;
+                        var vl = data.balance[0].vl_bal-data.on_process.vl < 0 ?formatSubtractCreditAvailableDecimal(data.balance[0].vl_bal,Math.floor(data.balance[0].vl_bal)):formatSubtractCreditAvailableDecimal(data.balance[0].vl_bal,data.on_process.vl)
+                        var sl = data.balance[0].sl_bal-data.on_process.sl < 0 ?formatSubtractCreditAvailableDecimal(data.balance[0].sl_bal,Math.floor(data.balance[0].sl_bal)):formatSubtractCreditAvailableDecimal(data.balance[0].sl_bal,data.on_process.sl)
+                        var coc = data.balance[0].coc_bal-data.on_process.vl < 0 ?0:data.balance[0].coc_bal-data.on_process.coc
+                        setavailableVL(vl)
+                        setavailableSL(sl)
+                        setavailableCOC(coc)
+
+                        let currDate = new Date();
+                        var date = new Date();
+                        var start = 0;
+                        var end = 5;
+                        var toAdd = 0;
+                        var slRangeDatesWP =[];
+                        while(start <= end){
+                            if(appliedDays.includes(moment(date).format('MM-DD-YYYY'))){
+                                toAdd++;
+                            }else{
+                                if(moment(date).isBusinessDay()){
+                                    slRangeDatesWP.push(moment(date).format('MM-DD-YYYY'))
+                                    start++;
+                                }
+                            }
+                            date.setDate(date.getDate() - 1);
+                        }
+                        let finalNoPay = momentBusinessDays(moment(currDate).format('YYYY-MM-DD'), 'YYYY-MM-DD').businessSubtract(6+toAdd)._d
+                        let finalWithPay = momentBusinessDays(moment(currDate).format('YYYY-MM-DD'), 'YYYY-MM-DD').businessSubtract(5+toAdd)._d
+
+                        setslRangeDatesWithPay(slRangeDatesWP)
+                        setslNoPay(finalNoPay)
+                        setslWithPay(finalWithPay)
+                        setIsLoading(false)
+                        // console.log(data.applied_dates)
+                    }).catch((error)=>{
+                        // toast(error)
+                        console.log(error)
+                    })
+                }).catch(error=>{
+                    console.log(error)
+                })
+            }
+        }).catch(error=>{
+            console.log(error)
+        })
+        
+
+        //request to get the list of types of leave
+        getTypesOfLeave()
+        .then((response)=>{
+            const data = response.data
+            setTypeOfLeaveData(data.type_of_leave)
+            // console.log(data)
+        }).catch((error)=>{
+            console.log(error)
+        })
+
+        
+        getLeaveApplicationData()
+        .then((response)=>{
+            const data = response.data
+            setPendingLeaveApplicationData(data.pending)
+            setHistoryLeaveApplicationData(data.history)
+        }).catch((error)=>{
+            // console.log(error)
+            toast(error.message)
+
+        })
+
+        // getLastDayOfDuty()
+        // .then(response=>{
+        //     const data = response.data
+        //     if(data.length !==0){
+        //         // setlastDayOfDuty(data[0].work_date)
+                
+               
+        //     }
+        // }).catch(error=>{
+        //     console.log(error)
+        // })
+        
+        
+    },[])
+
+    /**
+     * trigger when selectedCTOInclusiveDates changed
+     */
+    useEffect(()=>{
+        var days = Math.round(CTOHours/8);
+        // console.log(selectedCTOInclusiveDates.length)
+
+        /**
+         * check if selected dates is equal to number of hours applied
+         */
+        if(selectedCTOInclusiveDates.length > days){
+            toast.warning('Inclusive dates is greater than applied hours ! Please select inclusive dates corresponds to your applied hours.',{
+                position:'top-center'
+            })
+        }
+        
+    },[selectedCTOInclusiveDates])
+    /**
+     * Modal application state
+     */
+    const [open,setOpen] = React.useState(false);
+
+    const [leaveType,setLeaveType] = React.useState('');
+
+    /**
+     * Modal style
+     */
+    const style = {
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        width: matches? 400:600,
+        marginBottom: matches? 20:0,
+        bgcolor: 'background.paper',
+        border: '2px solid #fff',
+        borderRadius:3,
+        boxShadow: 24,
+        p: 4,
+        // overflow:leaveType.length !==0
+        // ?
+        //     matches
+        //     ?
+        //     'scroll'
+        //     :
+        //     'auto'
+        // :
+        // 'auto',
+        // height:leaveType.length !==0
+        // ?
+        //     matches
+        //     ?
+        //     '100%'
+        //     :
+        //         tempSelectedCTOInclusiveDates.length>1
+        //         ?
+        //         '100%'
+        //         :
+        //         '100%'
+        // :
+        // 'auto',
+        // height:leaveType.length !==0
+        // ?
+        // '100%'
+        // :
+        // 'auto',
+        // maxHeight:'80vh'
+        // display:'block'
+      };
+    /**
+     * leave details based on selected leave type
+     */
+    const [leaveDetails,setLeaveDetails] = React.useState('');
+
+    /**
+     * leave details data based on selected leave type
+     */
+    const [leaveDetailsData,setLeaveDetailsData] = React.useState([]);
+
+    /**
+     * specify details state
+     */
+    const [specifyDetails,setSpecifyDetails] = React.useState('');
+    
+    const [appliedOthersDays,setappliedOthersDays] = React.useState(0)
+    const [hasAppliedVL,sethasAppliedVL] = React.useState(false);
+    const [isInludeSLMonetization,setisInludeSLMonetization] = React.useState(false);
+    const [daysOfMonetization,setdaysOfMonetization] = React.useState(0);
+    /**
+     * handler after leave details select change
+     */
+    useEffect(()=>{
+        if(leaveDetails === 9){
+            getMonetizationInfo()
+            .then(response=>{
+                const data = response.data
+                if(data.length ===0){
+                    sethasAppliedVL(0)
+                }else{
+                    sethasAppliedVL(data[0].total)
+                }
+            }).catch(error=>{
+                console.log(error)
+            })
+        }
+    },[leaveDetails])
+    const selectLeaveDetails = (event) => {
+        setLeaveDetails(event.target.value);
+        if(event.target.value === 10){
+            setappliedOthersDays(availableVL+availableSL)
+        }
+    };
+
+    const [isApplicableForFiling,setisApplicableForFiling] = React.useState(null);
+    /**
+     * handlert for type of leave select change
+     */
+    const [applicableDaysLoading,setapplicableDaysLoading] = React.useState(false)
+    const [applicableDays,setapplicableDays] = React.useState(0);
+    const [splDropdown,setsplDropdown] = React.useState([]);
+    const [selectedSPL,setselectedSPL] = React.useState(0.5);
+    const [daysPeriod,setdaysPeriod] = React.useState(0);
+    const [availableSPL,setAvailabelSPL] = React.useState('');
+    const [onprocessSPL,setOnprocessSPL] = React.useState('');
+    const [currentMonthCTO,setCurrentMonthCTO] = React.useState('');
+    const handleSetTypeOfLeave = (value) =>{
+        setLeaveDetailsData([]);
+        setInclusiveDates([]);
+        setPreviewInclusiveDates('');
+        setLeaveType(value.target.value)
+        for(var x = 0 ; x <typeOfLeaveData.length ; x++){
+            if(typeOfLeaveData[x].leave_type_id === value.target.value){
+                setdaysPeriod(typeOfLeaveData[x].days)
+                break;
+            }
+        }
+        var bal = 0;
+        var bal2 = 0;
+        /**
+         * loop to set the available balance based on selected leave type
+         */
+        balanceData.forEach(element => {
+            // if(element.id === value.target.value){
+            //     bal = element.leave_balance
+            // }
+            switch(value.target.value){
+                /**
+                 * vacation leave/force leave/ special privilege leave
+                 */
+                case 1:
+                case 2:
+                    bal2 = formatSubtractCreditAvailableDecimal(element.vl_bal,onProcess.vl)
+                    if(bal2<0){
+                        bal = 0
+                    }else{
+                        bal = formatSubtractCreditAvailableDecimal(element.vl_bal,onProcess.vl)
+                    }
+                    break;
+                /**
+                 * sick leave
+                 */
+                case 3:
+                    bal2 = formatSubtractCreditAvailableDecimal(element.sl_bal,onProcess.sl)
+                    if(bal2<0){
+                        bal = 0
+                    }else{
+                        bal = formatSubtractCreditAvailableDecimal(element.sl_bal,onProcess.sl)
+                    }
+                    break;
+                /**
+                 *  CTO
+                 */
+                case 14:
+                    bal2 = formatSubtractCreditAvailableDecimal(element.coc_bal,onProcess.coc)
+                    if(bal2<0){
+                        bal = 0
+                    }else{
+                        bal = formatSubtractCreditAvailableDecimal(element.coc_bal,onProcess.coc)
+                    }
+                    // loop for CTO dropdown hours based on available balance
+                    var coc = bal;
+                    var result = [];
+                    
+                    /**
+         * Check if has already applied 40 hrs
+         */
+         getCTOAlreadyAppliedHours(currentMonth.format('MM-YYYY'))
+         .then(response=>{
+             var data;
+            //  console.log(response.data)
+             setTotalMonthHours(response.data.total)
+             if(response.data.length !==0){
+                 data = response.data.total
+             }else{
+                 data = 0;
+             }
+             /**
+              * Check if current month hours is greater than 40
+              */
+             if(data>=40){
+                 /**
+                  * Can't applied CTO
+                  */
+                 setCTOHoursDropdown([])
+             }else{
+                 if(data === 0){
+                     //limit only 5 days equals to 40 HRS per application
+                     var x=0;
+                     var start = data;
+                     for(var i = 4 ; x < 10 ;){
+                         if(i>coc){
+                             break;
+                         }else{
+                             result.push(i)
+                             i = i +4;
+                             x++;
+                         }
+                     
+                     }
+                     setCTOHoursDropdown(result)
+                 }else{
+                     //limit only remaining CTO hours per month
+                     var total=0;
+                     for(var i = 4 ; i <= coc;){
+                         if(i>coc){
+                             break;
+                         }else{
+                             result.push(i)
+                             total = i+data;
+                             i = i +4;
+                             if(total>=40){
+                                 break;
+                             }
+                         }
+                     
+                     }
+                     setCTOHoursDropdown(result)
+                 }
+                 
+             }
+             setCurrentMonthCTO(data)
+             setCTOInclusiveDates([])
+             setCTOHours('')
+            })
+            .catch(error=>{
+                console.log(error)
+            })
+                     
+                break;
+            }
+        });
+        /**
+         * reset leave details value
+         */
+        setLeaveDetails('');
+        /**
+         * reset leave specify value
+         */
+        setSpecifyDetails('');
+
+        /**
+         * request to get the leave details based on leave type selected
+         */
+        setapplicableDaysLoading(true)
+        getLeaveDetails(value.target.value)
+        .then((response)=>{
+            /**
+             * update leave details state
+             */
+            const data = response.data
+            if(value.target.value === 5){
+                setLeaveDetailsData(data.data)
+                setisApplicableForFiling(data.is_applicable)
+                setapplicableDays(data.applicable_days)
+            }else if(value.target.value === 6){
+                setTempSelectedSPLInclusiveDates([])
+                setLeaveDetailsData(data.data)
+                setisApplicableForFiling(data.is_applicable)
+                setapplicableDays(data.applicable_days)
+                var bal = data.applicable_days;
+                var result = [];
+                
+                //limit only 5 days equals to 40 HRS per application
+                var x=0;
+                for(var i = .5 ; i <= bal ;){
+                    if(i>bal){
+                        break;
+                    }else{
+                        result.push(i)
+                        i = i +.5;
+                    }
+                
+                }
+                setsplDropdown(result)
+            }else{
+                setLeaveDetailsData(data.data)
+            }
+            setapplicableDaysLoading(false)
+
+
+        }).catch((error)=>{
+            console.log(error)
+        })
+        /**
+         * update balance state
+         */
+        setBalance(bal)
+        switch(value.target.value){
+            case 15:
+                setCommutation('Requested');
+                break;
+            default:
+                setCommutation('Not Requested');
+                break;
+        }
+    }
+    /**
+     * state for multiple selected inclusive dates except for CTO
+     */
+    const [selectedInclusiveDates, setInclusiveDates] = React.useState([]);
+
+    /**
+     * state for selected inclusive dates for maternity leave
+     */
+     const [selectedInclusiveMaternityDates, setInclusiveMaternityDates] = React.useState('');
+     const [selectedInclusiveMaternityDatesRange, setInclusiveMaternityDatesRange] = React.useState([]);
+
+    /**
+     * state for selected inclusive dates for VAWC leave
+     */
+    const [selectedInclusiveVAWCDates, setInclusiveVAWCDates] = React.useState('');
+    const [selectedInclusiveVAWCDatesRange, setInclusiveVAWCDatesRange] = React.useState([]);
+
+
+    /**
+     * handler for updating the selectedInclusiveDates state
+     */
+    const handleSetInclusiveDates = (value) => {
+        setInclusiveDates(value)
+        if(leaveType === 6){
+            setTempSelectedSPLInclusiveDates([])
+        }
+    }
+    /**
+     * handler for updating the handleSetCTOInclusiveDates state
+     */
+    const handleSetCTOInclusiveDates = (value) => {
+        setCTOInclusiveDates(value)
+    }
+
+    /**
+     * function use for disabling the dates before filing days
+     */
+    const inclusiveMinDate = () => {
+        // var d = new Date();
+        // var disabled = d.setDate(d.getDate() + 5);
+        var startDate = new Date();
+        // startDate = new Date(startDate.replace(/-/g, "/"));
+        var endDate = "", noOfDaysToAdd = 0, count = 0;
+        for(var x= 0 ;x<typeOfLeaveData.length ; x++){
+            if(typeOfLeaveData[x].leave_type_id === leaveType){
+                noOfDaysToAdd = typeOfLeaveData[x].filing_period
+                break;
+            }
+        }
+        // switch(leaveType){
+        //     /**
+        //      * Vacation leave / force leave
+        //      */
+        //     case 1:
+        //     case 2:
+        //         noOfDaysToAdd = 5
+        //         break;
+        //     /** Special Privilege Leave
+        //      * 
+        //      */
+        //     case 6:
+        //         noOfDaysToAdd = 7
+        //         break;
+
+        //     /** Solo Parent Leave
+        //      * 
+        //      */
+        //      case 7:
+        //         noOfDaysToAdd = 6
+        //         break;
+
+        //     /**
+        //      * CTO
+        //      */
+        //     case 14:
+        //         noOfDaysToAdd = 5
+        //         break;
+        // }
+        while(count < noOfDaysToAdd){
+            endDate = new Date(startDate.setDate(startDate.getDate() + 1));
+            if(endDate.getDay() != 0 && endDate.getDay() != 6){
+            count++;
+            }
+        }
+        switch(leaveType){
+            case 1:
+            case 2:
+            case 3:
+            case 6:
+            case 7:
+            case 14:
+                return endDate
+            default:
+                return new Date()
+        }
+    }
+    const inclusiveSPLMinDate = () => {
+        var startDate = new Date();
+        var endDate = "", noOfDaysToMinus = 5, count = 0;
+       
+        while(count < noOfDaysToMinus){
+            endDate = new Date(startDate.setDate(startDate.getDate() - 1));
+            if(endDate.getDay() != 0 && endDate.getDay() != 6 && !alreadyAppliedDays.includes(moment(endDate).format('MM-DD-YYYY'))){
+                count++;
+            }
+            
+        }
+        return endDate
+    }
+    const inclusiveSPLMaxDate = () => {
+        var startDate = new Date();
+        var endDate = "", noOfDaysToAdd = 5, count = 0;
+       
+        while(count < noOfDaysToAdd){
+            endDate = new Date(startDate.setDate(startDate.getDate() + 1));
+            
+            if(endDate.getDay() != 0 && endDate.getDay() != 6 && !alreadyAppliedDays.includes(moment(endDate).format('MM-DD-YYYY'))){
+            count++;
+            }
+        }
+        return endDate
+    }
+    //credit balance state
+    const [balance,setBalance] = React.useState('')
+    // const [finalSortedInclusiveDates,setFinalSortedInclusiveDates] = React.useState([]);
+
+    //value for selected sorted inclusive dates
+    const [previewInclusiveDates,setPreviewInclusiveDates] = React.useState('');
+
+    //reference for leave application print preview
+    const leaveRef = useRef();
+
+    //reference for CTO application print preview
+    const cocRef = useRef();
+
+    
+
+    //value for CTO hours
+    const [CTOHours,setCTOHours] = React.useState('');
+    /**
+     * trigger when CTOHours changed
+     */
+    useEffect(()=>{
+        /**
+         * check if number of inclusive dates is greater than applied hours
+         */
+        if(selectedCTOInclusiveDates.length !==0){
+            var sortedTemp = selectedCTOInclusiveDates.sort()
+            var days = Math.round(CTOHours/8);
+            /**
+             * if inclusive dates greater than applied hours then remove the oldest date
+             */
+            if(selectedCTOInclusiveDates.length > days){
+                for (var i = selectedCTOInclusiveDates.length -1; i >= days; i--)
+                sortedTemp.splice(i, 1);
+            }
+            var newTemp = [];
+            sortedTemp.forEach(el=> {
+                var t = {
+                    date:el,
+                    period:''
+                };
+                newTemp.push(t)
+            })
+            setTempSelectedCTOInclusiveDates(newTemp)
+        }
+    },[CTOHours])
+    useEffect(()=>{
+        /**
+         * check if number of inclusive dates is greater than applied hours
+         */
+        if(selectedInclusiveDates.length !==0){
+            var sortedTemp = selectedInclusiveDates.sort()
+            var days = Math.round(CTOHours/1);
+            /**
+             * if inclusive dates greater than applied hours then remove the oldest date
+             */
+            if(selectedInclusiveDates.length > days){
+                for (var i = selectedInclusiveDates.length -1; i >= days; i--)
+                sortedTemp.splice(i, 1);
+            }
+            var newTemp = [];
+            sortedTemp.forEach(el=> {
+                var t = {
+                    date:el,
+                    period:''
+                };
+                newTemp.push(t)
+            })
+            setTempSelectedSPLInclusiveDates(newTemp)
+        }
+        // console.log(selectedSPL)
+    },[selectedSPL])
+    const [isAppliedAllocationOfMaternityLeave,setisAppliedAllocationOfMaternityLeave] = React.useState(false)
+    const [openAllocation,setOpenAllocation] = React.useState(false);
+    const [allocationInfo,setallocationInfo] = React.useState({
+        employee_contact_details:'',
+        allocated_days:1,
+        fullname:'',
+        position:'',
+        home_address:'',
+        contact_details:'',
+        agency_address:'',
+        relationship_to_employee:'',
+        relationship_to_employee_details:'',
+        relationship_to_employee_details_specify:'',
+        relationship_to_employee_proof:'',
+        relationship_to_employee_proof_file:'',
+        esignature:''
+
+    })
+    const saveAllocationForm = (data) => {
+        // console.log(data)
+        setallocationInfo(data)
+    }
+    const [selectedRehabilitationDates,setRehabilitationDates] = React.useState('');
+    const [selectedBenefitForWomenDates,setselectedBenefitForWomenDates] = React.useState('');
+    const [selectedStudyDates,setSelectedStudyDates] = React.useState('');
+    const [selectedAdoptionDates,setSelectedAdoptionDates] = React.useState('');
+
+
+    useEffect(()=>{
+        if(selectedInclusiveMaternityDates.length !==0){
+            // let toDate = momentBusinessDays(selectedInclusiveMaternityDates.toDate(), 'DD-MM-YYYY').businessAdd(105)._d
+            const from = selectedInclusiveMaternityDates.toDate();
+            let to;
+            var end = daysPeriod;
+            if(isAppliedAllocationOfMaternityLeave){
+                end = end-allocationInfo.allocated_days;
+            }
+            // var inclusiveDates = moment(selectedInclusiveMaternityDates.toDate()).format('MMMM DD, YYYY')+' - ' +moment(toDate).format('MMMM DD, YYYY');
+            const date = selectedInclusiveMaternityDates.toDate()
+            const dates = [];
+            var start = 1;
+            while(start <= end){
+                var exclude = alreadyAppliedDays.includes(moment(date).format('MM-DD-YYYY'))
+
+                if(exclude){
+                    date.setDate(date.getDate() + 1);
+                }else{
+                    dates.push(moment(new Date(date)).format('MM-DD-YYYY'));
+                    date.setDate(date.getDate() + 1);
+                    start++;
+                }
+            }
+            var inclusiveDates = moment(dates[0]).format('MMMM DD,YYYY') + ' - ' + moment(dates[dates.length-1]).format('MMMM DD,YYYY')
+            setPreviewInclusiveDates(inclusiveDates)
+            // const exclude_days =[];
+            // dates.forEach(el=>{
+            //     alreadyAppliedDays.forEach(el2=>{
+            //         if(moment(el).format('MM-DD-YYYY') === moment(el2).format('MM-DD-YYYY')){
+            //             exclude_days.push(moment(el).format('MM-DD-YYYY'))
+            //         }
+            //     })
+            // })
+            // console.log(exclude_days)
+            setInclusiveMaternityDatesRange(dates)
+        }
+    },[selectedInclusiveMaternityDates,isAppliedAllocationOfMaternityLeave,allocationInfo])
+    useEffect(()=>{
+        if(selectedInclusiveVAWCDates.length !==0){
+            var end = daysPeriod;
+            const date = selectedInclusiveVAWCDates.toDate()
+            const dates = [];
+            var start = 1;
+            while(start <= end){
+                var exclude = alreadyAppliedDays.includes(moment(date).format('MM-DD-YYYY'))
+                if(exclude){
+                    date.setDate(date.getDate() + 1);
+                }else if(moment(date).isBusinessDay()){
+                    dates.push(moment(new Date(date)).format('MM-DD-YYYY'));
+                    date.setDate(date.getDate() + 1);
+                    start++;
+                }
+                else{
+                    date.setDate(date.getDate() + 1);
+                }
+            }
+            var inclusiveDates = moment(dates[0]).format('MMMM DD,YYYY') + ' - ' + moment(dates[dates.length-1]).format('MMMM DD,YYYY')
+            setPreviewInclusiveDates(inclusiveDates)
+            setInclusiveVAWCDatesRange(dates)
+        }
+    },[selectedInclusiveVAWCDates])
+    useEffect(()=>{
+        if(selectedRehabilitationDates.length >1){
+            var dates = selectedRehabilitationDates[0].format('MMMM DD,YYYY')+' - '+selectedRehabilitationDates[1].format('MMMM DD,YYYY')
+            // allDates.forEach( el =>
+            //     console.log(moment(el.toDate()).format('MM-DD-YYYY'))
+            // )
+            setPreviewInclusiveDates(dates)
+        }
+    },[selectedRehabilitationDates])
+    useEffect(()=>{
+        if(selectedBenefitForWomenDates.length >1){
+            var dates = selectedBenefitForWomenDates[0].format('MMMM DD,YYYY')+' - '+selectedBenefitForWomenDates[1].format('MMMM DD,YYYY')
+            setPreviewInclusiveDates(dates)
+        }
+    },[selectedBenefitForWomenDates])
+    useEffect(()=>{
+        if(selectedStudyDates.length >1){
+            var dates = selectedStudyDates[0].format('MMMM DD,YYYY')+' - '+selectedStudyDates[1].format('MMMM DD,YYYY')
+            setPreviewInclusiveDates(dates)
+        }
+    },[selectedStudyDates])
+    const [slTotalWithoutPay,setslTotalWithoutPay] = React.useState(0);
+    const [slAutoWithoutPay,setslAutoWithoutPay] = React.useState(0);
+    
+    /**
+     * used for sorting the inclusive dates selected
+     */
+    const handleSortInclusiveDates = () => {
+        var sorted = selectedInclusiveDates.sort()
+        var sortedTemp = selectedInclusiveDates.sort()
+
+        if(leaveType === 3){
+            var slAutoWithoutPay = 0;
+            var isWithPay = false;
+            var daysWOP = []
+            selectedInclusiveDates.forEach(el=>{
+                if(slRangeDatesWithPay.includes(moment(el.toDate()).format('MM-DD-YYYY'))){
+                    isWithPay = true;
+                }
+            })
+            if(!isWithPay){
+                /**
+                 * get all dates without pay
+                 */
+                 selectedInclusiveDates.forEach(el=>{
+                    if(moment(el.toDate()).format('MM-DD-YYYY') <= moment(slNoPay).format('MM-DD-YYYY')){
+                        daysWOP.push(moment(el.toDate()).format('MM-DD-YYYY'))
+                    }
+                })
+            }
+            let totalWithoutPay=0,finalTotal=0;
+            if(daysWOP.length === 0 ){
+                if(selectedInclusiveDates.length >Math.floor(balance)){
+                    totalWithoutPay = selectedInclusiveDates.length-Math.floor(balance)
+                }else{
+                    totalWithoutPay = 0;
+                }
+            }else{
+                if((selectedInclusiveDates.length - daysWOP.length) > Math.floor(balance)){
+                    totalWithoutPay = (selectedInclusiveDates.length - daysWOP.length)-Math.floor(balance)
+                }else{
+                    totalWithoutPay = 0;
+                }
+            }
+            setslAutoWithoutPay(Math.floor(daysWOP.length));
+            finalTotal = daysWOP.length+totalWithoutPay;
+            setslTotalWithoutPay(Math.floor(finalTotal))
+            // let to = new Date();
+            // // let from = to.setDate(to.getDate()-5);
+            // let from = momentBusinessDays(new Date(), 'DD-MM-YYYY').businessSubtract(5)._d
+
+            // const date = from;
+            // const dates = [];
+            // while(date <= to){
+            //     var tempDate = moment(date).format('MM-DD-YYYY')
+            //     if(moment(tempDate, 'MM-DD-YYYY').isBusinessDay()){
+            //         dates.push(tempDate);
+            //     }
+            //     date.setDate(date.getDate() + 1);
+            // }
+            // // setInclusiveMaternityDatesRange(dates)
+            // let withPay = 0,withoutPay = 0,tempWOP;
+            // sorted.forEach(el=> {
+            //     let isWithPay = dates.includes(moment(el.toDate()).format('MM-DD-YYYY'))
+            //     if(isWithPay){
+            //         withPay++;
+            //     }else{
+            //         if(moment(from).format('MM-DD-YYYY') > moment(el.toDate()).format('MM-DD-YYYY')){
+            //             withoutPay++;
+            //         }
+            //     }
+            // })
+            // let totalWithoutPay=0,finalTotal=0;
+            // if(withoutPay === 0 ){
+            //     if(selectedInclusiveDates.length >balance){
+            //         totalWithoutPay = selectedInclusiveDates.length-balance
+            //     }else{
+            //         totalWithoutPay = 0;
+            //     }
+            // }else{
+            //     if((selectedInclusiveDates.length - withoutPay) > balance){
+            //         totalWithoutPay = (selectedInclusiveDates.length - withoutPay)-balance
+            //     }else{
+            //         totalWithoutPay = 0;
+            //     }
+            // }
+            // setslAutoWithoutPay(withoutPay);
+            // finalTotal = withoutPay+totalWithoutPay;
+            // setslTotalWithoutPay(finalTotal)
+        }
+        if(leaveType === 6){
+            var days = Math.round(selectedSPL/1);
+            if(selectedInclusiveDates.length > days){
+                for (var i = selectedInclusiveDates.length -1; i >= days; i--)
+                sortedTemp.splice(i, 1);
+            }
+            var newTemp = [];
+            sortedTemp.forEach(el=> {
+                var t = {
+                    date:el,
+                    period:''
+                };
+                newTemp.push(t)
+            })
+            setTempSelectedSPLInclusiveDates(newTemp)
+        }
+        var temp = [];
+        var temp2 = [];
+        for(var i = 0; i <sorted.length ; i++){
+            //check if increment equals to sorted length
+            if(i+1 !== sorted.length){
+                // check if same month and year
+                if(moment(sorted[i].toDate()).format('MMMM YYYY') === moment(sorted[i+1].toDate()).format('MMMM YYYY')){
+                    // check if consecutive dates
+                    if(moment(sorted[i+1].toDate()).diff(moment(sorted[i].toDate()),'days') === 1){
+                        temp2.push(sorted[i].toDate())
+                    }else{
+                        temp2.push(sorted[i].toDate())
+                        temp.push(temp2)
+                        temp2 = []
+                    }
+                }else{
+                    temp2.push(sorted[i].toDate())
+                    temp.push(temp2)
+                    temp2 = []
+                }
+            }else{
+                temp2.push(sorted[i].toDate())
+                temp.push(temp2)
+            }
+        }
+        // console.log(temp)
+        // setFinalSortedInclusiveDates(temp)
+        var inclusiveDates = '';
+        for(var x = 0 ; x<temp.length; x++){
+            if(x+1 !== temp.length){
+                if(temp[x].length !==1){
+                    if(x ===0 ){
+                        if(moment(temp[x][0]).format('MMMM YYYY') === moment(temp[x+1][0]).format('MMMM YYYY')){
+                            inclusiveDates +=moment(temp[x][0]).format('MMMM DD-')
+                            inclusiveDates +=moment(temp[x][temp[x].length-1]).format('DD')
+                        }else{
+                            inclusiveDates +=moment(temp[x][0]).format('MMMM DD-')
+                            inclusiveDates +=moment(temp[x][temp[x].length-1]).format('DD YYYY, ')
+                        }
+                    }else{
+                        // check if next and before array month and year is equal to current data
+                        if(moment(temp[x][0]).format('MMMM YYYY') === moment(temp[x+1][0]).format('MMMM YYYY') &&
+                        moment(temp[x][0]).format('MMMM YYYY') === moment(temp[x-1][0]).format('MMMM YYYY')){
+                            inclusiveDates += moment(temp[x][0]).format(',DD-')
+                            inclusiveDates += moment(temp[x][temp[x].length-1]).format('DD')
+                        }else{
+                            //check if before array month and year is equal to current data
+                            if(moment(temp[x][0]).format('MMMM YYYY') === moment(temp[x-1][0]).format('MMMM YYYY')){
+                                inclusiveDates += moment(temp[x][0]).format(',DD-')
+                                inclusiveDates += moment(temp[x][temp[x].length-1]).format('DD YYYY,')
+                            }else{
+                                inclusiveDates += moment(temp[x][0]).format('MMMM DD-')
+                                inclusiveDates += moment(temp[x][temp[x].length-1]).format('DD ')
+                            }
+                        }
+                    }
+                }else{
+                    if(x ===0){
+                        if(moment(temp[x][0]).format('MMMM YYYY') === moment(temp[x+1][0]).format('MMMM YYYY')){
+                            inclusiveDates += moment(temp[x][0]).format('MMMM DD')
+                        }else{
+                            inclusiveDates += moment(temp[x][0]).format('MMMM DD YYYY, ')
+                        }
+                    }else{
+                        if(moment(temp[x][0]).format('MMMM YYYY') === moment(temp[x-1][0]).format('MMMM YYYY')){
+                            if(moment(temp[x][0]).format('MMMM YYYY') === moment(temp[x+1][0]).format('MMMM YYYY')){
+                                inclusiveDates += moment(temp[x][0]).format(',DD')
+                            }else{
+                                inclusiveDates += moment(temp[x][0]).format(',DD YYYY,')
+                            }
+                        }else{
+                            if(moment(temp[x][0]).format('MMMM YYYY') === moment(temp[x+1][0]).format('MMMM YYYY')){
+                                inclusiveDates += moment(temp[x][0]).format('MMMM DD')
+                            }else{
+                                inclusiveDates += moment(temp[x][0]).format('MMMM DD YYYY, ')
+                            }
+                        }
+                    }
+                    
+                }
+            }else{
+                if(temp.length !== 1){
+                    if(temp[x].length !== 1){
+                        if(moment(temp[x][0]).format('MMMM YYYY') === moment(temp[x-1][0]).format('MMMM YYYY')){
+                            inclusiveDates += moment(temp[x][0]).format(',DD-')
+                            inclusiveDates += moment(temp[x][temp[x].length-1]).format('DD,YYYY')
+                        }else{
+                            inclusiveDates +=moment(temp[x][0]).format('MMMM DD-')
+                            inclusiveDates += moment(temp[x][temp[x].length-1]).format('DD,YYYY')
+                        }
+                    }else{
+                        if(moment(temp[x][0]).format('MMMM YYYY') === moment(temp[x-1][0]).format('MMMM YYYY')){
+                            inclusiveDates += moment(temp[x][temp[x].length-1]).format(',DD,YYYY')
+                        }else{
+                            inclusiveDates += moment(temp[x][0]).format('MMMM DD YYYY')
+                        }
+                    }
+                }else{
+                    if(temp[x].length !== 1){
+                        inclusiveDates += moment(temp[x][0]).format('MMMM DD-')
+                        inclusiveDates += moment(temp[x][temp[x].length-1]).format('DD,YYYY')
+                    }else{
+                        inclusiveDates +=moment(temp[x][0]).format('MMMM DD, YYYY')
+                    }
+                }
+            }
+        }
+        // console.log(inclusiveDates)
+        setPreviewInclusiveDates(inclusiveDates)
+        if(selectedInclusiveDates.length >5){
+            setSLAttachment(true)
+        }else{
+            setSLAttachment(false)
+        }
+        if(selectedInclusiveDates.length !==0){
+            if(moment(sorted[0].toDate()).format('MM-DD-YYYY') > moment(new Date).format('MM-DD-YYYY')){
+                setSLAttachment(true)
+            }
+        }else{
+            setSLAttachment(false)
+        }
+        selectedInclusiveDates.forEach(el=>{
+            if(moment(el.toDate()).format('MM-DD-YYYY')>=moment(new Date()).format('MM-DD-YYYY')){
+                setSLAttachment(true)
+            }
+        })
+    }
+    const [slAttachment,setSLAttachment] = React.useState(false);
+    const handleSortCTOInclusiveDates = () => {
+        var sorted = selectedCTOInclusiveDates.sort()
+        var sortedTemp = selectedCTOInclusiveDates.sort()
+
+        var days = Math.round(CTOHours/8);
+        if(selectedCTOInclusiveDates.length > days){
+            for (var i = selectedCTOInclusiveDates.length -1; i >= days; i--)
+            sortedTemp.splice(i, 1);
+        }
+        var newTemp = [];
+        sortedTemp.forEach(el=> {
+            var t = {
+                date:el,
+                period:''
+            };
+            newTemp.push(t)
+        })
+        setTempSelectedCTOInclusiveDates(newTemp)
+        var temp = [];
+        var temp2 = [];
+        for(var i = 0; i <sorted.length ; i++){
+            //check if increment equals to sorted length
+            if(i+1 !== sorted.length){
+                // check if same month and year
+                if(moment(sorted[i].toDate()).format('MMMM YYYY') === moment(sorted[i+1].toDate()).format('MMMM YYYY')){
+                    // check if consecutive dates
+                    if(moment(sorted[i+1].toDate()).diff(moment(sorted[i].toDate()),'days') === 1){
+                        temp2.push(sorted[i].toDate())
+                    }else{
+                        temp2.push(sorted[i].toDate())
+                        temp.push(temp2)
+                        temp2 = []
+                    }
+                }else{
+                    temp2.push(sorted[i].toDate())
+                    temp.push(temp2)
+                    temp2 = []
+                }
+            }else{
+                temp2.push(sorted[i].toDate())
+                temp.push(temp2)
+            }
+        }
+        // console.log(temp)
+        // setFinalSortedInclusiveDates(temp)
+        var inclusiveDates = '';
+        for(var x = 0 ; x<temp.length; x++){
+            if(x+1 !== temp.length){
+                if(temp[x].length !==1){
+                    if(x ===0 ){
+                        if(moment(temp[x][0]).format('MMMM YYYY') === moment(temp[x+1][0]).format('MMMM YYYY')){
+                            inclusiveDates +=moment(temp[x][0]).format('MMMM DD-')
+                            inclusiveDates +=moment(temp[x][temp[x].length-1]).format('DD')
+                        }else{
+                            inclusiveDates +=moment(temp[x][0]).format('MMMM DD-')
+                            inclusiveDates +=moment(temp[x][temp[x].length-1]).format('DD YYYY, ')
+                        }
+                    }else{
+                        // check if next and before array month and year is equal to current data
+                        if(moment(temp[x][0]).format('MMMM YYYY') === moment(temp[x+1][0]).format('MMMM YYYY') &&
+                        moment(temp[x][0]).format('MMMM YYYY') === moment(temp[x-1][0]).format('MMMM YYYY')){
+                            inclusiveDates += moment(temp[x][0]).format(',DD-')
+                            inclusiveDates += moment(temp[x][temp[x].length-1]).format('DD')
+                        }else{
+                            //check if before array month and year is equal to current data
+                            if(moment(temp[x][0]).format('MMMM YYYY') === moment(temp[x-1][0]).format('MMMM YYYY')){
+                                inclusiveDates += moment(temp[x][0]).format(',DD-')
+                                inclusiveDates += moment(temp[x][temp[x].length-1]).format('DD YYYY,')
+                            }else{
+                                inclusiveDates += moment(temp[x][0]).format('MMMM DD-')
+                                inclusiveDates += moment(temp[x][temp[x].length-1]).format('DD ')
+                            }
+                        }
+                    }
+                }else{
+                    if(x ===0){
+                        if(moment(temp[x][0]).format('MMMM YYYY') === moment(temp[x+1][0]).format('MMMM YYYY')){
+                            inclusiveDates += moment(temp[x][0]).format('MMMM DD')
+                        }else{
+                            inclusiveDates += moment(temp[x][0]).format('MMMM DD YYYY, ')
+                        }
+                    }else{
+                        if(moment(temp[x][0]).format('MMMM YYYY') === moment(temp[x-1][0]).format('MMMM YYYY')){
+                            if(moment(temp[x][0]).format('MMMM YYYY') === moment(temp[x+1][0]).format('MMMM YYYY')){
+                                inclusiveDates += moment(temp[x][0]).format(',DD')
+                            }else{
+                                inclusiveDates += moment(temp[x][0]).format(',DD YYYY,')
+                            }
+                        }else{
+                            if(moment(temp[x][0]).format('MMMM YYYY') === moment(temp[x+1][0]).format('MMMM YYYY')){
+                                inclusiveDates += moment(temp[x][0]).format('MMMM DD')
+                            }else{
+                                inclusiveDates += moment(temp[x][0]).format('MMMM DD YYYY, ')
+                            }
+                        }
+                    }
+                    
+                }
+            }else{
+                if(temp.length !== 1){
+                    if(temp[x].length !== 1){
+                        if(moment(temp[x][0]).format('MMMM YYYY') === moment(temp[x-1][0]).format('MMMM YYYY')){
+                            inclusiveDates += moment(temp[x][0]).format(',DD-')
+                            inclusiveDates += moment(temp[x][temp[x].length-1]).format('DD,YYYY')
+                        }else{
+                            inclusiveDates +=moment(temp[x][0]).format('MMMM DD-')
+                            inclusiveDates += moment(temp[x][temp[x].length-1]).format('DD,YYYY')
+                        }
+                    }else{
+                        if(moment(temp[x][0]).format('MMMM YYYY') === moment(temp[x-1][0]).format('MMMM YYYY')){
+                            inclusiveDates += moment(temp[x][temp[x].length-1]).format(',DD,YYYY')
+                        }else{
+                            inclusiveDates += moment(temp[x][0]).format('MMMM DD YYYY')
+                        }
+                    }
+                }else{
+                    if(temp[x].length !== 1){
+                        inclusiveDates += moment(temp[x][0]).format('MMMM DD-')
+                        inclusiveDates += moment(temp[x][temp[x].length-1]).format('DD,YYYY')
+                    }else{
+                        inclusiveDates +=moment(temp[x][0]).format('MMMM DD, YYYY')
+                    }
+                }
+            }
+        }
+        // console.log(inclusiveDates)
+        setctodatestext(inclusiveDates)
+    }
+    const [ctodatestext,setctodatestext] = React.useState('');
+    const printWarning = ()=>{
+        alert('warning')
+    }
+    const submitApplication = () =>{
+        Swal.fire({
+            icon:'info',
+            title: 'Do you want to save the changes?',
+            showCancelButton: true,
+            confirmButtonText: 'Save',
+          }).then((result) => {
+            /**
+             * if click save on confirmation
+             */
+            if (result.isConfirmed) {
+                var format_date = [];
+                var cto_dates = '';
+                /**
+                 * switch action based on leave type selected
+                 */
+                switch(leaveType){
+                    /**
+                     * Vacation Leave & Mandatory Forced Leave
+                     */
+                    case 1:
+                    case 2:
+                        if(leaveDetails.length ===0){
+                            Swal.fire({
+                                icon:'warning',
+                                title:'Oops...',
+                                html:'Please select details of leave.'
+                            })
+                        }else{
+                            if(specifyDetails.length ===0){
+                                Swal.fire({
+                                    icon:'warning',
+                                    title:'Oops...',
+                                    html:'Please specify details of leave.'
+                                })
+                            }else{
+                                if(selectedInclusiveDates.length ===0){
+                                    Swal.fire({
+                                        icon:'warning',
+                                        title:'Oops...',
+                                        html:'Please select a date.'
+                                    })
+                                }else{
+                                    if(commutation.length === 0){
+                                        Swal.fire({
+                                            icon:'warning',
+                                            title:'Oops...',
+                                            html:'Please select commutation.'
+                                        })
+                                    }else{
+                                        selectedInclusiveDates.forEach(el=>
+                                            format_date.push({
+                                                date:moment(el.toDate()).format('MM-DD-YYYY'),
+                                                period:'NONE'
+                                            })
+                                        )
+                                        var data = {
+                                            leave_type_id:leaveType,
+                                            details_of_leave_id:leaveDetails,
+                                            specify_details:specifyDetails,
+                                            days_hours_applied:selectedInclusiveDates.length,
+                                            inclusive_dates:format_date,
+                                            days_with_pay:selectedInclusiveDates.length>Math.floor(balance) ? Math.floor(balance):selectedInclusiveDates.length,
+                                            days_without_pay:selectedInclusiveDates.length>Math.floor(balance) ? selectedInclusiveDates.length - Math.floor(balance):0,
+                                            balance:balance,
+                                            inclusive_dates_text:previewInclusiveDates,
+                                            commutation:commutation,
+                                        }
+                                        console.log(data)
+                                        Swal.fire({
+                                            icon:'info',
+                                            title:'Saving data',
+                                            html:'Please wait...',
+                                            allowEscapeKey:false,
+                                            allowOutsideClick:false
+                                        })
+                                        Swal.showLoading()
+                                        addLeaveApplication(data)
+                                        .then((response)=>{
+                                            if(response.data.status === 'success'){
+                                                
+                                                const data = response.data;
+                                                Swal.fire({
+                                                    icon:'success',
+                                                    title:data.message,
+                                                    showConfirmButton: false,
+                                                    timer: 1500
+                                                })
+                                                setLeaveType('');
+                                                setLeaveDetails('')
+                                                setSpecifyDetails('')
+                                                setCommutation('')
+                                                setInclusiveDates([])
+                                                setPreviewInclusiveDates('')
+                                                setPendingLeaveApplicationData(data.pending)
+                                                setAlreadyAppliedDays(data.applied_dates)
+                                                setonProcess(data.on_process)
+                                                // toast.success(response.data.message)
+                                                var vl = balanceData[0].vl_bal-data.on_process.vl < 0 ?0:balanceData[0].vl_bal-data.on_process.vl
+                                                var sl = balanceData[0].sl_bal-data.on_process.sl < 0 ?0:balanceData[0].sl_bal-data.on_process.sl
+                                                var coc = balanceData[0].coc_bal-data.on_process.vl < 0 ?0:balanceData[0].coc_bal-data.on_process.coc
+                                                setavailableVL(vl)
+                                                setavailableSL(sl)
+                                                setavailableCOC(coc)
+                                                setOpen(false)
+                                            }else if(response.data.status === 'warning'){
+                                                const data = response.data;
+                                                setBalanceData(data.balance)
+                                                var vl = data.balance[0].vl_bal-data.on_process.vl < 0 ?formatSubtractCreditAvailableDecimal(data.balance[0].vl_bal,Math.floor(data.balance[0].vl_bal)):formatSubtractCreditAvailableDecimal(data.balance[0].vl_bal,data.on_process.vl)
+                                                var sl = data.balance[0].sl_bal-data.on_process.sl < 0 ?formatSubtractCreditAvailableDecimal(data.balance[0].sl_bal,Math.floor(data.balance[0].sl_bal)):formatSubtractCreditAvailableDecimal(data.balance[0].sl_bal,data.on_process.sl)
+                                                var coc = data.balance[0].coc_bal-data.on_process.vl < 0 ?0:data.balance[0].coc_bal-data.on_process.coc
+                                                setPendingLeaveApplicationData(data.pending)
+                                                setAlreadyAppliedDays(data.applied_dates)
+                                                setonProcess(data.on_process)
+                                                setavailableVL(vl)
+                                                setavailableSL(sl)
+                                                setavailableCOC(coc)
+                                                console.log(data)
+                                                var bal = 0;
+                                                var bal2 = 0;
+                                                /**
+                                                 * loop to set the available balance based on selected leave type
+                                                 */
+                                                 data.balance.forEach(element => {
+                                                    // if(element.id === value.target.value){
+                                                    //     bal = element.leave_balance
+                                                    // }
+                                                    switch(leaveType){
+                                                        /**
+                                                         * vacation leave/force leave/ special privilege leave
+                                                         */
+                                                        case 1:
+                                                        case 2:
+                                                            bal2 = formatSubtractCreditAvailableDecimal(element.vl_bal,data.on_process.vl)
+                                                            if(bal2<0){
+                                                                bal = 0;
+                                                            }else{
+                                                                bal = formatSubtractCreditAvailableDecimal(element.vl_bal,data.on_process.vl)
+                                                            }
+                                                            break;
+                                                        /**
+                                                         * sick leave
+                                                         */
+                                                        case 3:
+                                                            bal = formatSubtractCreditAvailableDecimal(element.sl_bal,data.on_process.sl)
+                                                            bal2 = formatSubtractCreditAvailableDecimal(element.sl_bal,data.on_process.sl)
+                                                            if(bal2<0){
+                                                                bal = 0;
+                                                            }else{
+                                                                bal = formatSubtractCreditAvailableDecimal(element.sl_bal,data.on_process.sl)
+                                                            }
+                                                            break;
+                                                        /**
+                                                         *  CTO
+                                                         */
+                                                        case 14:
+                                                            // bal = element.coc_bal-data.on_process.coc
+                                                            bal2 = formatSubtractCreditAvailableDecimal(element.coc_bal,data.on_process.coc)
+                                                            if(bal2<0){
+                                                                bal = 0;
+                                                            }else{
+                                                                bal = formatSubtractCreditAvailableDecimal(element.coc_bal,data.on_process.coc)
+                                                            }
+                                                            break;
+                                                    }
+                                                });
+                                                setBalance(bal)
+                                                Swal.fire({
+                                                    icon:'warning',
+                                                    title:'Oops...',
+                                                    html:'Current Balance is updated. Please review again your application.'
+                                                })
+                                            }else{
+                                                Swal.close()
+                                                toast.error(response.data.message)
+                                            }
+                                        }).catch((error)=>{
+                                            Swal.close()
+                                            toast.error(error)
+                                            console.log(error)
+                
+                                        })
+                                    }
+                                }
+                            }
+                        }
+                        break;
+
+                    /**
+                     * Sick Leave
+                     */
+                    case 3:
+                        
+                        /**
+                         * check if selected inclusive dates is null
+                         */
+                        if(selectedInclusiveDates.length ===0){
+                            Swal.fire({
+                                icon:'warning',
+                                title:'Oops...',
+                                html:'Please select inclusive dates.'
+                            })
+                        }else{
+                            /**
+                             * if exceed 5 days, it must have an attachment
+                             */
+                            var has_attachment = false;
+                            var sorted = selectedInclusiveDates.sort();
+                            if(selectedInclusiveDates.length >5){
+                                has_attachment = true;
+                            }
+                            if(selectedInclusiveDates.length !==0){
+                                if(moment(sorted[0].toDate()).format('MM-DD-YYYY') > moment(new Date).format('MM-DD-YYYY')){
+                                    has_attachment = true
+                                }
+                            }
+                            if(has_attachment){
+                                if(slFile.length === 0){
+                                    Swal.fire({
+                                        icon:'warning',
+                                        title:'Oops...',
+                                        html:'Please upload a valid Medical Cert. or Affidavit.'
+                                    })
+                                }else{
+                                    selectedInclusiveDates.forEach(el=>
+                                        format_date.push({
+                                            date:moment(el.toDate()).format('MM-DD-YYYY'),
+                                            period:'NONE'
+                                        })
+                                    )
+                                    if(specifyDetails.length !==0){
+                                        var data = {
+                                            has_attachment:has_attachment,
+                                            leave_type_id:leaveType,
+                                            details_of_leave_id:leaveDetails,
+                                            specify_details:specifyDetails,
+                                            days_hours_applied:selectedInclusiveDates.length,
+                                            inclusive_dates:format_date,
+                                            days_with_pay:selectedInclusiveDates.length-slAutoWithoutPay>balance ? balance:selectedInclusiveDates.length-slAutoWithoutPay,
+                                            days_without_pay:slTotalWithoutPay,
+                                            balance:balance,
+                                            inclusive_dates_text:previewInclusiveDates,
+                                            commutation:commutation,
+                                            sl_file:slFile
+                                        }
+                                        // console.log(data)
+                                        Swal.fire({
+                                            icon:'info',
+                                            title:'Saving data',
+                                            html:'Please wait...',
+                                            allowEscapeKey:false,
+                                            allowOutsideClick:false
+                                        })
+                                        Swal.showLoading()
+                                        addLeaveApplication(data)
+                                        .then((response)=>{
+                                            // console.log(response.data)
+                                            if(response.data.status === 'success'){
+                                                // Swal.close()
+                                                const data = response.data;
+                                                Swal.fire({
+                                                    icon:'success',
+                                                    title:data.message,
+                                                    showConfirmButton: false,
+                                                    timer: 1500
+                                                })
+                                                setLeaveType('');
+                                                setLeaveDetails('')
+                                                setSpecifyDetails('')
+                                                setCommutation('')
+                                                setInclusiveDates([])
+                                                setPreviewInclusiveDates('')
+                                                setPendingLeaveApplicationData(data.pending)
+                                                setAlreadyAppliedDays(data.applied_dates)
+                                                setonProcess(data.on_process)
+                                                setslAutoWithoutPay(0)
+                                                setslTotalWithoutPay(0)
+                                                // toast.success(response.data.message)
+                                                setOpen(false)
+                                                var vl = balanceData[0].vl_bal-data.on_process.vl < 0 ?0:balanceData[0].vl_bal-data.on_process.vl
+                                                var sl = balanceData[0].sl_bal-data.on_process.sl < 0 ?0:balanceData[0].sl_bal-data.on_process.sl
+                                                var coc = balanceData[0].coc_bal-data.on_process.vl < 0 ?0:balanceData[0].coc_bal-data.on_process.coc
+                                                setavailableVL(vl)
+                                                setavailableSL(sl)
+                                                setavailableCOC(coc)
+
+                                                let currDate = new Date();
+                                                var date = new Date();
+                                                var start = 0;
+                                                var end = 5;
+                                                var toAdd = 0;
+                                                var slRangeDatesWP =[];
+                                                while(start <= end){
+                                                    if(data.applied_dates.includes(moment(date).format('MM-DD-YYYY'))){
+                                                        toAdd++;
+                                                    }else{
+                                                        if(moment(date).isBusinessDay()){
+                                                            slRangeDatesWP.push(moment(date).format('MM-DD-YYYY'))
+                                                            start++;
+                                                        }
+                                                    }
+                                                    date.setDate(date.getDate() - 1);
+                                                }
+                                                let finalNoPay = momentBusinessDays(moment(currDate).format('YYYY-MM-DD'), 'YYYY-MM-DD').businessSubtract(6+toAdd)._d
+                                                let finalWithPay = momentBusinessDays(moment(currDate).format('YYYY-MM-DD'), 'YYYY-MM-DD').businessSubtract(5+toAdd)._d
+
+                                                setslRangeDatesWithPay(slRangeDatesWP)
+                                                setslNoPay(finalNoPay)
+                                                setslWithPay(finalWithPay)
+                                            }else if(response.data.status === 'warning'){
+                                                const data = response.data;
+                                                setBalanceData(data.balance)
+                                                var vl = data.balance[0].vl_bal-data.on_process.vl < 0 ?formatSubtractCreditAvailableDecimal(data.balance[0].vl_bal,Math.floor(data.balance[0].vl_bal)):formatSubtractCreditAvailableDecimal(data.balance[0].vl_bal,data.on_process.vl)
+                                                var sl = data.balance[0].sl_bal-data.on_process.sl < 0 ?formatSubtractCreditAvailableDecimal(data.balance[0].sl_bal,Math.floor(data.balance[0].sl_bal)):formatSubtractCreditAvailableDecimal(data.balance[0].sl_bal,data.on_process.sl)
+                                                var coc = data.balance[0].coc_bal-data.on_process.vl < 0 ?0:data.balance[0].coc_bal-data.on_process.coc
+                                                setPendingLeaveApplicationData(data.pending)
+                                                setAlreadyAppliedDays(data.applied_dates)
+                                                setonProcess(data.on_process)
+                                                setavailableVL(vl)
+                                                setavailableSL(sl)
+                                                setavailableCOC(coc)
+                                                var bal = 0,bal2=0;
+                                                /**
+                                                 * loop to set the available balance based on selected leave type
+                                                 */
+                                                 data.balance.forEach(element => {
+                                                    // if(element.id === value.target.value){
+                                                    //     bal = element.leave_balance
+                                                    // }
+                                                    switch(leaveType){
+                                                        /**
+                                                         * vacation leave/force leave/ special privilege leave
+                                                         */
+                                                        case 1:
+                                                        case 2:
+                                                            bal2 = formatSubtractCreditAvailableDecimal(element.vl_bal-data.on_process.vl)
+                                                            if(bal2<0){
+                                                                bal = 0;
+                                                            }else{
+                                                                bal = formatSubtractCreditAvailableDecimal(element.vl_bal,data.on_process.vl)
+                                                            }
+                                                            break;
+                                                        /**
+                                                         * sick leave
+                                                         */
+                                                        case 3:
+                                                            // bal = element.sl_bal-data.on_process.sl
+                                                            bal2 = formatSubtractCreditAvailableDecimal(element.sl_bal-data.on_process.sl)
+                                                            if(bal2<0){
+                                                                bal = 0;
+                                                            }else{
+                                                                bal = formatSubtractCreditAvailableDecimal(element.sl_bal,data.on_process.sl)
+                                                            }
+                                                            break;
+                                                        /**
+                                                         *  CTO
+                                                         */
+                                                        case 14:
+                                                            // bal = element.coc_bal-data.on_process.coc
+                                                            bal2 = formatSubtractCreditAvailableDecimal(element.coc_bal,data.on_process.coc)
+                                                            if(bal2<0){
+                                                                bal = 0;
+                                                            }else{
+                                                                bal = formatSubtractCreditAvailableDecimal(element.coc_bal,data.on_process.coc)
+                                                            }
+                                                            break;
+                                                    }
+                                                });
+                                                setBalance(bal)
+                                                Swal.fire({
+                                                    icon:'warning',
+                                                    title:'Oops...',
+                                                    html:'Current Balance is updated. Please review again your application.'
+                                                })
+                                            }else{
+                                                Swal.close()
+                                                toast.error(response.data.message)
+                                            }
+                                        }).catch((error)=>{
+                                            Swal.close()
+                                            toast.error(error)
+                                            console.log(error)
+                
+                                        })
+                                    }else{
+                                        Swal.fire({
+                                            icon:'warning',
+                                            title:'Oops...',
+                                            html:'Please specify details of leave.'
+                                        })
+                                    }
+                                }
+                            }else{
+                                selectedInclusiveDates.forEach(el=>
+                                    format_date.push({
+                                        date:moment(el.toDate()).format('MM-DD-YYYY'),
+                                        period:'NONE'
+                                    })
+                                )
+                                if(specifyDetails.length !==0){
+                                    var data = {
+                                        has_attachment:has_attachment,
+                                        leave_type_id:leaveType,
+                                        details_of_leave_id:leaveDetails,
+                                        specify_details:specifyDetails,
+                                        days_hours_applied:selectedInclusiveDates.length,
+                                        inclusive_dates:format_date,
+                                        days_with_pay:selectedInclusiveDates.length-slAutoWithoutPay>balance ? balance:selectedInclusiveDates.length-slAutoWithoutPay,
+                                        days_without_pay:slTotalWithoutPay,
+                                        balance:balance,
+                                        inclusive_dates_text:previewInclusiveDates,
+                                        commutation:commutation,
+                                        sl_file:slFile
+                                    }
+                                    // console.log(data)
+                                    Swal.fire({
+                                        icon:'info',
+                                        title:'Saving data',
+                                        html:'Please wait...',
+                                        allowEscapeKey:false,
+                                        allowOutsideClick:false
+                                    })
+                                    Swal.showLoading()
+                                    addLeaveApplication(data)
+                                    .then((response)=>{
+                                        // console.log(response.data)
+                                        if(response.data.status === 'success'){
+                                            // Swal.close()
+                                            const data = response.data;
+                                            Swal.fire({
+                                                icon:'success',
+                                                title:data.message,
+                                                showConfirmButton: false,
+                                                timer: 1500
+                                            })
+                                            setLeaveType('');
+                                            setLeaveDetails('')
+                                            setSpecifyDetails('')
+                                            setCommutation('')
+                                            setInclusiveDates([])
+                                            setPreviewInclusiveDates('')
+                                            setPendingLeaveApplicationData(data.pending)
+                                            setAlreadyAppliedDays(data.applied_dates)
+                                            setonProcess(data.on_process)
+                                            // toast.success(response.data.message)
+                                            setOpen(false)
+                                            setslAutoWithoutPay(0)
+                                            setslTotalWithoutPay(0)
+                                            let currDate = new Date();
+                                            var date = new Date();
+                                            var start = 0;
+                                            var end = 5;
+                                            var toAdd = 0;
+                                            var slRangeDatesWP =[];
+                                            while(start <= end){
+                                                if(data.applied_dates.includes(moment(date).format('MM-DD-YYYY'))){
+                                                    toAdd++;
+                                                }else{
+                                                    if(moment(date).isBusinessDay()){
+                                                        slRangeDatesWP.push(moment(date).format('MM-DD-YYYY'))
+                                                        start++;
+                                                    }
+                                                }
+                                                date.setDate(date.getDate() - 1);
+                                            }
+                                            let finalNoPay = momentBusinessDays(moment(currDate).format('YYYY-MM-DD'), 'YYYY-MM-DD').businessSubtract(6+toAdd)._d
+                                            let finalWithPay = momentBusinessDays(moment(currDate).format('YYYY-MM-DD'), 'YYYY-MM-DD').businessSubtract(5+toAdd)._d
+
+                                            setslRangeDatesWithPay(slRangeDatesWP)
+                                            setslNoPay(finalNoPay)
+                                            setslWithPay(finalWithPay)
+                                        }else if(response.data.status === 'warning'){
+                                            const data = response.data;
+                                            setBalanceData(data.balance)
+                                            setPendingLeaveApplicationData(data.pending)
+                                            setAlreadyAppliedDays(data.applied_dates)
+                                                setonProcess(data.on_process)
+                                            var bal = 0,bal2=0;
+                                            /**
+                                             * loop to set the available balance based on selected leave type
+                                             */
+                                             data.balance.forEach(element => {
+                                                // if(element.id === value.target.value){
+                                                //     bal = element.leave_balance
+                                                // }
+                                                switch(leaveType){
+                                                    /**
+                                                     * vacation leave/force leave/ special privilege leave
+                                                     */
+                                                    case 1:
+                                                    case 2:
+                                                        bal2 = formatSubtractCreditAvailableDecimal(element.vl_bal,data.on_process.vl)
+                                                        if(bal2<0){
+                                                            bal = 0;
+                                                        }else{
+                                                            bal = formatSubtractCreditAvailableDecimal(element.vl_bal,data.on_process.vl)
+                                                        }
+                                                        break;
+                                                    /**
+                                                     * sick leave
+                                                     */
+                                                    case 3:
+                                                        // bal = element.sl_bal-data.on_process.sl
+                                                        bal2 = formatSubtractCreditAvailableDecimal(element.sl_bal,data.on_process.sl)
+                                                        if(bal2<0){
+                                                            bal = 0;
+                                                        }else{
+                                                            bal = formatSubtractCreditAvailableDecimal(element.sl_bal,data.on_process.sl)
+                                                        }
+                                                        break;
+                                                    /**
+                                                     *  CTO
+                                                     */
+                                                    case 14:
+                                                        // bal = element.coc_bal-data.on_process.coc
+                                                        bal2 = formatSubtractCreditAvailableDecimal(element.coc_bal,data.on_process.coc)
+                                                        if(bal2<0){
+                                                            bal = 0;
+                                                        }else{
+                                                            bal = formatSubtractCreditAvailableDecimal(element.coc_bal,data.on_process.coc)
+                                                        }
+                                                        break;
+                                                }
+                                            });
+                                            setBalance(bal)
+                                            Swal.fire({
+                                                icon:'warning',
+                                                title:'Oops...',
+                                                html:'Current Balance is updated. Please review again your application.'
+                                            })
+                                        }else{
+                                            Swal.close()
+                                            toast.error(response.data.message)
+                                        }
+                                    }).catch((error)=>{
+                                        Swal.close()
+                                        toast.error(error)
+                                        console.log(error)
+            
+                                    })
+                                }else{
+                                    Swal.fire({
+                                        icon:'warning',
+                                        title:'Oops...',
+                                        html:'Please specify details of leave.'
+                                    })
+                                }
+                            }
+                        }
+                        
+                        
+                    break;
+                /**
+                 * Maternity Leave
+                 */
+                    case 4:
+                    
+                    /**
+                     * check if selected inclusive dates is null
+                     */
+                    if(selectedInclusiveMaternityDates.length ===0){
+                        Swal.fire({
+                            icon:'warning',
+                            title:'Oops...',
+                            html:'Please select inclusive dates.'
+                        })
+                    }else{
+                        /**
+                         * Check if has selected date
+                         */
+                        if(selectedInclusiveMaternityDates.length === 0){
+                            Swal.fire({
+                                icon:'warning',
+                                title:'Oops...',
+                                html:'Please select start date.'
+                            })
+                        }else{
+                            if(singleFile.length === 0){
+                                Swal.fire({
+                                    icon:'warning',
+                                    title:'Oops...',
+                                    html:'Please upload a valid Proof of pregnancy.'
+                                })
+                            }else{
+                                if(isAppliedAllocationOfMaternityLeave){
+                                    if(
+                                    allocationInfo.fullname.length === 0 ||
+                                    allocationInfo.position.length === 0 ||
+                                    allocationInfo.home_address.length === 0 ||
+                                    allocationInfo.contact_details.length === 0 ||
+                                    allocationInfo.agency_address.length === 0 ||
+                                    allocationInfo.relationship_to_employee.length === 0 ||
+                                    allocationInfo.relationship_to_employee_proof.length === 0 ||
+                                    allocationInfo.relationship_to_employee_proof_file.length === 0 ||
+                                    allocationInfo.esignature.length === 0){
+                                        Swal.fire({
+                                            icon:'warning',
+                                            title:'Please fill out necessary allocation info'
+                                        })
+                                    }else{
+                                        var data = {
+                                            is_applied_allocation:true,
+                                            leave_type_id:leaveType,
+                                            days_hours_applied:daysPeriod-allocationInfo.allocated_days,
+                                            inclusive_dates:selectedInclusiveMaternityDatesRange,
+                                            days_with_pay:daysPeriod-allocationInfo.allocated_days,
+                                            days_without_pay:0,
+                                            balance:balance,
+                                            inclusive_dates_text:previewInclusiveDates,
+                                            commutation:commutation,
+                                            maternity_file:singleFile,
+                                            employee_contact_details:employeeInfo.cpno+' - '+employeeInfo.emailadd,
+                                            allocated_days:allocationInfo.allocated_days,
+                                            benefit_fullname:allocationInfo.fullname,
+                                            benefit_position:allocationInfo.position,
+                                            benefit_home_address:allocationInfo.home_address,
+                                            benefit_contact_details:allocationInfo.contact_details,
+                                            benefit_agency_address:allocationInfo.agency_address,
+                                            benefit_relationship:allocationInfo.relationship_to_employee,
+                                            benefit_relationship_details:allocationInfo.relationship_to_employee_details,
+                                            benefit_relationship_details_specify:allocationInfo.relationship_to_employee_details_specify,
+                                            benefit_proof_relationship:allocationInfo.relationship_to_employee_proof,
+                                            relationship_to_employee_proof_file:allocationInfo.relationship_to_employee_proof_file,
+                                            esignature:allocationInfo.esignature
+                                        }
+                                        Swal.fire({
+                                            icon:'info',
+                                            title:'Saving data',
+                                            html:'Please wait...',
+                                            allowEscapeKey:false,
+                                            allowOutsideClick:false
+                                        })
+                                        Swal.showLoading()
+                                        addLeaveApplication(data)
+                                        .then((response)=>{
+                                            const data = response.data;
+                                            if(response.data.status === 'success'){
+                                                // Swal.close()
+                                                
+                                                Swal.fire({
+                                                    icon:'success',
+                                                    title:data.message,
+                                                    showConfirmButton: false,
+                                                    timer: 1500
+                                                })
+                                                setLeaveType('');
+                                                setPreviewInclusiveDates('')
+                                                setInclusiveMaternityDates('')
+                                                setInclusiveMaternityDatesRange([])
+                                                setPendingLeaveApplicationData(data.pending)
+                                                setAlreadyAppliedDays(data.applied_dates)
+                                                setisAppliedAllocationOfMaternityLeave(false)
+                                                setonProcess(data.on_process)
+                                                setallocationInfo({
+                                                    employee_contact_details:'',
+                                                    allocated_days:1,
+                                                    fullname:'',
+                                                    position:'',
+                                                    home_address:'',
+                                                    contact_details:'',
+                                                    agency_address:'',
+                                                    relationship_to_employee:'',
+                                                    relationship_to_employee_details:'',
+                                                    relationship_to_employee_details_specify:'',
+                                                    relationship_to_employee_proof:'',
+                                                    relationship_to_employee_proof_file:'',
+                                                });
+                                                // toast.success(response.data.message)
+                                                setOpen(false)
+                                            }else{
+                                                Swal.close()
+                                                toast.error(data.message)
+                                            }
+                                        }).catch((error)=>{
+                                            Swal.close()
+                                            toast.error(error)
+                                            console.log(error)
+                
+                                        })
+                                    }
+                                    
+                                }else{
+                                    var data = {
+                                        is_applied_allocation:false,
+                                        leave_type_id:leaveType,
+                                        days_hours_applied:daysPeriod,
+                                        inclusive_dates:selectedInclusiveMaternityDatesRange,
+                                        days_with_pay:daysPeriod,
+                                        days_without_pay:0,
+                                        balance:balance,
+                                        inclusive_dates_text:previewInclusiveDates,
+                                        commutation:commutation,
+                                        maternity_file:singleFile,
+
+                                    }
+                                    Swal.fire({
+                                        icon:'info',
+                                        title:'Saving data',
+                                        html:'Please wait...',
+                                        allowEscapeKey:false,
+                                        allowOutsideClick:false
+                                    })
+                                    Swal.showLoading()
+                                    addLeaveApplication(data)
+                                    .then((response)=>{
+                                        // console.log(response.data)
+                                        if(response.data.status === 'success'){
+                                            // Swal.close()
+                                            const data = response.data;
+                                            Swal.fire({
+                                                icon:'success',
+                                                title:data.message,
+                                                showConfirmButton: false,
+                                                timer: 1500
+                                            })
+                                            setLeaveType('');
+                                            setLeaveDetails('')
+                                            setSpecifyDetails('')
+                                            setInclusiveMaternityDates('')
+                                            setInclusiveMaternityDatesRange([])
+                                            setPreviewInclusiveDates('')
+                                            setPendingLeaveApplicationData(data.pending)
+                                            setAlreadyAppliedDays(data.applied_dates)
+                                            setonProcess(data.on_process)
+                                            // toast.success(response.data.message)
+                                            setOpen(false)
+                                        }else{
+                                            Swal.close()
+                                            toast.error(response.data.message)
+                                        }
+                                    }).catch((error)=>{
+                                        Swal.close()
+                                        toast.error(error)
+                                        alert(error.message)
+            
+                                    })
+                                }
+                                
+                            }
+                        }
+                        
+                    }
+                    
+                    
+                    break;
+                /**
+                 * Paternity Leave
+                 */
+                     case 5:
+                    
+                        /**
+                         * check if selected inclusive dates is null
+                         */
+                        if(selectedInclusiveDates.length ===0 || selectedInclusiveDates.length < 7){
+                            Swal.fire({
+                                icon:'warning',
+                                title:'Oops...',
+                                html:'Please select a total of 7 days.'
+                            })
+                        }else{
+                            if(singleFile.length === 0){
+                                Swal.fire({
+                                    icon:'warning',
+                                    title:'Oops...',
+                                    html:"Please upload a valid Proof of child's delivery"
+                                })
+                            }else{
+                                selectedInclusiveDates.forEach(el=>
+                                    format_date.push({
+                                        date:moment(el.toDate()).format('MM-DD-YYYY'),
+                                        period:'NONE'
+                                    })
+                                )
+                                var data = {
+                                    leave_type_id:leaveType,
+                                    days_hours_applied:selectedInclusiveDates.length,
+                                    inclusive_dates:format_date,
+                                    days_with_pay:selectedInclusiveDates.length,
+                                    days_without_pay:0,
+                                    inclusive_dates_text:previewInclusiveDates,
+                                    commutation:commutation,
+                                    paternity_file:singleFile
+                                }
+                                Swal.fire({
+                                    icon:'info',
+                                    title:'Saving data',
+                                    html:'Please wait...',
+                                    allowEscapeKey:false,
+                                    allowOutsideClick:false
+                                })
+                                Swal.showLoading()
+                                addLeaveApplication(data)
+                                .then((response)=>{
+                                    // console.log(response.data)
+                                    if(response.data.status === 'success'){
+                                        // Swal.close()
+                                        const data = response.data;
+                                        Swal.fire({
+                                            icon:'success',
+                                            title:data.message,
+                                            showConfirmButton: false,
+                                            timer: 1500
+                                        })
+                                        setLeaveType('');
+                                        setCommutation('')
+                                        setInclusiveDates('')
+                                        setPreviewInclusiveDates('')
+                                        setPendingLeaveApplicationData(data.pending)
+                                        setAlreadyAppliedDays(data.applied_dates)
+                                        setonProcess(data.on_process)
+                                        // toast.success(response.data.message)
+                                        setsingleFile('')
+                                        setOpen(false)
+                                    }else if(response.data.status === "warning"){
+                                        Swal.fire({
+                                            icon:'warning',
+                                            title:'Oops...',
+                                            html:response.data.message
+                                        })
+                                    }else{
+                                        Swal.close()
+                                        toast.error(response.data.message)
+                                    }
+                                }).catch((error)=>{
+                                    Swal.close()
+                                    toast.error(error)
+                                    console.log(error)
+        
+                                })
+                            }
+                            
+                        }
+                        break;
+                    /**
+                     * Special Privilege Leave
+                     */
+                    case 6:
+                        if(leaveDetails.length ===0){
+                            Swal.fire({
+                                icon:'warning',
+                                title:'Oops...',
+                                html:'Please select details of leave.'
+                            })
+                        }else{
+                            if(specifyDetails.length ===0){
+                                Swal.fire({
+                                    icon:'warning',
+                                    title:'Oops...',
+                                    html:'Please specify details of leave.'
+                                })
+                            }else{
+                                if(selectedInclusiveDates.length ===0){
+                                    Swal.fire({
+                                        icon:'warning',
+                                        title:'Oops...',
+                                        html:'Please select date.'
+                                    })
+                                }else{
+                                    if(commutation.length === 0){
+                                        Swal.fire({
+                                            icon:'warning',
+                                            title:'Oops...',
+                                            html:'Please select commutation.'
+                                        })
+                                    }else{
+                                        var has_period = false;
+
+                                        if(selectedSPL%1){
+                                            for(var c = 0; c<tempSelectedSPLInclusiveDates.length ; c++){
+                                                if(tempSelectedSPLInclusiveDates[c].period !== ''){
+                                                    has_period = true;
+                                                }
+                                            }
+                                        }else{
+                                            has_period = true;
+                                        }
+                                        // tempSelectedSPLInclusiveDates.forEach(el=>
+                                        //     format_date.push(moment(el.date.toDate()).format('MM-DD-YYYY'))
+                                        // )
+                                        if(!has_period){
+                                            Swal.fire({
+                                                icon:'warning',
+                                                title:'Oops...',
+                                                html:'Please select a date period (AM,PM). This is required if inclusive dates has half-day.'
+                                            })
+                                        }else{
+                                            selectedInclusiveDates.forEach(el=>
+                                                format_date.push({
+                                                    date:moment(el.toDate()).format('MM-DD-YYYY'),
+                                                    period:'NONE'
+                                                })
+                                            )
+                                            var data = {
+                                                leave_type_id:leaveType,
+                                                details_of_leave_id:leaveDetails,
+                                                specify_details:specifyDetails,
+                                                days_hours_applied:selectedSPL,
+                                                inclusive_dates:format_date,
+                                                days_with_pay:selectedSPL,
+                                                days_without_pay:0,
+                                                balance:balance,
+                                                inclusive_dates_text:previewInclusiveDates,
+                                                commutation:commutation,
+                                            }
+                                            Swal.fire({
+                                                icon:'info',
+                                                title:'Saving data',
+                                                html:'Please wait...',
+                                                allowEscapeKey:false,
+                                                allowOutsideClick:false,
+                                            })
+                                            Swal.showLoading()
+                                            addLeaveApplication(data)
+                                            .then((response)=>{
+                                                // console.log(response.data)
+                                                if(response.data.status === 'success'){
+                                                    // Swal.close()
+                                                    const data = response.data;
+                                                    Swal.fire({
+                                                        icon:'success',
+                                                        title:data.message,
+                                                        showConfirmButton: false,
+                                                        timer: 1500
+                                                    })
+                                                    setLeaveType('');
+                                                    setLeaveDetails('')
+                                                    setSpecifyDetails('')
+                                                    setCommutation('')
+                                                    setPreviewInclusiveDates('')
+                                                    setselectedSPL(0.5)
+                                                    setTempSelectedSPLInclusiveDates([]);
+                                                    setPendingLeaveApplicationData(data.pending)
+                                                    setAlreadyAppliedDays(data.applied_dates)
+                                                    setonProcess(data.on_process)
+                                                    setAvailabelSPL(data.spl_days_balance)
+                                                    setOnprocessSPL(data.spl_days_onprocess)                                              // toast.success(response.data.message)
+                                                    setOpen(false)
+                                                }else{
+                                                    Swal.close()
+                                                    toast.error(response.data.message)
+                                                }
+                                            }).catch((error)=>{
+                                                Swal.close()
+                                                toast.error(error)
+                                                console.log(error)
+                    
+                                            })
+                                        }
+                                        
+                                    }
+                                }
+                            }
+                        }
+                        
+                        break;
+                    /**
+                     * Solo Parent Leave
+                     */
+                     case 7:
+                        if(selectedInclusiveDates.length ===0 || selectedInclusiveDates.length<7){
+                            Swal.fire({
+                                icon:'warning',
+                                title:'Oops...',
+                                html:'Please select a total of 7 days.'
+                            })
+                        }else{
+                            selectedInclusiveDates.forEach(el=>
+                                format_date.push({
+                                    date:moment(el.toDate()).format('MM-DD-YYYY'),
+                                    period:'NONE'
+                                })
+                            )
+                            var data = {
+                                leave_type_id:leaveType,
+                                days_hours_applied:7,
+                                inclusive_dates:format_date,
+                                days_with_pay:7,
+                                days_without_pay:0,
+                                balance:balance,
+                                inclusive_dates_text:previewInclusiveDates,
+                                commutation:commutation,
+                            }
+                            Swal.fire({
+                                icon:'info',
+                                title:'Saving data',
+                                html:'Please wait...',
+                                allowEscapeKey:false,
+                                allowOutsideClick:false,
+                            })
+                            Swal.showLoading()
+                            addLeaveApplication(data)
+                            .then((response)=>{
+                                // console.log(response.data)
+                                if(response.data.status === 'success'){
+                                    // Swal.close()
+                                    const data = response.data;
+                                    Swal.fire({
+                                        icon:'success',
+                                        title:data.message,
+                                        showConfirmButton: false,
+                                        timer: 1500
+                                    })
+                                    setLeaveType('');
+                                    setCommutation('')
+                                    setInclusiveDates('')
+                                    setPreviewInclusiveDates('')
+                                    setPendingLeaveApplicationData(data.pending)
+                                    setAlreadyAppliedDays(data.applied_dates)
+                                    setonProcess(data.on_process)
+                                    // toast.success(response.data.message)
+                                    setOpen(false)
+                                }else{
+                                    Swal.close()
+                                    toast.error(response.data.message)
+                                }
+                            }).catch((error)=>{
+                                Swal.close()
+                                toast.error(error)
+                                console.log(error)
+    
+                            })
+                        }
+                        
+                        break;
+            /**
+             * Study leave
+             */
+                case 8:
+                
+                /**
+                 * check if selected inclusive dates is null
+                 */
+                if(selectedStudyDates.length ===0){
+                    Swal.fire({
+                        icon:'warning',
+                        title:'Oops...',
+                        html:'Please select inlcusive dates.'
+                    })
+                }else{
+                    if(singleFile.length === 0){
+                        Swal.fire({
+                            icon:'warning',
+                            title:'Oops...',
+                            html:"Please upload a supporting document."
+                        })
+                    }else{
+                       
+                        var from =selectedStudyDates[0].toDate();
+                        var to =selectedStudyDates[1].toDate();
+                        var dates = []
+                        while(from <= to){
+                            var exclude = alreadyAppliedDays.includes(moment(from).format('MM-DD-YYYY'))
+                            if(exclude){
+                                from.setDate(from.getDate()+1)
+                            }else{
+                                dates.push(moment(new Date(from)).format('MM-DD-YYYY'));
+                                from.setDate(from.getDate() + 1);
+                            }
+
+                        }
+                        // selectedInclusiveDates.forEach(el=>
+                        //     format_date.push(moment(el.toDate()).format('MM-DD-YYYY'))
+                        // )
+                        var data = {
+                            leave_type_id:leaveType,
+                            days_hours_applied:dates.length,
+                            inclusive_dates:dates,
+                            days_with_pay:dates.length,
+                            days_without_pay:0,
+                            inclusive_dates_text:previewInclusiveDates,
+                            commutation:commutation,
+                            study_file:singleFile
+                        }
+                        Swal.fire({
+                            icon:'info',
+                            title:'Saving data',
+                            html:'Please wait...',
+                            allowEscapeKey:false,
+                            allowOutsideClick:false
+                        })
+                        Swal.showLoading()
+                        addLeaveApplication(data)
+                        .then((response)=>{
+                            // console.log(response.data)
+                            if(response.data.status === 'success'){
+                                // Swal.close()
+                                const data = response.data;
+                                Swal.fire({
+                                    icon:'success',
+                                    title:data.message,
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                })
+                                setLeaveType('');
+                                setCommutation('')
+                                setSelectedStudyDates('')
+                                setPreviewInclusiveDates('')
+                                setsingleFile('')
+                                setPendingLeaveApplicationData(data.pending)
+                                setAlreadyAppliedDays(data.applied_dates)
+                                setonProcess(data.on_process)
+                                // toast.success(response.data.message)
+                                setOpen(false)
+                            }else{
+                                Swal.close()
+                                toast.error(response.data.message)
+                            }
+                        }).catch((error)=>{
+                            Swal.close()
+                            toast.error(error)
+                            console.log(error)
+
+                        })
+                    }
+                    
+                }
+                break;
+                /**
+                 * VAWC Leave
+                 */
+                     case 9:
+                        /**
+                         * check if selected inclusive dates is null
+                         */
+                        if(selectedInclusiveVAWCDates.length ===0){
+                            Swal.fire({
+                                icon:'warning',
+                                title:'Oops...',
+                                html:'Please select start dates.'
+                            })
+                        }else{
+                            if(singleFile.length === 0){
+                                Swal.fire({
+                                    icon:'warning',
+                                    title:'Oops...',
+                                    html:'Please upload a supporting document.'
+                                })
+                            }else{
+                                var data = {
+                                    leave_type_id:leaveType,
+                                    days_hours_applied:10,
+                                    inclusive_dates:selectedInclusiveVAWCDatesRange,
+                                    days_with_pay:10,
+                                    days_without_pay:0,
+                                    balance:balance,
+                                    inclusive_dates_text:previewInclusiveDates,
+                                    commutation:commutation,
+                                    vawc_file:singleFile,
+
+                                }
+                                Swal.fire({
+                                    icon:'info',
+                                    title:'Saving data',
+                                    html:'Please wait...',
+                                    allowEscapeKey:false,
+                                    allowOutsideClick:false
+                                })
+                                Swal.showLoading()
+                                addLeaveApplication(data)
+                                .then((response)=>{
+                                    // console.log(response.data)
+                                    if(response.data.status === 'success'){
+                                        // Swal.close()
+                                        const data = response.data;
+                                        Swal.fire({
+                                            icon:'success',
+                                            title:data.message,
+                                            showConfirmButton: false,
+                                            timer: 1500
+                                        })
+                                        setLeaveType('');
+                                        setLeaveDetails('')
+                                        setSpecifyDetails('')
+                                        setCommutation('')
+                                        setInclusiveVAWCDates('')
+                                        setsingleFile('')
+                                        setInclusiveVAWCDatesRange([])
+                                        setPreviewInclusiveDates('')
+                                        setPendingLeaveApplicationData(data.pending)
+                                        setAlreadyAppliedDays(data.applied_dates)
+                                        setonProcess(data.on_process)
+                                        // toast.success(response.data.message)
+                                        setOpen(false)
+                                    }else{
+                                        Swal.close()
+                                        toast.error(response.data.message)
+                                    }
+                                }).catch((error)=>{
+                                    Swal.close()
+                                    toast.error(error)
+                                    alert(error.message)
+        
+                                })                                    
+                            }
+                            
+                        }
+                        
+                        
+                        break;
+                /**
+                 * Rehabilitation Leave
+                 */
+                     case 10:
+                    
+                        /**
+                         * check if selected inclusive dates is null
+                         */
+                        if(selectedRehabilitationDates.length ===0){
+                            Swal.fire({
+                                icon:'warning',
+                                title:'Oops...',
+                                html:'Please select inlcusive dates.'
+                            })
+                        }else{
+                            if(singleFile.length === 0){
+                                Swal.fire({
+                                    icon:'warning',
+                                    title:'Oops...',
+                                    html:"Please upload a supporting document."
+                                })
+                            }else{
+                                // var allDates = getAllDatesInRange(selectedRehabilitationDates)
+                                // allDates.forEach(el=>
+                                //     format_date.push(el.format('MM-DD-YYYY'))
+                                // )
+                                
+                                var from =selectedRehabilitationDates[0].toDate();
+                                var to =selectedRehabilitationDates[1].toDate();
+                                var dates = []
+                                while(from <= to){
+                                    var exclude = alreadyAppliedDays.includes(moment(from).format('MM-DD-YYYY'))
+                                    if(exclude){
+                                        from.setDate(from.getDate()+1)
+                                    }else{
+                                        dates.push(moment(new Date(from)).format('MM-DD-YYYY'));
+                                        from.setDate(from.getDate() + 1);
+                                    }
+
+                                }
+                                // selectedInclusiveDates.forEach(el=>
+                                //     format_date.push(moment(el.toDate()).format('MM-DD-YYYY'))
+                                // )
+                                var data = {
+                                    leave_type_id:leaveType,
+                                    days_hours_applied:dates.length,
+                                    inclusive_dates:dates,
+                                    days_with_pay:dates.length,
+                                    days_without_pay:0,
+                                    inclusive_dates_text:previewInclusiveDates,
+                                    commutation:commutation,
+                                    rehabilitation_file:singleFile
+                                }
+                                Swal.fire({
+                                    icon:'info',
+                                    title:'Saving data',
+                                    html:'Please wait...',
+                                    allowEscapeKey:false,
+                                    allowOutsideClick:false
+                                })
+                                Swal.showLoading()
+                                addLeaveApplication(data)
+                                .then((response)=>{
+                                    // console.log(response.data)
+                                    if(response.data.status === 'success'){
+                                        // Swal.close()
+                                        const data = response.data;
+                                        Swal.fire({
+                                            icon:'success',
+                                            title:data.message,
+                                            showConfirmButton: false,
+                                            timer: 1500
+                                        })
+                                        setLeaveType('');
+                                        setCommutation('')
+                                        setRehabilitationDates('')
+                                        setPreviewInclusiveDates('')
+                                        setsingleFile('')
+                                        setPendingLeaveApplicationData(data.pending)
+                                        setAlreadyAppliedDays(data.applied_dates)
+                                        setonProcess(data.on_process)
+                                        // toast.success(response.data.message)
+                                        setOpen(false)
+                                    }else{
+                                        Swal.close()
+                                        toast.error(response.data.message)
+                                    }
+                                }).catch((error)=>{
+                                    Swal.close()
+                                    toast.error(error)
+                                    console.log(error)
+        
+                                })
+                            }
+                            
+                        }
+                        break;
+                /**
+                 * Special Leave benefits for women
+                 */
+                     case 11:
+                    
+                        /**
+                         * check if selected inclusive dates is null
+                         */
+                        if(selectedBenefitForWomenDates.length ===0){
+                            Swal.fire({
+                                icon:'warning',
+                                title:'Oops...',
+                                html:'Please select inlcusive dates.'
+                            })
+                        }else{
+                            if(specifyDetails.length ===0){
+                                Swal.fire({
+                                    icon:'warning',
+                                    title:'Oops...',
+                                    html:'Please specify illness.'
+                                })
+                            }else{
+                                if(singleFile.length === 0){
+                                    Swal.fire({
+                                        icon:'warning',
+                                        title:'Oops...',
+                                        html:"Please upload a supporting document."
+                                    })
+                                }else{
+                                    // var allDates = getAllDatesInRange(selectedBenefitForWomenDates)
+                                    // allDates.forEach(el=>
+                                    //     format_date.push(el.format('MM-DD-YYYY'))
+                                    // )
+                                    var from =selectedBenefitForWomenDates[0].toDate();
+                                    var to =selectedBenefitForWomenDates[1].toDate();
+                                    var dates = []
+                                    while(from <= to){
+                                        var exclude = alreadyAppliedDays.includes(moment(from).format('MM-DD-YYYY'))
+                                        if(exclude){
+                                            from.setDate(from.getDate()+1)
+                                        }else{
+                                            dates.push(moment(new Date(from)).format('MM-DD-YYYY'));
+                                            from.setDate(from.getDate() + 1);
+                                        }
+
+                                    }
+                                    // selectedInclusiveDates.forEach(el=>
+                                    //     format_date.push(moment(el.toDate()).format('MM-DD-YYYY'))
+                                    // )
+                                    var data = {
+                                        leave_type_id:leaveType,
+                                        days_hours_applied:dates.length,
+                                        inclusive_dates:dates,
+                                        days_with_pay:dates.length,
+                                        days_without_pay:0,
+                                        inclusive_dates_text:previewInclusiveDates,
+                                        commutation:commutation,
+                                        specialleavewomen_file:singleFile
+                                    }
+                                    Swal.fire({
+                                        icon:'info',
+                                        title:'Saving data',
+                                        html:'Please wait...',
+                                        allowEscapeKey:false,
+                                        allowOutsideClick:false
+                                    })
+                                    Swal.showLoading()
+                                    addLeaveApplication(data)
+                                    .then((response)=>{
+                                        // console.log(response.data)
+                                        if(response.data.status === 'success'){
+                                            // Swal.close()
+                                            const data = response.data;
+                                            Swal.fire({
+                                                icon:'success',
+                                                title:data.message,
+                                                showConfirmButton: false,
+                                                timer: 1500
+                                            })
+                                            setLeaveType('');
+                                            setCommutation('')
+                                            setselectedBenefitForWomenDates('')
+                                            setPreviewInclusiveDates('')
+                                            setsingleFile('')
+                                            setPendingLeaveApplicationData(data.pending)
+                                            setAlreadyAppliedDays(data.applied_dates)
+                                            setonProcess(data.on_process)
+                                            // toast.success(response.data.message)
+                                            setOpen(false)
+                                        }else{
+                                            Swal.close()
+                                            toast.error(response.data.message)
+                                        }
+                                    }).catch((error)=>{
+                                        Swal.close()
+                                        toast.error(error)
+                                        console.log(error)
+            
+                                    })
+                                }
+                            }
+                            
+                            
+                        }
+                        break;
+                /**
+                 * Special emergency Leave
+                 */
+                     case 12:
+                    
+                        /**
+                         * check if selected inclusive dates is null
+                         */
+                        if(selectedInclusiveDates.length ===0 || selectedInclusiveDates.length > 5){
+                            Swal.fire({
+                                icon:'warning',
+                                title:'Oops...',
+                                html:'Please maximum of 5 days.'
+                            })
+                        }else{
+                            if(singleFile.length === 0){
+                                Swal.fire({
+                                    icon:'warning',
+                                    title:'Oops...',
+                                    html:"Please upload a supporting document."
+                                })
+                            }else{
+                                selectedInclusiveDates.forEach(el=>
+                                    format_date.push({
+                                        date:moment(el.toDate()).format('MM-DD-YYYY'),
+                                        period:'NONE'
+                                    })
+                                )
+                                var data = {
+                                    leave_type_id:leaveType,
+                                    days_hours_applied:selectedInclusiveDates.length,
+                                    inclusive_dates:format_date,
+                                    days_with_pay:selectedInclusiveDates.length,
+                                    days_without_pay:0,
+                                    inclusive_dates_text:previewInclusiveDates,
+                                    commutation:commutation,
+                                    specialemergency_file:singleFile
+                                }
+                                Swal.fire({
+                                    icon:'info',
+                                    title:'Saving data',
+                                    html:'Please wait...',
+                                    allowEscapeKey:false,
+                                    allowOutsideClick:false
+                                })
+                                Swal.showLoading()
+                                addLeaveApplication(data)
+                                .then((response)=>{
+                                    // console.log(response.data)
+                                    if(response.data.status === 'success'){
+                                        // Swal.close()
+                                        const data = response.data;
+                                        Swal.fire({
+                                            icon:'success',
+                                            title:data.message,
+                                            showConfirmButton: false,
+                                            timer: 1500
+                                        })
+                                        setLeaveType('');
+                                        setCommutation('')
+                                        setInclusiveDates('')
+                                        setPreviewInclusiveDates('')
+                                        setsingleFile('')
+                                        setPendingLeaveApplicationData(data.pending)
+                                        setAlreadyAppliedDays(data.applied_dates)
+                                        setonProcess(data.on_process)
+                                        // toast.success(response.data.message)
+                                        setOpen(false)
+                                    }else{
+                                        Swal.close()
+                                        toast.error(response.data.message)
+                                    }
+                                }).catch((error)=>{
+                                    Swal.close()
+                                    toast.error(error)
+                                    console.log(error)
+        
+                                })
+                            }
+                            
+                        }
+                        break;
+                /**
+                 * Others
+                 */
+                 case 15:
+                    if(specifyDetails.length ===0){
+                        // document.getElementById("specify-details").focus();
+                        Swal.fire({
+                            icon:'warning',
+                            title:'Oops...',
+                            html:'Please input specify details '
+                        })
+                    }else{
+                        switch(leaveDetails){
+                            /**
+                             * Monetization of leave credits
+                             */
+                            case 9:
+                                /**
+                                 * check if selected number of days for monetization
+                                 */
+                                var isRequiredMonetizationFile = false;
+                                var monetization = availableVL/2;
+
+                                if(daysOfMonetization>=monetization){
+                                    isRequiredMonetizationFile = true;
+                                }else{
+                                    isRequiredMonetizationFile = false;
+                                }
+    
+                                if(daysOfMonetization === 0){
+                                    Swal.fire({
+                                        icon:'warning',
+                                        title:'Oops...',
+                                        html:'Please select a number of days.'
+                                    })
+                                }else{
+                                    if(isRequiredMonetizationFile){
+                                        if(singleFile.length === 0){
+                                            Swal.fire({
+                                                icon:'warning',
+                                                title:'Oops...',
+                                                html:"Please upload a supporting document."
+                                            })
+                                        }else{
+                                            var total_vl;
+                                            var total_sl;
+                                            /**
+                                             * check if has applied VL within the current year
+                                             */
+                                            if(hasAppliedVL){
+                                                /**
+                                                 * Check if tick the checkbox for include SL for deduction
+                                                 */
+                                                if(isInludeSLMonetization){
+                                                    /**
+                                                     * check again if selected number of days of monenitization is greater than to available vl, if greater than means include SL for deduction
+                                                     */
+                                                    if(daysOfMonetization>availableVL){
+                                                        total_vl = availableVL;
+                                                        total_sl = daysOfMonetization-availableVL
+                                                    }else{
+                                                        total_vl = daysOfMonetization;
+                                                        total_sl = 0;
+                                                    }
+                                                    
+                                                }else{
+    
+                                                    if(daysOfMonetization>(availableVL-5)){
+                                                        total_vl = availableVL-5;
+                                                        total_sl = daysOfMonetization-availableVL
+                                                    }else{
+                                                        total_vl = daysOfMonetization;
+                                                        total_sl = 0;
+                                                    }
+                                                }
+    
+                                            }else{
+                                                if(daysOfMonetization>(availableVL-5)){
+                                                    total_vl = availableVL-5;
+                                                    total_sl = daysOfMonetization-(availableVL-5)
+                                                }else{
+                                                    total_vl = daysOfMonetization;
+                                                    total_sl = 0;
+                                                }
+                                            }
+                                            
+                                            var data = {
+                                                has_required_file:isRequiredMonetizationFile,
+                                                leave_type_id:leaveType,
+                                                details_of_leave_id:9,
+                                                days_hours_applied:daysOfMonetization,
+                                                days_with_pay:daysOfMonetization,
+                                                days_without_pay:0,
+                                                commutation:commutation,
+                                                monetization_file:singleFile,
+                                                available_vl:availableVL,
+                                                available_sl:availableSL,
+                                                specify_details:specifyDetails,
+                                                total_vl:total_vl,
+                                                total_sl:total_sl
+                                            }
+                                            // console.log(data)
+                                            Swal.fire({
+                                                icon:'info',
+                                                title:'Saving data',
+                                                html:'Please wait...',
+                                                allowEscapeKey:false,
+                                                allowOutsideClick:false
+                                            })
+                                            Swal.showLoading()
+                                            addLeaveApplication(data)
+                                            .then((response)=>{
+                                                console.log(response.data)
+                                                if(response.data.status === 'success'){
+                                                    // Swal.close()
+                                                    const data = response.data;
+                                                    Swal.fire({
+                                                        icon:'success',
+                                                        title:data.message,
+                                                        showConfirmButton: false,
+                                                        timer: 1500
+                                                    })
+                                                    setLeaveType('');
+                                                    setCommutation('')
+                                                    setsingleFile('')
+                                                    setdaysOfMonetization(1)
+                                                    setPendingLeaveApplicationData(data.pending)
+                                                    setAlreadyAppliedDays(data.applied_dates)
+                                                    setonProcess(data.on_process)
+                                                    // toast.success(response.data.message)
+                                                    setOpen(false)
+        
+                                                    var vl = data.balance[0].vl_bal-data.on_process.vl < 0 ?formatSubtractCreditAvailableDecimal(data.balance[0].vl_bal,Math.floor(data.balance[0].vl_bal)):formatSubtractCreditAvailableDecimal(data.balance[0].vl_bal,data.on_process.vl)
+                                                    var sl = data.balance[0].sl_bal-data.on_process.sl < 0 ?formatSubtractCreditAvailableDecimal(data.balance[0].sl_bal,Math.floor(data.balance[0].sl_bal)):formatSubtractCreditAvailableDecimal(data.balance[0].sl_bal,data.on_process.sl)
+                                                    var coc = data.balance[0].coc_bal-data.on_process.vl < 0 ?0:data.balance[0].coc_bal-data.on_process.coc
+                                                    setavailableVL(vl)
+                                                    setavailableSL(sl)
+                                                    setavailableCOC(coc)
+                                                }else{
+                                                    Swal.close()
+                                                    toast.error(response.data.message)
+                                                }
+                                            }).catch((error)=>{
+                                                Swal.close()
+                                                toast.error(error)
+                                                console.log(error)
+                    
+                                            })
+                                        }
+                                    }else{
+                                        var total_vl;
+                                            var total_sl;
+                                            /**
+                                             * check if has applied VL within the current year
+                                             */
+                                            if(hasAppliedVL >= 5){
+                                                /**
+                                                 * Check if tick the checkbox for include SL for deduction
+                                                 */
+                                                if(isInludeSLMonetization){
+                                                    /**
+                                                     * check again if selected number of days of monenitization is greater than to available vl, if greater than means include SL for deduction
+                                                     */
+                                                    if(daysOfMonetization>availableVL){
+                                                        total_vl = availableVL;
+                                                        total_sl = daysOfMonetization-availableVL
+                                                    }else{
+                                                        total_vl = daysOfMonetization;
+                                                        total_sl = 0;
+                                                    }
+                                                    
+                                                }else{
+                                                    if(daysOfMonetization>(availableVL-5)){
+                                                        total_vl = availableVL-5;
+                                                        total_sl = (daysOfMonetization-availableVL)-5
+                                                    }else{
+                                                        total_vl = daysOfMonetization;
+                                                        total_sl = 0;
+                                                    }
+                                                }
+    
+                                            }else{
+                                                if(daysOfMonetization>(availableVL-5)){
+                                                    total_vl = availableVL-5;
+                                                    total_sl = (daysOfMonetization-availableVL)-5
+                                                }else{
+                                                    total_vl = daysOfMonetization;
+                                                    total_sl = 0;
+                                                }
+                                            }
+                                        var data = {
+                                            has_required_file:isRequiredMonetizationFile,
+                                            leave_type_id:leaveType,
+                                            details_of_leave_id:9,
+                                            days_hours_applied:daysOfMonetization,
+                                            days_with_pay:daysOfMonetization,
+                                            days_without_pay:0,
+                                            commutation:commutation,
+                                            specify_details:specifyDetails,
+                                            available_vl:availableVL,
+                                            available_sl:availableSL,
+                                            total_vl:total_vl,
+                                            total_sl:total_sl
+                                        }
+                                        console.log(data)
+                                        Swal.fire({
+                                            icon:'info',
+                                            title:'Saving data',
+                                            html:'Please wait...',
+                                            allowEscapeKey:false,
+                                            allowOutsideClick:false
+                                        })
+                                        Swal.showLoading()
+                                        addLeaveApplication(data)
+                                        .then((response)=>{
+                                            console.log(response.data)
+                                            if(response.data.status === 'success'){
+                                                // Swal.close()
+                                                const data = response.data;
+                                                Swal.fire({
+                                                    icon:'success',
+                                                    title:data.message,
+                                                    showConfirmButton: false,
+                                                    timer: 1500
+                                                })
+                                                setLeaveType('');
+                                                setCommutation('')
+                                                setsingleFile('')
+                                                setdaysOfMonetization(1)
+                                                setPendingLeaveApplicationData(data.pending)
+                                                setAlreadyAppliedDays(data.applied_dates)
+                                                setonProcess(data.on_process)
+                                                // toast.success(response.data.message)
+                                                setOpen(false)
+    
+                                                var vl = data.balance[0].vl_bal-data.on_process.vl < 0 ?formatSubtractCreditAvailableDecimal(data.balance[0].vl_bal,Math.floor(data.balance[0].vl_bal)):formatSubtractCreditAvailableDecimal(data.balance[0].vl_bal,data.on_process.vl)
+                                                var sl = data.balance[0].sl_bal-data.on_process.sl < 0 ?formatSubtractCreditAvailableDecimal(data.balance[0].sl_bal,Math.floor(data.balance[0].sl_bal)):formatSubtractCreditAvailableDecimal(data.balance[0].sl_bal,data.on_process.sl)
+                                                var coc = data.balance[0].coc_bal-data.on_process.vl < 0 ?0:data.balance[0].coc_bal-data.on_process.coc
+                                                setavailableVL(vl)
+                                                setavailableSL(sl)
+                                                setavailableCOC(coc)
+                                            }else{
+                                                Swal.close()
+                                                toast.error(response.data.message)
+                                            }
+                                        }).catch((error)=>{
+                                            Swal.close()
+                                            toast.error(error)
+                                            console.log(error)
+                
+                                        })
+                                    }
+                                    
+                                }
+                            break;
+                            case 10:
+                                if(singleFile.length === 0){
+                                    Swal.fire({
+                                        icon:'warning',
+                                        title:'Oops...',
+                                        html:"Please upload a supporting document."
+                                    })
+                                }else{
+                                    var data = {
+                                        leave_type_id:leaveType,
+                                        details_of_leave_id:10,
+                                        days_hours_applied:availableVL+availableSL,
+                                        days_with_pay:availableVL+availableSL,
+                                        days_without_pay:0,
+                                        commutation:commutation,
+                                        specify_details:specifyDetails,
+                                        terminal_file:singleFile,
+                                        available_vl:availableVL,
+                                        available_sl:availableSL
+                                    }
+                                    // console.log(data)
+                                    Swal.fire({
+                                        icon:'info',
+                                        title:'Saving data',
+                                        html:'Please wait...',
+                                        allowEscapeKey:false,
+                                        allowOutsideClick:false
+                                    })
+                                    Swal.showLoading()
+                                    addLeaveApplication(data)
+                                    .then((response)=>{
+                                        console.log(response.data)
+                                        if(response.data.status === 'success'){
+                                            // Swal.close()
+                                            const data = response.data;
+                                            Swal.fire({
+                                                icon:'success',
+                                                title:data.message,
+                                                showConfirmButton: false,
+                                                timer: 1500
+                                            })
+                                            setLeaveType('');
+                                            setCommutation('')
+                                            setsingleFile('')
+                                            setPendingLeaveApplicationData(data.pending)
+                                            setAlreadyAppliedDays(data.applied_dates)
+                                            setonProcess(data.on_process)
+                                            // toast.success(response.data.message)
+                                            setOpen(false)
+    
+                                            var vl = data.balance[0].vl_bal-data.on_process.vl < 0 ?formatSubtractCreditAvailableDecimal(data.balance[0].vl_bal,Math.floor(data.balance[0].vl_bal)):formatSubtractCreditAvailableDecimal(data.balance[0].vl_bal,data.on_process.vl)
+                                            var sl = data.balance[0].sl_bal-data.on_process.sl < 0 ?formatSubtractCreditAvailableDecimal(data.balance[0].sl_bal,Math.floor(data.balance[0].sl_bal)):formatSubtractCreditAvailableDecimal(data.balance[0].sl_bal,data.on_process.sl)
+                                            var coc = data.balance[0].coc_bal-data.on_process.vl < 0 ?0:data.balance[0].coc_bal-data.on_process.coc
+                                            setavailableVL(vl)
+                                            setavailableSL(sl)
+                                            setavailableCOC(coc)
+                                        }else{
+                                            Swal.close()
+                                            toast.error(response.data.message)
+                                        }
+                                    }).catch((error)=>{
+                                        Swal.close()
+                                        toast.error(error)
+                                        console.log(error)
+            
+                                    })
+                                }
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                    
+                    break;
+                    /**
+                     * CTO
+                     */
+                    case 14:
+                        var has_period = false;
+
+                        if(CTOHours%8){
+                            for(var c = 0; c<tempSelectedCTOInclusiveDates.length ; c++){
+                                if(tempSelectedCTOInclusiveDates[c].period !== ''){
+                                    has_period = true;
+                                }
+                            }
+                        }else{
+                            has_period = true;
+    
+                        }
+                        tempSelectedCTOInclusiveDates.forEach(el=>
+                            format_date.push({
+                                date:moment(el.date.toDate()).format('MM-DD-YYYY'),
+                                period:el.period.length === 0 ?'NONE':el.period
+                            })
+                        )
+                        // for (var i = 0 ; i <tempSelectedCTOInclusiveDates.length ; i++){
+                        //     var period = '';
+                        //     if(tempSelectedCTOInclusiveDates[i].period.length !==0){
+                        //         period = '-'+tempSelectedCTOInclusiveDates[i].period;
+                        //     }else{
+                        //         period = tempSelectedCTOInclusiveDates[i].period;
+                        //     }
+    
+                        //     if(i === tempSelectedCTOInclusiveDates.length - 1){
+                        //         cto_dates += moment(tempSelectedCTOInclusiveDates[i].date.toDate()).format('MMMM DD, YYYY') + period;
+    
+                        //     }else{
+                        //         cto_dates += moment(tempSelectedCTOInclusiveDates[i].date.toDate()).format('MMMM DD, YYYY') + period+', ';
+    
+                        //     }
+    
+                        // }
+                        if(!has_period){
+                            Swal.fire({
+                                icon:'warning',
+                                title:'Oops...',
+                                html:'Please select a date period (AM,PM). This is required if inclusive dates has half-day.'
+                            })
+                        }else{
+                            if(cocFile.length === 0){
+                                Swal.fire({
+                                    icon:'warning',
+                                    title:'Oops..',
+                                    html:'Please upload Certificate of COC.'
+                                })
+                            }else if(CTOHours.length === 0){
+                                Swal.fire({
+                                    icon:'warning',
+                                    title:'Oops..',
+                                    html:'Please select no. of hours to apply.'
+                                })
+                            }else if(tempSelectedCTOInclusiveDates.length === 0){
+                                Swal.fire({
+                                    icon:'warning',
+                                    title:'Oops..',
+                                    html:'Please select Inclusive dates.'
+                                })
+                            }else{
+                                var days = Math.round(CTOHours/8);
+                                var data = {
+                                    leave_type_id:leaveType,
+                                    details_of_leave_id:leaveDetails,
+                                    specify_details:specifyDetails,
+                                    days_hours_applied:CTOHours,
+                                    inclusive_dates:format_date,
+                                    days_with_pay:selectedInclusiveDates.length>balance ? balance:selectedInclusiveDates.length,
+                                    days_without_pay:selectedInclusiveDates.length>balance ? selectedInclusiveDates.length - balance:0,
+                                    balance:balance,
+                                    inclusive_dates_text:ctodatestext,
+                                    commutation:'',
+                                    coc_file:cocFile
+                                }
+                                Swal.fire({
+                                    icon:'info',
+                                    title:'Saving data',
+                                    html:'Please wait...',
+                                    allowEscapeKey:false,
+                                    allowOutsideClick:false
+                                })
+                                Swal.showLoading()
+                                addLeaveApplication(data)
+                                .then((response)=>{
+                                    const data = response.data;
+                                    // console.log(data)
+                                    if(data.status === 'success'){
+                                        // Swal.close()
+                                        Swal.fire({
+                                            icon:'success',
+                                            title:data.message,
+                                            showConfirmButton: false,
+                                            timer: 1500
+                                        })
+                                        setLeaveType('');
+                                        setCOCFile('');
+                                        setctodatestext('');
+                                        setLeaveDetails('')
+                                        setCommutation('')
+                                        setPreviewInclusiveDates('')
+                                        setCTOHours('')
+                                        setCTOInclusiveDates([])
+                                        setTempSelectedCTOInclusiveDates([])
+                                        setPendingLeaveApplicationData(data.pending)
+                                        setAlreadyAppliedDays(data.applied_dates)
+                                        setonProcess(data.on_process)
+                                        toast.success(data.message)
+                                        setOpen(false)
+                                    }else if(response.data.status === 'warning'){
+                                        const data = response.data;
+                                        setBalanceData(data.balance)
+                                        setPendingLeaveApplicationData(data.pending)
+                                        setAlreadyAppliedDays(data.applied_dates)
+                                        setonProcess(data.on_process)
+                                        var bal = 0,bal2=0;
+                                        /**
+                                         * loop to set the available balance based on selected leave type
+                                         */
+                                         data.balance.forEach(element => {
+                                            // if(element.id === value.target.value){
+                                            //     bal = element.leave_balance
+                                            // }
+                                            switch(leaveType){
+                                                /**
+                                                 * vacation leave/force leave/ special privilege leave
+                                                 */
+                                                case 1:
+                                                case 2:
+                                                    bal2 = formatSubtractCreditAvailableDecimal(element.vl_bal,data.on_process.vl)
+                                                    if(bal2<0){
+                                                        bal = 0;
+                                                    }else{
+                                                        bal = formatSubtractCreditAvailableDecimal(element.vl_bal,data.on_process.vl)
+                                                    }
+                                                    break;
+                                                /**
+                                                 * sick leave
+                                                 */
+                                                case 3:
+                                                    // bal = element.sl_bal-data.on_process.sl
+                                                    bal2 = formatSubtractCreditAvailableDecimal(element.sl_bal,data.on_process.sl)
+                                                    if(bal2<0){
+                                                        bal = 0;
+                                                    }else{
+                                                        bal = formatSubtractCreditAvailableDecimal(element.sl_bal,data.on_process.sl)
+                                                    }
+                                                    break;
+                                                /**
+                                                 *  CTO
+                                                 */
+                                                case 14:
+                                                    // bal = element.coc_bal-data.on_process.coc
+                                                    bal2 = formatSubtractCreditAvailableDecimal(element.coc_bal,data.on_process.coc)
+                                                    if(bal2<0){
+                                                        bal = 0;
+                                                    }else{
+                                                        bal = formatSubtractCreditAvailableDecimal(element.coc_bal,data.on_process.coc)
+                                                    }
+                                                    break;
+                                            }
+                                        });
+                                        setBalance(bal)
+                                        var coc = data.balance[0].coc_bal
+                                        var result = [];
+                                        
+                                        //limit only 5 days equals to 40 HRS per application
+                                        var x=0;
+                                        for(var i = 4 ; x < 10 ;){
+                                            if(i>coc){
+                                                break;
+                                            }else{
+                                                result.push(i)
+                                                i = i +4;
+                                                x++;
+                                            }
+                                        
+                                        }
+                                        setCTOHoursDropdown(result)
+                                        Swal.fire({
+                                            icon:'warning',
+                                            title:'Oops...',
+                                            html:'Current Balance is updated. Please review again your application.'
+                                        })
+                                    }else{
+                                        Swal.close()
+                                        toast.error(response.data.message)
+                                    }
+                                }).catch((error)=>{
+                                    Swal.close()
+                                    toast.error(error)
+                                    console.log(error)
+                                })
+                            }
+                        }
+                        break;
+                }
+                
+            }
+          })
+        
+    }
+    const balanceUponApproval = (row) =>{
+        if(row.status === 'FOR REVIEW'){
+            if(row.leave_type_id.length !==0){
+                switch(row.leave_type_id){
+                    case 1:
+                    case 2:
+                        if(row.days_hours_applied>balanceData[0].vl_bal){
+                            return 0;
+                        }else{
+                            return balanceData[0].vl_bal-row.days_hours_applied;
+                        }
+                        break;
+                    case 3:
+                        if(row.days_hours_applied>balanceData[0].sl_bal){
+                            return 0;
+                        }else{
+                            return balanceData[0].sl_bal-row.days_hours_applied;
+                        }
+                        break;
+                    case 14:
+                        if(row.days_hours_applied>balanceData[0].coc_bal){
+                            return 0;
+                        }else{
+                            return balanceData[0].coc_bal-row.days_hours_applied;
+                        }
+                        break;
+                }
+            }else{
+                return 0;
+            }
+        }else{
+            if(row.leave_type_id.length !==0){
+                switch(row.leave_type_id){
+                    case 1:
+                    case 2:
+                        return <span>{row.bal_after_review} <small>day/s</small> <br/><small style={{color:'orange'}}><em>(already deducted)</em></small></span>;
+                        break;
+                    case 3:
+                        return <span>{row.bal_after_review} <small>day/s</small> <br/><small style={{color:'orange'}}><em>(already deducted)</em></small></span>;
+                        break;
+                    case 14:
+                        return <span>{row.bal_after_review} <small>hr/s</small> <br/><small style={{color:'orange'}}><em>(already deducted)</em></small></span>;
+
+                        break;
+                }
+            }else{
+                return 0;
+            }
+        }
+        
+        
+        // return JSON.stringify(row.days_hours_applied);
+    }
+    const showLeaveTypePreview = () =>{
+        switch(leaveType){
+            case 14:
+                return(
+                    <ReactToPrint
+                            trigger={() => <Button fullWidth variant='outlined' disabled = {ctodatestext.length ===0 ? true:false} startIcon={<PrintIcon/>}>PRINT</Button>}
+                            content={() => cocRef.current}
+                            documentTitle={'CTO '+employeeInfo.lname}
+                        />
+                );
+            case 15:
+                return(
+                    <ReactToPrint
+                            trigger={() => <Button fullWidth variant='outlined' disabled = {availableVL+availableSL===0?true:false} startIcon={<PrintIcon/>}>PRINT</Button>}
+                            content={() => leaveRef.current}
+                            documentTitle={'Leave Application '+employeeInfo.lname}
+                        />
+                );
+                break;
+            default:
+                return(
+                    <ReactToPrint
+                            trigger={() => <Button fullWidth variant='outlined' disabled = {previewInclusiveDates.length !==0 ? false:true} startIcon={<PrintIcon/>}>PRINT</Button>}
+                            content={() => leaveRef.current}
+                            documentTitle={'Leave Application '+employeeInfo.lname}
+                        />
+                );
+                break;
+        }
+    }
+    const handleSetCTOHours = (value) =>{
+        setCTOHours(value.target.value)
+        setTempSelectedCTOInclusiveDates([])
+    }
+    // const checkCTOHours = (value) => {
+    //     if(value%4==0){
+    //         setCTOHours(value)
+    //     }else{
+    //         setCTOHours(0)
+    //         toast.warning('Please input a valid hours e.g. 4,8,12,16 etc.',
+    //         {
+    //             position: "top-center"
+    //         })
+    //     }
+    // }
+    // const checkCTOInclusiveDates = () => {
+    //     var days = Math.round(CTOHours/8);
+    //     if(selectedCTOInclusiveDates.length > days){
+    //         toast.warning('Inclusive dates is greater than applied hours ! Please select inclusive dates corresponds to your applied hours.',{
+    //             position:'top-center'
+    //         })
+    //     }
+    // }
+    const pendingColumns = [
+        {
+            name: 'Date Filed',
+            sortable:true,
+            selector: row => moment(row.date_of_filing).format('MMMM DD, YYYY h:mm:ss A'),
+        },
+        {
+            name: 'Inclusive Dates',
+            selector: row => row.inclusive_dates_text,
+        },
+        {
+            name: 'Type of Leave',
+            selector: row => row.leave_type,
+        },
+        {
+            name: 'Details of Leave',
+            selector: row => row.leave_type_details,
+        },
+        {
+            name: 'No. of Days/Hours Applied',
+            selector: row => row.leave_type_id === 14?<span>{row.days_hours_applied} <small><em>hr/s</em> </small></span>:<span>{row.days_hours_applied} <small><em>day/s</em></small></span>,
+        },
+        {
+            name: 'Balance after review',
+            selector: row => row.bal_after_process,
+        },
+        {
+            name: 'Status',
+            sortable:true,
+            selector: row => <em>{row.status === 'FOR REVIEW' ? <span style={{color:'orange',fontSize:matches?'10px':'13px'}}>{row.status}</span>:<span style={{color:'green',fontSize:matches?'10px':'13px'}}>{row.status}</span>}</em>
+        },
+        {
+            name: 'Action',
+            selector: row =>
+            matches
+            ?
+            <Box>
+            <Fab color="primary" aria-label="add" onClick = {()=>printPending(row)} size="small">
+                <PrintIcon  />
+            </Fab>
+            {
+                row.file_ids !==null || row.leave_type_id === 4
+                ?
+                <Fab color="secondary" aria-label="add" onClick = {()=>showFileAttachment(row)} size="small">
+                    <AttachmentIcon  />
+                </Fab>
+                :
+                ''
+
+            }
+            
+            <Fab color="error" aria-label="add" onClick = {()=>cancelApplication(row)}  size="small" disabled = {row.status === 'FOR REVIEW' ? false:true} >
+                <DeleteForever/>
+            </Fab>
+            </Box>
+            :
+            <Box>
+            <Button fullWidth variant='outlined' startIcon={<PrintIcon/>} onClick = {()=>printPending(row)} size="small" sx={{fontSize:matches?'9px':'auto',marginTop:'5px',marginBottom:'5px','&:hover': { bgcolor: blue[800], color: '#fff' }, flex: 1}}>Print</Button>
+            {
+                row.file_ids !==null || row.leave_type_id === 4
+                ?
+                <Button fullWidth variant='outlined' color="secondary" size="small" startIcon={<AttachmentIcon/>}  sx={{fontSize:matches?'9px':'auto',marginBottom:'5px','&:hover': { bgcolor: blue[800], color: '#fff' }, flex: 1}} onClick = {()=>showFileAttachment(row)}>File</Button> 
+                :
+                ''
+            }
+            <Button fullWidth variant='outlined' color="error" size="small" startIcon={<DeleteForever/>}  sx={{fontSize:matches?'9px':'auto',marginBottom:'5px','&:hover': { bgcolor: red[800], color: '#fff' }, flex: 1}} disabled = {row.status === 'FOR REVIEW' ? false:true} onClick = {()=>cancelApplication(row)}>Cancel</Button>
+            </Box>
+        },
+
+    ];
+    const balanceColumns = [
+        {
+            name: 'Type of Leave',
+            sortable:true
+        },
+        {
+            name: 'Balance',
+            selector: row => row.inclusive_dates_text,
+        },
+        {
+            name: 'On Process',
+            selector: row => row.leave_type,
+        },
+        {
+            name: 'Available',
+            selector: row => row.leave_type_details,
+        }
+    ];
+    const cancelApplication = (row) =>{
+        Swal.fire({
+            icon:'warning',
+            title: 'Are you sure to cancel your application ?',
+            showCancelButton: true,
+            confirmButtonText: 'Yes',
+            cancelButtonText:'No'
+          }).then((result) => {
+            /* Read more about isConfirmed, isDenied below */
+            if (result.isConfirmed) {
+                Swal.fire({
+                    icon:'info',
+                    title:'Please wait...',
+                    allowEscapeKey:false,
+                    allowOutsideClick:false
+                })
+                Swal.showLoading()
+                var data = {
+                    leave_application_id:row.leave_application_id,
+                    leave_type_id:row.leave_type_id
+                }
+                cancelLeaveApplication(data)
+                .then(response=>{
+                    // console.log(response.data)
+                    if(response.data.status==='success'){
+                        const data = response.data
+                        setLeaveType('');
+                        setCOCFile('');
+                        setctodatestext('');
+                        setPendingLeaveApplicationData(data.pending)
+                        setonProcess(data.on_process)
+                        setAlreadyAppliedDays(data.applied_dates)
+                        setAvailabelSPL(data.spl_days_balance)
+                        setOnprocessSPL(data.spl_days_onprocess)
+                        var vl = data.balance[0].vl_bal-data.on_process.vl < 0 ?formatSubtractCreditAvailableDecimal(data.balance[0].vl_bal,Math.floor(data.balance[0].vl_bal)):formatSubtractCreditAvailableDecimal(data.balance[0].vl_bal,data.on_process.vl)
+                        var sl = data.balance[0].sl_bal-data.on_process.sl < 0 ?formatSubtractCreditAvailableDecimal(data.balance[0].sl_bal,Math.floor(data.balance[0].sl_bal)):formatSubtractCreditAvailableDecimal(data.balance[0].sl_bal,data.on_process.sl)
+                        var coc = data.balance[0].coc_bal-data.on_process.vl < 0 ?0:data.balance[0].coc_bal-data.on_process.coc
+                        setavailableVL(vl)
+                        setavailableSL(sl)
+                        setavailableCOC(coc)
+                        Swal.fire({
+                            icon:'success',
+                            title:response.data.message,
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
+                        // Swal.close();
+                        // toast.success(response.data.message)
+                        /**
+                         * Check if has already applied 40 hrs
+                         */
+                        getCTOAlreadyAppliedHours(currentMonth.format('MM-YYYY'))
+                        .then(response=>{
+                            var data;
+                            setTotalMonthHours(response.data.total)
+
+                            if(response.data.length !==0){
+                                data = response.data.total
+                            }else{
+                                data = 0;
+                            }
+                            /**
+                             * Check if current month hours is greater than 40
+                             */
+                            if(data>=40){
+                                /**
+                                 * Can't applied CTO
+                                 */
+                                setCTOHoursDropdown([])
+                            }else{
+                                if(data === 0){
+                                    //limit only 5 days equals to 40 HRS per application
+                                    var x=0;
+                                    var start = data;
+                                    for(var i = 4 ; x < 10 ;){
+                                        if(i>coc){
+                                            break;
+                                        }else{
+                                            result.push(i)
+                                            i = i +4;
+                                            x++;
+                                        }
+                                    
+                                    }
+                                    setCTOHoursDropdown(result)
+                                }else{
+                                    //limit only remaining CTO hours per month
+                                    var total=0;
+                                    for(var i = 4 ; i <= coc;){
+                                        if(i>coc){
+                                            break;
+                                        }else{
+                                            result.push(i)
+                                            total = i+data;
+                                            i = i +4;
+                                            if(total>=40){
+                                                break;
+                                            }
+                                        }
+                                    
+                                    }
+                                    setCTOHoursDropdown(result)
+                                }
+                                
+                            }
+                            setCurrentMonthCTO(data)
+                            setCTOInclusiveDates([])
+                            setCTOHours('')
+                            })
+                            .catch(error=>{
+                                console.log(error)
+                            })
+                    }else{
+                        const data = response.data
+                        setPendingLeaveApplicationData(data.pending)
+                        setAlreadyAppliedDays(data.applied_dates)
+                        Swal.fire({
+                            icon:'error',
+                            title:'Oops...',
+                            html:response.data.message,
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
+                       
+                    }
+                    
+                }).catch(error=>{
+                    console.log(error)
+                    Swal.close();
+                })
+            }
+          })
+    }
+    const [printPendingInfo,setPrintPendingInfo] = React.useState([]);
+    //reference for leave application print preview on pending application
+    const printLeaveRef = useRef();
+
+    //reference for CTO print preview on pending application
+    const printLeaveCTORef = useRef();
+    
+    //reference for allocation of maternity leave
+    const printMaternityAllocationLeaveRef = useRef();
+
+    const reactToPrint  = useReactToPrint({
+        content: () => printLeaveRef.current,
+        documentTitle: 'Leave Application '+employeeInfo.lname
+
+    });
+    const reactToPrintCTO  = useReactToPrint({
+        content: () => printLeaveCTORef.current,
+        documentTitle:'CTO '+employeeInfo.lname
+    });
+    const [printCount,setPrintCount] = React.useState(0);
+    useEffect(()=>{
+        if(printPendingInfo.length !==0){
+            if(printPendingInfo.leave_type_id === 14){
+                reactToPrintCTO()
+                // setPrintPendingInfo([])
+            }else{
+                reactToPrint()
+                // setPrintPendingInfo([])
+
+            }
+        }
+    },[printCount])
+    const [pendingBalance,setPendingBalance] = React.useState('');
+    const printPending = (row)=>{
+        console.log(row)
+        setPrintCount(printCount+1);
+        var bal,bal2;
+        balanceData.forEach(element => {
+            switch(row.leave_type_id){
+                /**
+                 * vacation leave/force leave/ special privilege leave
+                 */
+                case 1:
+                case 2:
+                    bal2 = element.vl_bal-onProcess.vl
+                    if(bal2<0){
+                        bal = 0
+                    }else{
+                        bal = element.vl_bal-onProcess.vl
+                    }
+                    break;
+                /**
+                 * sick leave
+                 */
+                case 3:
+                    bal2 = element.sl_bal-onProcess.sl
+                    if(bal2<0){
+                        bal = 0
+                    }else{
+                        bal = element.sl_bal-onProcess.sl
+                    }
+                    break;
+                /**
+                 *  CTO
+                 */
+                case 14:
+                    bal2 = element.coc_bal-onProcess.coc
+                    if(bal2<0){
+                        bal = 0
+                    }else{
+                        bal = element.coc_bal-onProcess.coc
+                    }
+                    break;
+            }
+        });
+        setPendingBalance(bal)
+        setPrintPendingInfo(row)
+        // reactToPrint()
+    }
+        
+    const historyColumns = [
+        {
+            name: 'Date Filed',
+            sortable:true,
+            selector: row => moment(row.date_of_filing).format('MMMM DD, YYYY h:mm:ss A'),
+        },
+        {
+            name: 'Inclusive Dates',
+            selector: row => row.inclusive_dates_text,
+        },
+        {
+            name: 'Type of Leave',
+            selector: row => row.leave_type,
+        },
+        {
+            name: 'Details of Leave',
+            selector: row => row.leave_type_details,
+        },
+        {
+            name: 'No. of Days Applied',
+            selector: row => row.leave_type_id === 14?<span>{row.days_hours_applied} <small><em>hr/s</em> </small></span>:<span>{row.days_hours_applied} <small><em>day/s</em></small></span>,
+        },
+        {
+            name: 'Status',
+            sortable:true,
+            selector: row => <em>{row.status === 'APPROVED' ? <span style={{color:'green'}}>{row.status}</span>:<span style={{color:'red'}}>{row.status}</span>}</em>
+        },
+        {
+            name: 'Remarks',
+            selector: row => <em>{row.remarks}</em>
+        }
+    ];
+    const handlePeriodChange = (data,key) => {
+        // tempSelectedCTOInclusiveDates[key].period = data
+        var temp = [...tempSelectedCTOInclusiveDates];
+        temp[key].period = data;
+
+        if(data === ''){
+            for(var i = 0; i <temp.length ; i++){ 
+                temp[i].disabled = false;
+            }
+        }else{
+            for(var i = 0; i <temp.length ; i++){
+                if(i === key){
+                    temp[i].disabled = false;
+                }else{
+                    temp[i].disabled = true;
+                }
+            }
+        }
+        setTempSelectedCTOInclusiveDates(temp);
+
+        var cto_dates = '';
+        for (var i = 0 ; i <temp.length ; i++){
+            var period = '';
+            if(tempSelectedCTOInclusiveDates[i].period.length !==0){
+                period = '-'+tempSelectedCTOInclusiveDates[i].period;
+            }else{
+                period = tempSelectedCTOInclusiveDates[i].period;
+            }
+
+            if(i === tempSelectedCTOInclusiveDates.length - 1){
+                cto_dates += moment(tempSelectedCTOInclusiveDates[i].date.toDate()).format('MMMM DD, YYYY') + period;
+
+            }else{
+                cto_dates += moment(tempSelectedCTOInclusiveDates[i].date.toDate()).format('MMMM DD, YYYY') + period+', ';
+
+            }
+
+        }
+        setctodatestext(cto_dates)
+    }
+    const handleSPLPeriodChange = (data,key) => {
+        // tempSelectedCTOInclusiveDates[key].period = data
+        var temp = [...tempSelectedSPLInclusiveDates];
+        temp[key].period = data;
+
+        if(data === ''){
+            for(var i = 0; i <temp.length ; i++){ 
+                temp[i].disabled = false;
+            }
+        }else{
+            for(var i = 0; i <temp.length ; i++){
+                if(i === key){
+                    temp[i].disabled = false;
+                }else{
+                    temp[i].disabled = true;
+                }
+            }
+        }
+        setTempSelectedSPLInclusiveDates(temp);
+
+        var spl_dates = '';
+        for (var i = 0 ; i <temp.length ; i++){
+            var period = '';
+            if(tempSelectedSPLInclusiveDates[i].period.length !==0){
+                period = '-'+tempSelectedSPLInclusiveDates[i].period;
+            }else{
+                period = tempSelectedSPLInclusiveDates[i].period;
+            }
+
+            if(i === tempSelectedSPLInclusiveDates.length - 1){
+                spl_dates += moment(tempSelectedSPLInclusiveDates[i].date.toDate()).format('MMMM DD, YYYY') + period;
+
+            }else{
+                spl_dates += moment(tempSelectedSPLInclusiveDates[i].date.toDate()).format('MMMM DD, YYYY') + period+', ';
+
+            }
+
+        }
+        setPreviewInclusiveDates(spl_dates)
+    }
+    const [commutation,setCommutation] = React.useState('');
+    const handleChangeCommutation = (value) =>{
+        setCommutation(value.target.value)
+    }
+    const [cocFile,setCOCFile] = React.useState('');
+    const [slFile,setSLFile] = React.useState('');
+    
+    const handleCOCFile = (e) =>{
+        var file = e.target.files[0].name;
+        var extension = file.split('.').pop();
+        if(extension === 'PDF'||extension === 'pdf'|| extension === 'PNG'||extension === 'png'||extension === 'JPG'||extension === 'jpg'||extension === 'JPEG'||extension === 'jpeg'){
+            // setCOCFile(event.target.files[0])
+            // let files = e.target.files;
+            let fileReader = new FileReader();
+            fileReader.readAsDataURL(e.target.files[0]);
+            
+            fileReader.onload = (event) => {
+                setCOCFile(fileReader.result)
+            }
+        }else{
+            setCOCFile('');
+            Swal.fire({
+                icon:'warning',
+                title:'Oops...',
+                html:'Please upload a PDF or Image file.'
+            })
+        }
+        
+    }
+    const handleSLFile = (e) =>{
+        var file = e.target.files[0].name;
+        var extension = file.split('.').pop();
+        if(extension === 'PDF'|| extension === 'pdf'|| extension === 'PNG'||extension === 'png'||extension === 'JPG'||extension === 'jpg'||extension === 'JPEG'||extension === 'jpeg'){
+            // setCOCFile(event.target.files[0])
+            // let files = e.target.files;
+            let fileReader = new FileReader();
+            fileReader.readAsDataURL(e.target.files[0]);
+            
+            fileReader.onload = (event) => {
+                setSLFile(fileReader.result)
+            }
+        }else{
+            setSLFile('');
+            Swal.fire({
+                icon:'warning',
+                title:'Oops...',
+                html:'Please upload PDF or Image file.'
+            })
+        }
+    }
+    const [singleFile,setsingleFile] = React.useState('');
+
+    const handleSingleFile = (e) =>{
+        var file = e.target.files[0].name;
+        var extension = file.split('.').pop();
+        if(extension === 'PDF'|| extension === 'pdf'|| extension === 'PNG'||extension === 'png'||extension === 'JPG'||extension === 'jpg'||extension === 'JPEG'||extension === 'jpeg'){
+            // setCOCFile(event.target.files[0])
+            // let files = e.target.files;
+            let fileReader = new FileReader();
+            fileReader.readAsDataURL(e.target.files[0]);
+            
+            fileReader.onload = (event) => {
+                setsingleFile(fileReader.result)
+            }
+        }else{
+            setsingleFile('');
+            Swal.fire({
+                icon:'warning',
+                title:'Oops...',
+                html:'Please upload PDF or Image file.'
+            })
+        }
+    }
+    const refreshPendingApplication = () =>{
+        Swal.fire({
+            icon:'info',
+            title:'Please wait...',
+            html:'Refreshing data...'
+        })
+        Swal.showLoading()
+       
+        refreshData()
+        .then((response)=>{
+            const data = response.data
+            setPendingLeaveApplicationData(data.pending)
+            setHistoryLeaveApplicationData(data.history)
+            setAlreadyAppliedDays(data.applied_dates)
+            setonProcess(data.on_process)
+            setBalanceData(data.balance)
+            setAvailabelSPL(data.spl_days_balance)
+            setOnprocessSPL(data.spl_days_onprocess)
+            var bal,bal2;
+            balanceData.forEach(element => {
+                switch(data.balance){
+                    /**
+                     * vacation leave/force leave/ special privilege leave
+                     */
+                    case 1:
+                    case 2:
+                        bal2 = element.vl_bal-onProcess.vl
+                        if(bal2<0){
+                            bal = 0
+                        }else{
+                            bal = element.vl_bal-onProcess.vl
+                        }
+                        break;
+                    /**
+                     * sick leave
+                     */
+                    case 3:
+                        bal2 = element.sl_bal-onProcess.sl
+                        if(bal2<0){
+                            bal = 0
+                        }else{
+                            bal = element.sl_bal-onProcess.sl
+                        }
+                        break;
+                    /**
+                     *  CTO
+                     */
+                    case 14:
+                        bal2 = element.coc_bal-onProcess.coc
+                        if(bal2<0){
+                            bal = 0
+                        }else{
+                            bal = element.coc_bal-onProcess.coc
+                        }
+                        var coc = bal
+                        var result = [];
+                        
+                        //limit only 5 days equals to 40 HRS per application
+                        var x=0;
+                        for(var i = 4 ; x < 10 ;){
+                            if(i>coc){
+                                break;
+                            }else{
+                                result.push(i)
+                                i = i +4;
+                                x++;
+                            }
+                        
+                        }
+                        setCTOHoursDropdown(result)
+                        break;
+                }
+            });
+            setPendingBalance(bal)
+            
+            Swal.close()
+
+        }).catch((error)=>{
+            // console.log(error)
+            toast(error.message)
+            Swal.close();
+
+        })
+    }
+    useEffect(()=>{
+        if(isAppliedAllocationOfMaternityLeave){
+            setOpenAllocation(true)
+        }
+    },[isAppliedAllocationOfMaternityLeave])
+    const handleIsAppliedAllocation = () => {
+        setisAppliedAllocationOfMaternityLeave(!isAppliedAllocationOfMaternityLeave);
+    }
+    const [totalVL,settotalVL] = React.useState(0);
+    const [totalSL,settotalSL] = React.useState(0);
+    const [onloadMonetization,setonloadMonetization] = React.useState(0)
+    const [firstLoad,setfirstLoad] = React.useState(true);
+    useLayoutEffect(()=>{
+        var limit = hasAppliedVL>=5?0:5-hasAppliedVL;
+        /**
+         * If include
+         */
+        // if(isInludeSLMonetization){
+        //     /**
+        //      * If has applied VL
+        //      */
+        //     if(hasAppliedVL >= 5){
+        //         // var total_maximum = Math.floor((availableVL+availableSL)/2);
+        //         var total_maximum = (Math.floor(formatSubtractCreditAvailableDecimal(availableVL,0))+Math.floor(availableSL))/2
+        //         if(daysOfMonetization>total_maximum){
+        //             setdaysOfMonetization(Math.floor((availableVL+availableSL)/2))
+        //             Swal.fire({
+        //                 icon:'warning',
+        //                 title:'Oops...',
+        //                 html:'Number of applied days exceed !'
+        //             })
+        //         }
+        //     }else{
+        //         var total_maximum;
+        //         if(availableVL>=limit){
+        //             total_maximum = (Math.floor(formatSubtractCreditAvailableDecimal(availableVL,limit))+Math.floor(availableSL))/2;
+        //         }else{
+        //             total_maximum = Math.floor(availableSL)/2
+        //         }
+        //         if(daysOfMonetization>total_maximum){
+        //             setdaysOfMonetization(Math.floor((availableVL>=limit?availableVL-limit:0+availableSL)/2))
+        //             Swal.fire({
+        //                 icon:'warning',
+        //                 title:'Oops...',
+        //                 html:'Number of applied days exceed !'
+        //             })
+        //         }
+        //     }
+        // }else{
+
+        //     if(hasAppliedVL >= 5){
+        //         var total_maximum;
+
+        //         if(availableVL>=limit){
+        //             total_maximum = (Math.floor(formatSubtractCreditAvailableDecimal(availableVL,0)))/2;
+        //         }else{
+        //             total_maximum = Math.floor(availableSL)/2
+        //         }
+        //         if(daysOfMonetization>total_maximum){
+        //             setdaysOfMonetization(Math.floor(availableVL))
+        //             Swal.fire({
+        //                 icon:'warning',
+        //                 title:'Oops...',
+        //                 html:'Number of applied days exceed !'
+        //             })
+
+        //         }
+        //     }else{
+
+        //         var total_maximum;
+                
+        //         if(availableVL>=limit){
+        //             total_maximum = (Math.floor(formatSubtractCreditAvailableDecimal(availableVL,limit)))/2;
+        //         }else{
+        //             total_maximum = 0
+        //         }
+        //         console.log(availableVL)
+        //         if(total_maximum >0){
+        //             if(daysOfMonetization>total_maximum){
+        //                 setdaysOfMonetization(Math.floor(availableVL)>=limit?Math.floor(availableVL)-limit:0)
+        //                 Swal.fire({
+        //                     icon:'warning',
+        //                     title:'Oops...',
+        //                     html:'Number of applied days exceed !'
+        //                 })
+    
+        //             }
+        //         }else{
+        //             if(!firstLoad){
+        //                 setdaysOfMonetization(Math.floor(availableVL)>=limit?Math.floor(availableVL)-limit:0)
+        //                 Swal.fire({
+        //                     icon:'warning',
+        //                     title:'Oops...',
+        //                     html:'Number of applied days exceed !'
+        //                 })
+        //             }else{
+        //                 setfirstLoad(false)
+        //             }
+                    
+        //         }
+        //     }
+        // }
+        if(hasAppliedVL >= 5){
+            // var total_maximum = Math.floor((availableVL+availableSL)/2);
+            var total_maximum = (Math.floor(formatSubtractCreditAvailableDecimal(availableVL,0))+Math.floor(availableSL))/2
+            if(daysOfMonetization>total_maximum){
+                setdaysOfMonetization(Math.floor((availableVL+availableSL)/2))
+                Swal.fire({
+                    icon:'warning',
+                    title:'Oops...',
+                    html:'Number of applied days exceed to limit !'
+                })
+            }
+        }else{
+            var total_maximum;
+            if(availableVL>=limit){
+                total_maximum = (Math.floor(formatSubtractCreditAvailableDecimal(availableVL,limit))+Math.floor(availableSL))/2;
+            }else{
+                total_maximum = Math.floor(availableSL)/2
+            }
+            if(daysOfMonetization>total_maximum){
+                setdaysOfMonetization(total_maximum)
+                Swal.fire({
+                    icon:'warning',
+                    title:'Oops...',
+                    html:'Number of applied days exceed to limit !'
+                })
+            }
+        }
+        var total_maximum2 = Math.floor(availableVL)>=limit?Math.floor(formatSubtractCreditAvailableDecimal(availableVL,limit)):0;
+        if(total_maximum2 >0){
+            var total_vl;
+            var total_sl;
+            /**
+             * check if has applied VL within the current year
+             */
+            if(hasAppliedVL >= 5){
+                /**
+                 * Check if tick the checkbox for include SL for deduction
+                 */
+                // if(isInludeSLMonetization){
+                //     /**
+                //      * check again if selected number of days of monenitization is greater than to available vl, if greater than means include SL for deduction
+                //      */
+                //     if(daysOfMonetization>availableVL){
+                //         total_vl = Math.floor(availableVL);
+                //         total_sl = daysOfMonetization-Math.floor(availableVL)
+                //     }else{
+                //         total_vl = daysOfMonetization;
+                //         total_sl = 0;
+                //     }
+                    
+                // }else{
+
+                //     if(daysOfMonetization>(availableVL>=limit?availableVL-limit:0)){
+                //         total_vl = Math.floor(availableVL)>=limit?Math.floor(formatSubtractCreditAvailableDecimal(availableVL,limit)):0;
+                //         total_sl = daysOfMonetization-Math.floor(availableVL)
+                //     }else{
+                //         total_vl = daysOfMonetization;
+                //         total_sl = 0;
+                //     }
+                // }
+                /**
+                 * check again if selected number of days of monenitization is greater than to available vl, if greater than means include SL for deduction
+                 */
+                if(daysOfMonetization>availableVL){
+                    total_vl = Math.floor(availableVL);
+                    total_sl = daysOfMonetization-Math.floor(availableVL)
+                }else{
+                    total_vl = daysOfMonetization;
+                    total_sl = 0;
+                }
+
+            }else{
+                if(daysOfMonetization>(Math.floor(availableVL)>=5?Math.floor(formatSubtractCreditAvailableDecimal(availableVL,limit)):0)){
+                    total_vl = Math.floor(availableVL)>=limit?Math.floor(formatSubtractCreditAvailableDecimal(availableVL,limit)):0;
+                    total_sl = daysOfMonetization-(availableVL>=5?Math.floor(formatSubtractCreditAvailableDecimal(availableVL,limit)):0)
+                }else{
+                    total_vl = daysOfMonetization;
+                    total_sl = 0;
+                }
+            }
+            settotalVL(total_vl)
+            settotalSL(total_sl)
+        }
+        setappliedOthersDays(daysOfMonetization)
+    },[daysOfMonetization])
+    const checkMonetizationAboveHalf = () => {
+        var total_maximum;
+        var limit = hasAppliedVL>=5?0:5-hasAppliedVL;
+        
+        if(hasAppliedVL >= 5){
+            // var total_maximum = Math.floor((availableVL+availableSL)/2);
+            var total_maximum = (Math.floor(formatSubtractCreditAvailableDecimal(availableVL,0))+Math.floor(availableSL))/2
+            
+        }else{
+            var total_maximum;
+            if(availableVL>=limit){
+                total_maximum = (Math.floor(formatSubtractCreditAvailableDecimal(availableVL,limit))+Math.floor(availableSL))/2;
+            }else{
+                total_maximum = Math.floor(availableSL)/2
+            }
+            
+        }
+        var monetization = total_maximum;
+
+        if(daysOfMonetization>=monetization){
+            return(
+                <Grid item xs={12} sm={12} md={12} lg={12}>
+                    <Tooltip title="Please upload a PDF/Image File" placement='top'>
+                    <TextField type = "file" label="Letter of Request *" fullWidth InputLabelProps={{shrink:true}} onChange = {handleSingleFile} InputProps={{ inputProps: { accept:'image/*    ,.pdf'}}}/>
+                    </Tooltip>
+                </Grid>
+            )
+        }else{
+            return null
+        }
+    }
+    const handlesetisInludeSLMonetization = ()=>{
+        setisInludeSLMonetization(!isInludeSLMonetization)
+        if(hasAppliedVL >= 5){
+            setdaysOfMonetization(Math.floor(availableVL))
+        }else{
+            if(availableVL>=5){
+                setdaysOfMonetization(Math.floor(formatSubtractCreditAvailableDecimal(availableVL,5)))
+            }else{
+                setdaysOfMonetization(0);
+            }
+            // setdaysOfMonetization(availableVL>=5?availableVL-5:0)
+        }
+    }
+    const monetizationVLFormat = () => {
+        // {hasAppliedVL?availableVL:availableVL>=5?availableVL-5:0}
+        if(hasAppliedVL >= 5){
+            return availableVL;
+        }else{
+            var limit = 5 - hasAppliedVL
+            if(availableVL>=limit){
+                return formatSubtractCreditAvailableDecimal(availableVL,limit)
+            }else{
+             return 0;
+            }
+        }
+    }
+    const showLeaveDetailsApplication = ()=>{
+        switch(leaveType){
+            /**
+             * Vacation Leave
+             * Force Leave
+             * 
+             */
+            case 1:
+            case 2:
+            return(
+            <>
+            <Grid item xs={12} sm={12} md={12} lg={12}>
+            <br/>
+            <Typography sx={{color:'orange',fontSize:'17px',borderBottom:'solid 2px',paddingBottom:'10px'}}>
+                                    Details of Application
+                                </Typography>
+            </Grid>
+            <Grid item xs={12} sm={12} md={12} lg={12}>
+            {/* <TextField type = 'date' label='No. of Days to Apply' InputLabelProps={{ shrink: true }} fullWidth/> */}
+            {/* <DatePicker onChange={onChange} value={value} /> */}
+            <Typography sx={{color:'#353232',fontSize:'.8em'}}>Inclusive Dates *</Typography>
+            <DatePicker
+                value = {selectedInclusiveDates}
+                onChange = {handleSetInclusiveDates}
+                multiple
+                plugins={[
+                <DatePanel />
+                ]}
+                minDate={inclusiveMinDate()}
+                // render={<InputIcon/>}
+                render={(value, openCalendar) => {
+                    return (
+                    <button onClick={openCalendar} className = "custom-inclusive-dates">
+                        <InputIcon/>
+                    </button>
+                    )
+                }}
+                // style={{
+                //     width: "100%",
+                //     boxSizing: "border-box",
+                //     height: "26px"
+                //   }}
+                containerStyle={{
+                    width: "100%"
+                }}
+                mapDays={({ date }) => {
+                    let props = {}
+                    let isWeekend = [0, 6].includes(date.weekDay.index)
+                    let isDisabled = alreadyAppliedDays.includes(moment(new Date(date)).format('MM-DD-YYYY'))
+                    if (isWeekend) props.className = "highlight highlight-red"
+                    if(isDisabled) props.disabled=true  
+                    return props
+                }}
+                onClose = {handleSortInclusiveDates}
+                onOpen = {()=>setInclusiveDatesOpen(true)}
+                
+            />
+            </Grid>
+            <Grid item xs={12} sm={12} md={12} lg={12}>
+                <TextField label='No. of Days to Apply' fullWidth  value = {selectedInclusiveDates.length} InputLabelProps={{ shrink: true }} readOnly />
+            </Grid>
+            {previewInclusiveDates.length !==0
+            ?
+            <Grid item xs={12} sm={12} md={12} lg={12}>
+                <TextField label='Inclusive Dates Selected' fullWidth  value = {previewInclusiveDates} InputLabelProps={{ shrink: true }} readOnly />
+            </Grid>
+            :
+            ''
+            }
+            </>
+            )
+            break;
+            /**
+             * Sick Leave
+             */
+            case 3:
+                return(
+                <>
+                <Grid item xs={12} sm={12} md={12} lg={12}>
+                    <br/>
+                    <Typography sx={{color:'orange',fontSize:'17px',borderBottom:'solid 2px',paddingBottom:'10px'}}>
+                                    Details of Application
+                                </Typography>
+                    </Grid>
+                <Grid item xs={12} sm={12} md={12} lg={12}>
+                {/* <TextField type = 'date' label='No. of Days to Apply' InputLabelProps={{ shrink: true }} fullWidth/> */}
+                {/* <DatePicker onChange={onChange} value={value} /> */}
+                <Typography sx={{color:'#353232',fontSize:'.8em'}}>Inclusive Dates *</Typography>
+                <DatePicker
+                    value = {selectedInclusiveDates}
+                    onChange = {handleSetInclusiveDates}
+                    multiple
+                    plugins={[
+                    <DatePanel />
+                    ]}
+                    minDate={inclusiveMinDate()}
+                    // render={<InputIcon/>}
+                    render={(value, openCalendar) => {
+                        return (
+                        <button onClick={openCalendar} className = "custom-inclusive-dates">
+                            <InputIcon/>
+                        </button>
+                        )
+                    }}
+                    // style={{
+                    //     width: "100%",
+                    //     boxSizing: "border-box",
+                    //     height: "26px"
+                    //   }}
+                    containerStyle={{
+                        width: "100%"
+                    }}
+                    mapDays={({ date }) => {
+                        let props = {}
+                        let isWeekend = [0, 6].includes(date.weekDay.index)
+                        let isDisabled = alreadyAppliedDays.includes(moment(new Date(date)).format('MM-DD-YYYY'))
+                        if (isWeekend) props.className = "highlight highlight-red"
+                        if(isDisabled) props.disabled=true
+                        if(isDisabled) props.title='already applied'
+                        if(moment(slNoPay).format('MM-DD-YYYY')>=moment(new Date(date)).format('MM-DD-YYYY')){
+                            props.className = "highlight highlight-red"
+                            props.title ='Without Pay'
+                        }
+                        return props
+                    }}
+                    onClose = {handleSortInclusiveDates}
+                    onOpen = {()=>setInclusiveDatesOpen(true)}
+                    
+                />
+                </Grid>
+                <Grid item xs={12} sm={12} md={12} lg={12}>
+                    <TextField label='No. of Days to Apply' fullWidth  value = {selectedInclusiveDates.length} InputLabelProps={{ shrink: true }} readOnly />
+                </Grid>
+                {
+                    slAttachment
+                    ?
+                    <Grid item xs={12} sm={12} md={12} lg={12}>
+                        <Tooltip title="Please upload a PDF/Image File" placement='top'>
+                        <TextField type = "file" label="Medical Certificate / Affidavit*" fullWidth InputLabelProps={{shrink:true}} InputProps={{ inputProps: { accept:'image/*    ,.pdf'} }} onChange = {handleSLFile} disabled={leaveDetails.length !== 0 ?false:true}/>
+                        </Tooltip>
+                    </Grid> 
+                    :
+                    ''
+
+                }
+                {previewInclusiveDates.length !==0
+                ?
+                <Grid item xs={12} sm={12} md={12} lg={12}>
+                    <TextField label='Inclusive Dates Selected' fullWidth  value = {previewInclusiveDates} InputLabelProps={{ shrink: true }} readOnly />
+                </Grid>
+                :
+                ''
+                }
+                </>
+                )
+                break;
+            /**
+             * Maternity leave
+             */
+            case 4:
+                return(
+                    <>
+                    <Grid item xs={12} sm={12} md={12} lg={12}>
+                    <br/>
+                    <Typography sx={{color:'orange',fontSize:'17px',borderBottom:'solid 2px',paddingBottom:'10px'}}>
+                                    Details of Application
+                                </Typography>
+                    </Grid>
+                    <Grid item xs={12} sm={12} md={12} lg={12}>
+                    {/* <TextField type = 'date' label='No. of Days to Apply' InputLabelProps={{ shrink: true }} fullWidth/> */}
+                    {/* <DatePicker onChange={onChange} value={value} /> */}
+                    <Box sx = {{display:'flex',flexDirection:'row',justifyContent:'space-between'}}>
+                    <Typography sx={{color:'#353232',fontSize:'.8em'}}>Start Date*</Typography>
+                    <Tooltip title="Calendar Days" placement='left'><InfoIcon sx={{color:'#609df7'}}/></Tooltip>
+                    </Box>
+                    <DatePicker
+                        value = {selectedInclusiveMaternityDates}
+                        onChange = {(val)=>setInclusiveMaternityDates(val)}
+                        // plugins={[
+                        // <DatePanel />
+                        // ]}
+                        minDate={inclusiveMinDate()}
+                        // render={<InputIcon/>}
+                        render={(value, openCalendar) => {
+                            return (
+                            <button onClick={openCalendar} className = "custom-inclusive-dates">
+                                <InputIcon/>
+                            </button>
+                            )
+                        }}
+                        containerStyle={{
+                            width: "100%"
+                        }}
+                        mapDays={({ date }) => {
+                            let props = {}
+                            let isWeekend = [0, 6].includes(date.weekDay.index)
+                            let isDisabled = alreadyAppliedDays.includes(moment(new Date(date)).format('MM-DD-YYYY'))
+                            if (isWeekend) props.className = "highlight highlight-red"
+                            if(isDisabled) props.disabled=true
+                            return props
+                        }}
+                        // onClose = {handleSortInclusiveDates}
+                        // onOpen = {()=>setInclusiveDatesOpen(true)}
+                        
+                    />
+                    </Grid>
+                    <Grid item xs={12} sm={12} md={12} lg={12}>
+                        <TextField label='No. of Days Applied' fullWidth  value = {isAppliedAllocationOfMaternityLeave?daysPeriod-allocationInfo.allocated_days:daysPeriod} InputLabelProps={{ shrink: true }} readOnly />
+                    </Grid>
+                    {previewInclusiveDates.length !==0
+                        ?
+                        <Grid item xs={12} sm={12} md={12} lg={12}>
+                            <TextField label='Inclusive Dates Selected' fullWidth  value = {previewInclusiveDates} InputLabelProps={{ shrink: true }} readOnly />
+                        </Grid>
+                        :
+                        ''
+                    }
+                    <Grid item xs={12} sm={12} md={12} lg={12}>
+                        <Tooltip title="Please upload a PDF/Image File" placement='top'>
+                        <TextField type = "file" label="Proof of pregnancy *" fullWidth InputLabelProps={{shrink:true}} onChange = {handleSingleFile} InputProps={{ inputProps: { accept:'image/*,.pdf'} }} disabled={selectedInclusiveMaternityDates.length !== 0 ?false:true}/>
+                        </Tooltip>
+                    </Grid>
+                    <Grid item xs={12} sm={12} md={12} lg={12} sx = {{display:'flex',flexDirection:'row',justifyContent:'space-between'}}>
+                    <FormGroup>
+                    <FormControlLabel control={<Checkbox onChange = {handleIsAppliedAllocation}/>} label="Apply allocation of maternity leave" />
+                    </FormGroup>
+                    <Tooltip title ="Can be applied later, after approval of application." placement='left'>
+                        <InfoIcon sx={{color:'#609df7'}}/>
+                    </Tooltip>
+                    </Grid>
+                   
+                    {
+                        isAppliedAllocationOfMaternityLeave
+                        ?
+                        <>
+                        <Grid item xs={12}>
+                            <Button variant='outlined' fullWidth onClick = {()=>setOpenAllocation(true)}> Fillout Allocation Form</Button>
+                        </Grid>
+                        {/* <Grid item xs={12} sm={12} md={12} lg={12}>
+                            <Tooltip title="Please upload a PDF/Image File" placement='top'>
+                            <TextField type = "file" label="Accomplished Notice of Allocation of Maternity Leave Form*" fullWidth InputLabelProps={{shrink:true}} onChange = {handleSingleFile} InputProps={{ inputProps: { accept:'image/*    ,.pdf'} }}/>
+                            </Tooltip>
+                        </Grid> */}
+                        </>
+
+                        :
+                        ''
+                    }
+                    
+                    
+                    </>
+                    )
+                    break;
+            /**
+             * Paternity Leave
+             */
+            case 5:
+                return(
+                    <>
+                    {
+                    applicableDaysLoading
+                    ?
+                    <Grid item xs={12} sx={{ width:'100%'}}>
+                        <Typography sx={{textAlign:'center'}}>Checking information. Please wait...</Typography>
+                        <LinearProgress />
+                    </Grid>
+                    :
+                        isApplicableForFiling === false
+                        ?
+                        <Grid item xs = {12}>
+                            <Alert sx={{textAlign:'center'}} severity="warning">Maximum paternity leave limit reached !</Alert>
+                        </Grid>
+                        :
+                        isApplicableForFiling === true
+                            ?
+                            <>
+                                <Grid item xs={12} sm={12} md={12} lg={12}>
+                                <br/>
+                                <Typography sx={{color:'orange',fontSize:'17px',borderBottom:'solid 2px',paddingBottom:'10px'}}>
+                                    Details of Application
+                                </Typography>
+                                </Grid>
+                                <Grid item xs={12} sm={12} md={12} lg={12}>
+                                <Typography sx={{color:'#353232',fontSize:'.8em'}}>Inclusive Dates *</Typography>
+                                <DatePicker
+                                    value = {selectedInclusiveDates}
+                                    onChange = {handleSetInclusiveDates}
+                                    multiple
+                                    plugins={[
+                                    <DatePanel />
+                                    ]}
+                                    minDate={inclusiveMinDate()}
+                                    // render={<InputIcon/>}
+                                    render={(value, openCalendar) => {
+                                        return (
+                                        <button onClick={openCalendar} className = "custom-inclusive-dates">
+                                            <InputIcon/>
+                                        </button>
+                                        )
+                                    }}
+                                    // style={{
+                                    //     width: "100%",
+                                    //     boxSizing: "border-box",
+                                    //     height: "26px"
+                                    //   }}
+                                    containerStyle={{
+                                        width: "100%"
+                                    }}
+                                    mapDays={({ date }) => {
+                                        let props = {}
+                                        let isWeekend = [0, 6].includes(date.weekDay.index)
+                                        let isDisabled = alreadyAppliedDays.includes(moment(new Date(date)).format('MM-DD-YYYY'))
+                                        if (isWeekend) props.className = "highlight highlight-red"
+                                        if(isDisabled) props.disabled=true
+                                        if(selectedInclusiveDates.length >=daysPeriod) props.disabled=true
+                                        return props
+                                    }}
+                                    onClose = {handleSortInclusiveDates}
+                                    onOpen = {()=>setInclusiveDatesOpen(true)}
+                                    
+                                />
+                                </Grid>
+                                <Grid item xs={12} sm={12} md={12} lg={12}>
+                                    <TextField label='No. of Days Applied' fullWidth  value = {selectedInclusiveDates.length} InputLabelProps={{ shrink: true }} readOnly />
+                                </Grid>
+                                {previewInclusiveDates.length !==0
+                                ?
+                                <Grid item xs={12} sm={12} md={12} lg={12}>
+                                    <TextField label='Inclusive Dates Selected' fullWidth  value = {previewInclusiveDates} InputLabelProps={{ shrink: true }} readOnly />
+                                </Grid>
+                                :
+                                ''
+                                }
+                                
+                                <Grid item xs={12} sm={12} md={12} lg={12}>
+                                    <Tooltip title="Please upload a PDF/Image File" placement='top'>
+                                    <TextField type = "file" label="Proof of child's delivery *" fullWidth InputLabelProps={{shrink:true}} onChange = {handleSingleFile} InputProps={{ inputProps: { accept:'image/*    ,.pdf'} }} disabled={selectedInclusiveDates.length !== 0 ?false:true}/>
+                                    </Tooltip>
+                                </Grid>
+                                </>
+                            :
+                            <Grid item xs={12} sx={{ display: 'flex',flexDirection:'row',justifyContent:'center' }}>
+                                <CircularProgress />
+                            </Grid>
+                    }
+                    </>
+                    )
+                break;
+            /**
+             * Special Privilege Leave
+             */
+            case 6:
+                return(
+                <>
+                {
+                applicableDaysLoading
+                ?
+                <Grid item xs={12} sx={{ width:'100%'}}>
+                    <Typography sx={{textAlign:'center'}}>Checking information. Please wait...</Typography>
+                    <LinearProgress />
+                </Grid>
+                :
+                isApplicableForFiling === false
+                ?
+                <Grid item xs = {12}>
+                        <Alert sx={{textAlign:'center'}} severity="warning">You have already reach the limit number of days per year for Special Privilege Leave ! Please cancel your application if you want to change your application (this is only applicable if the status of your applicantion is 'FOR REVIEW')</Alert>
+                    </Grid>
+                :
+                    isApplicableForFiling === true
+                    ?
+                    <>
+                    <Grid item xs={12} sm={12} md={12} lg={12}>
+                            <br/>
+                            <Typography sx={{color:'orange',fontSize:'17px',borderBottom:'solid 2px',paddingBottom:'10px'}}>
+                                    Details of Application
+                                </Typography>
+                    </Grid>
+                    <Grid item xs={12} sm={12} md={12} lg={12}>
+                        <TextField label={'No. of available days for the year '+moment(new Date()).format('YYYY')} fullWidth  value = {applicableDays} InputLabelProps={{ shrink: true }} readOnly/>
+                    </Grid>
+                    <Grid item xs={12} sm={12} md={12} lg={12}>
+                        <FormControl fullWidth>
+                            <InputLabel id="cto-hours-select-label">No. of Days to Apply</InputLabel>
+                            <Select
+                                labelId="cto-hours-select-label"
+                                id="cto-hours-select"
+                                value={selectedSPL}
+                                label="No. of Days to Apply"
+                                // onChange={handleChange}
+                                onChange={(value) => setselectedSPL(value.target.value)}
+                                // onBlur ={(val)=>checkCTOHours(val.target.value)}
+                            >
+                                {splDropdown.map((data,key)=>
+                                    <MenuItem key = {key} value ={data}>{data}</MenuItem>
+                                )}
+                            </Select>
+                            </FormControl>
+                    </Grid>
+                    <Grid item xs={12} sm={12} md={12} lg={12}>
+                    <Typography sx={{color:'#353232',fontSize:'.8em'}}>Inclusive Dates *</Typography>
+                    <DatePicker
+                        value = {selectedInclusiveDates}
+                        onChange = {handleSetInclusiveDates}
+                        multiple
+                        plugins={[
+                        <DatePanel />
+                        ]}
+                        minDate={inclusiveSPLMinDate()}
+                        maxDate={inclusiveSPLMaxDate()}
+                        // render={<InputIcon/>}
+                        render={(value, openCalendar) => {
+                            return (
+                            <button onClick={openCalendar} className = "custom-inclusive-dates">
+                                <InputIcon/>
+                            </button>
+                            )
+                        }}
+                        // style={{
+                        //     width: "100%",
+                        //     boxSizing: "border-box",
+                        //     height: "26px"
+                        //   }}
+                        containerStyle={{
+                            width: "100%"
+                        }}
+                        mapDays={({ date }) => {
+                            let props = {}
+                            let isWeekend = [0, 6].includes(date.weekDay.index)
+                            let isDisabled = alreadyAppliedDays.includes(moment(new Date(date)).format('MM-DD-YYYY'))
+                            
+                            if (isWeekend) props.className = "highlight highlight-red"
+                            if(isDisabled) props.disabled=true
+                            
+                            var days = Math.round(selectedSPL/1);
+                            if(splDropdown.length ===0){
+                                props.disabled = true;
+                            }else{
+                                if(selectedInclusiveDates.length>=days)props.disabled = true;
+                            }
+                            return props
+                        }}
+                        onClose = {handleSortInclusiveDates}
+                        onOpen = {()=>setInclusiveDatesOpen(true)}
+                        
+                    />
+                    </Grid>
+                   
+                    {previewInclusiveDates.length !==0
+                    ?
+                    <Grid item xs={12} sm={12} md={12} lg={12}>
+                        <TextField label='Inclusive Dates Selected' fullWidth  value = {previewInclusiveDates} InputLabelProps={{ shrink: true }} readOnly />
+                    </Grid>
+                    :
+                    ''
+                    }
+                    {
+                    tempSelectedSPLInclusiveDates.length !==0
+                    ?
+                        selectedSPL%1
+                        ?
+                            tempSelectedSPLInclusiveDates.map((data,key)=>
+                            <Grid item xs={12} sm={12} md = {12} lg ={12} key = {key}>
+                                {
+                                    key === 0
+                                    ?
+                                    <Typography sx={{color:'#353232',fontSize:'.8em',marginBottom:'7px'}}>Select date period *</Typography>
+                                    :
+                                    ''
+                                }
+                                <FormControl fullWidth disabled = {data.disabled ? true:false}>
+                                <InputLabel id="demo-simple-select-label"> {moment(data.date.toDate()).format('MMMM DD, YYYY')} Period</InputLabel>
+                                <Select
+                                    labelId="demo-simple-select-label"
+                                    id="demo-simple-select"
+                                    value={data.period}
+                                    label={moment(data.date.toDate()).format('MMMM DD, YYYY')+" Period"}
+                                    onChange={(value) => handleSPLPeriodChange(value.target.value,key)}
+                                >
+                                    <MenuItem value='AM'>AM</MenuItem>
+                                    <MenuItem value='PM'>PM</MenuItem>
+                                    <MenuItem value=''>NONE</MenuItem>
+                                </Select>
+                                </FormControl>
+                            </Grid>
+
+                            )
+                        :
+                        ''
+                        
+                    :
+                    ''
+                    }
+                    </>
+                    :
+                    <Grid item xs={12} sx={{ display: 'flex',flexDirection:'row',justifyContent:'center' }}>
+                        <CircularProgress />
+                    </Grid>
+
+                }
+                
+                
+                </>
+                )
+                break;
+            /**
+             * Solo Parent Leave
+             */
+            case 7:
+                    return(
+                    <>
+                    <Grid item xs={12} sm={12} md={12} lg={12}>
+                    <br/>
+                    <Typography sx={{color:'orange',fontSize:'17px',borderBottom:'solid 2px',paddingBottom:'10px'}}>
+                                    Details of Application
+                                </Typography>
+                    </Grid>
+                    <Grid item xs={12} sm={12} md={12} lg={12}>
+                    {/* <TextField type = 'date' label='No. of Days to Apply' InputLabelProps={{ shrink: true }} fullWidth/> */}
+                    {/* <DatePicker onChange={onChange} value={value} /> */}
+                    <Typography sx={{color:'#353232',fontSize:'.8em'}}>Inclusive Dates *</Typography>
+                    <DatePicker
+                        value = {selectedInclusiveDates}
+                        onChange = {handleSetInclusiveDates}
+                        multiple
+                        plugins={[
+                        <DatePanel />
+                        ]}
+                        minDate={inclusiveMinDate()}
+                        // render={<InputIcon/>}
+                        render={(value, openCalendar) => {
+                            return (
+                            <button onClick={openCalendar} className = "custom-inclusive-dates">
+                                <InputIcon/>
+                            </button>
+                            )
+                        }}
+                        // style={{
+                        //     width: "100%",
+                        //     boxSizing: "border-box",
+                        //     height: "26px"
+                        //   }}
+                        containerStyle={{
+                            width: "100%"
+                        }}
+                        mapDays={({ date }) => {
+                            let props = {}
+                            let isWeekend = [0, 6].includes(date.weekDay.index)
+                            let isDisabled = alreadyAppliedDays.includes(moment(new Date(date)).format('MM-DD-YYYY'))
+                            if (isWeekend) props.className = "highlight highlight-red"
+                            if(isDisabled) props.disabled=true
+                            if(selectedInclusiveDates.length>=daysPeriod) props.disabled=true
+                            return props
+                        }}
+                        onClose = {handleSortInclusiveDates}
+                        onOpen = {()=>setInclusiveDatesOpen(true)}
+                        
+                    />
+                    </Grid>
+                    <Grid item xs={12} sm={12} md={12} lg={12}>
+                        <TextField label='No. of Days Applied' fullWidth  value = {selectedInclusiveDates.length} InputLabelProps={{ shrink: true }} readOnly />
+                    </Grid>
+                    {previewInclusiveDates.length !==0
+                    ?
+                    <Grid item xs={12} sm={12} md={12} lg={12}>
+                        <TextField label='Inclusive Dates Selected' fullWidth  value = {previewInclusiveDates} InputLabelProps={{ shrink: true }} readOnly />
+                    </Grid>
+                    :
+                    ''
+                    }
+                    </>
+                    )
+                    break;
+            /**
+             * Study leave
+             */
+             case 8:
+                return(
+                    <>
+                    <Grid item xs={12} sm={12} md={12} lg={12}>
+                    <br/>
+                    <Typography sx={{color:'orange',fontSize:'17px',borderBottom:'solid 2px',paddingBottom:'10px'}}>
+                                    Details of Application
+                                </Typography>
+                    </Grid>
+                    <Grid item xs={12} sm={12} md={12} lg={12}>
+                    <Box sx = {{display:'flex',flexDirection:'row',justifyContent:'space-between'}}>
+                    <Typography sx={{color:'#353232',fontSize:'.8em'}}>Inclusive Dates *</Typography>
+                    <Tooltip title="Calendar Days" placement='left'><InfoIcon sx={{color:'#609df7'}}/></Tooltip>
+                    </Box>
+                    <DatePicker
+                        value = {selectedStudyDates}
+                        onChange = {(val)=>setSelectedStudyDates(val)}
+                        range
+                        plugins={[
+                        <DatePanel />
+                        ]}
+                        minDate={inclusiveMinDate()}
+                        // render={<InputIcon/>}
+                        render={(value, openCalendar) => {
+                            return (
+                            <button onClick={openCalendar} className = "custom-inclusive-dates">
+                                <InputIcon/>
+                            </button>
+                            )
+                        }}
+                        containerStyle={{
+                            width: "100%"
+                        }}
+                        mapDays={({ date }) => {
+                            let props = {}
+                            let isWeekend = [0, 6].includes(date.weekDay.index)
+                            let isDisabled = alreadyAppliedDays.includes(moment(new Date(date)).format('MM-DD-YYYY'))
+                            if (isWeekend) props.className = "highlight highlight-red"
+                            if(isDisabled) props.disabled=true
+                            return props
+                        }}
+                        // onClose = {handleSortInclusiveDates}
+                        // onOpen = {()=>setInclusiveDatesOpen(true)}
+                        
+                    />
+                    </Grid>
+                    {/* <Grid item xs={12} sm={12} md={12} lg={12}>
+                        <TextField label='No. of Days Applied' fullWidth  value = {selectedRehabilitationDates.length} InputLabelProps={{ shrink: true }} readOnly />
+                    </Grid> */}
+                    {previewInclusiveDates.length !==0
+                        ?
+                        <Grid item xs={12} sm={12} md={12} lg={12}>
+                            <TextField label='Inclusive Dates Selected' fullWidth  value = {previewInclusiveDates} InputLabelProps={{ shrink: true }} readOnly />
+                        </Grid>
+                        :
+                        ''
+                    }
+                    <Grid item xs={12} sm={12} md={12} lg={12}>
+                        <Tooltip title="Please upload a PDF/Image File" placement='top'>
+                        <TextField type = "file" label="Supporting Document *" fullWidth InputLabelProps={{shrink:true}} onChange = {handleSingleFile} InputProps={{ inputProps: { accept:'image/*,.pdf'} }} disabled={selectedStudyDates.length >1 ?false:true}/>
+                        </Tooltip>
+                    </Grid>
+                    </>
+                    )
+                    break;
+            /**
+             * VAWC leave
+             */
+            case 9:
+                return(
+                    <>
+                    <Grid item xs={12} sm={12} md={12} lg={12}>
+                    <br/>
+                    <Typography sx={{color:'orange',fontSize:'17px',borderBottom:'solid 2px',paddingBottom:'10px'}}>
+                                    Details of Application
+                                </Typography>
+                    </Grid>
+                    <Grid item xs={12} sm={12} md={12} lg={12}>
+                    <Box sx = {{display:'flex',flexDirection:'row',justifyContent:'space-between'}}>
+                    <Typography sx={{color:'#353232',fontSize:'.8em'}}>Start Date*</Typography>
+                    <Tooltip title="Working Days" placement='left'><InfoIcon sx={{color:'#609df7'}}/></Tooltip>
+                    </Box>
+                    <DatePicker
+                        value = {selectedInclusiveVAWCDates}
+                        onChange = {(val)=>setInclusiveVAWCDates(val)}
+                        // multiple
+                        // plugins={[
+                        // <DatePanel />
+                        // ]}
+                        minDate={inclusiveMinDate()}
+                        // render={<InputIcon/>}
+                        render={(value, openCalendar) => {
+                            return (
+                            <button onClick={openCalendar} className = "custom-inclusive-dates">
+                                <InputIcon/>
+                            </button>
+                            )
+                        }}
+                        containerStyle={{
+                            width: "100%"
+                        }}
+                        mapDays={({ date }) => {
+                            let props = {}
+                            let isWeekend = [0, 6].includes(date.weekDay.index)
+                            let isDisabled = alreadyAppliedDays.includes(moment(new Date(date)).format('MM-DD-YYYY'))
+                            if (isWeekend) props.disabled=true
+                            if(isDisabled) props.disabled=true
+                            if(selectedInclusiveMaternityDates.length >=daysPeriod) props.disabled=true
+                            return props
+                        }}
+                        // onClose = {handleSortInclusiveDates}
+                        // onOpen = {()=>setInclusiveDatesOpen(true)}
+                        
+                    />
+                    </Grid>
+                    <Grid item xs={12} sm={12} md={12} lg={12}>
+                        <TextField label='No. of Days Applied' fullWidth  value = {10} InputLabelProps={{ shrink: true }} readOnly />
+                    </Grid>
+                    {previewInclusiveDates.length !==0
+                        ?
+                        <Grid item xs={12} sm={12} md={12} lg={12}>
+                            <TextField label='Inclusive Dates Selected' fullWidth  value = {previewInclusiveDates} InputLabelProps={{ shrink: true }} readOnly />
+                        </Grid>
+                        :
+                        ''
+                    }
+                    <Grid item xs={12} sm={12} md={12} lg={12}>
+                        <Tooltip title="Please upload a PDF/Image File" placement='top'>
+                        <TextField type = "file" label="Supporting Document *" fullWidth InputLabelProps={{shrink:true}} onChange = {handleSingleFile} InputProps={{ inputProps: { accept:'image/*,.pdf'} }} disabled={selectedInclusiveVAWCDates.length !== 0 ?false:true}/>
+                        </Tooltip>
+                    </Grid>
+                    </>
+                    )
+                    break;
+            /**
+             * Rehabilitation leave
+             */
+             case 10:
+                return(
+                    <>
+                    <Grid item xs={12} sm={12} md={12} lg={12}>
+                    <br/>
+                    <Typography sx={{color:'orange',fontSize:'17px',borderBottom:'solid 2px',paddingBottom:'10px'}}>
+                                    Details of Application
+                                </Typography>
+                    </Grid>
+                    <Grid item xs={12} sm={12} md={12} lg={12}>
+                    <Box sx = {{display:'flex',flexDirection:'row',justifyContent:'space-between'}}>
+                    <Typography sx={{color:'#353232',fontSize:'.8em'}}>Inclusive Dates *</Typography>
+                    <Tooltip title="Calendar Days" placement='left'><InfoIcon sx={{color:'#609df7'}}/></Tooltip>
+                    </Box>
+                    <DatePicker
+                        value = {selectedRehabilitationDates}
+                        onChange = {(val)=>setRehabilitationDates(val)}
+                        // multiple
+                        range
+                        plugins={[
+                        <DatePanel />
+                        ]}
+                        minDate={inclusiveMinDate()}
+                        // render={<InputIcon/>}
+                        render={(value, openCalendar) => {
+                            return (
+                            <button onClick={openCalendar} className = "custom-inclusive-dates">
+                                <InputIcon/>
+                            </button>
+                            )
+                        }}
+                        containerStyle={{
+                            width: "100%"
+                        }}
+                        mapDays={({ date }) => {
+                            let props = {}
+                            let isWeekend = [0, 6].includes(date.weekDay.index)
+                            let isDisabled = alreadyAppliedDays.includes(moment(new Date(date)).format('MM-DD-YYYY'))
+                            if (isWeekend) props.className = "highlight highlight-red"
+                            if(isDisabled) props.disabled=true
+                            // if(selectedInclusiveMaternityDates.length >=10) props.disabled=true
+                            return props
+                        }}
+                        // onClose = {handleSortInclusiveDates}
+                        // onOpen = {()=>setInclusiveDatesOpen(true)}
+                        
+                    />
+                    </Grid>
+                    {/* <Grid item xs={12} sm={12} md={12} lg={12}>
+                        <TextField label='No. of Days Applied' fullWidth  value = {selectedRehabilitationDates.length} InputLabelProps={{ shrink: true }} readOnly />
+                    </Grid> */}
+                    {previewInclusiveDates.length !==0
+                        ?
+                        <Grid item xs={12} sm={12} md={12} lg={12}>
+                            <TextField label='Inclusive Dates Selected' fullWidth  value = {previewInclusiveDates} InputLabelProps={{ shrink: true }} readOnly />
+                        </Grid>
+                        :
+                        ''
+                    }
+                    <Grid item xs={12} sm={12} md={12} lg={12}>
+                        <Tooltip title="Please upload a PDF/Image File" placement='top'>
+                        <TextField type = "file" label="Supporting Document *" fullWidth InputLabelProps={{shrink:true}} onChange = {handleSingleFile} InputProps={{ inputProps: { accept:'image/*,.pdf'} }} disabled={selectedRehabilitationDates.length >1 ?false:true}/>
+                        </Tooltip>
+                    </Grid>
+                    </>
+                    )
+                    break;
+            /**
+             * Special leave benefits for women
+             */
+             case 11:
+                return(
+                    <>
+                    <Grid item xs={12} sm={12} md={12} lg={12}>
+                    <br/>
+                    <Typography sx={{color:'orange',fontSize:'17px',borderBottom:'solid 2px',paddingBottom:'10px'}}>
+                                    Details of Application
+                                </Typography>
+                    </Grid>
+                    <Grid item xs={12} sm={12} md={12} lg={12}>
+                    <Box sx = {{display:'flex',flexDirection:'row',justifyContent:'space-between'}}>
+                    <Typography sx={{color:'#353232',fontSize:'.8em'}}>Inclusive Dates *</Typography>
+                    <Tooltip title="Calendar Days" placement='left'><InfoIcon sx={{color:'#609df7'}}/></Tooltip>
+                    </Box>
+                    <DatePicker
+                        value = {selectedBenefitForWomenDates}
+                        onChange = {(val)=>setselectedBenefitForWomenDates(val)}
+                        // multiple
+                        range
+                        plugins={[
+                        <DatePanel />
+                        ]}
+                        minDate={inclusiveMinDate()}
+                        // render={<InputIcon/>}
+                        render={(value, openCalendar) => {
+                            return (
+                            <button onClick={openCalendar} className = "custom-inclusive-dates">
+                                <InputIcon/>
+                            </button>
+                            )
+                        }}
+                        containerStyle={{
+                            width: "100%"
+                        }}
+                        mapDays={({ date }) => {
+                            let props = {}
+                            let isWeekend = [0, 6].includes(date.weekDay.index)
+                            let isDisabled = alreadyAppliedDays.includes(moment(new Date(date)).format('MM-DD-YYYY'))
+                            if (isWeekend) props.className = "highlight highlight-red"
+                            if(isDisabled) props.disabled=true
+                            // if(selectedInclusiveMaternityDates.length >=10) props.disabled=true
+                            return props
+                        }}
+                        // onClose = {handleSortInclusiveDates}
+                        // onOpen = {()=>setInclusiveDatesOpen(true)}
+                        
+                    />
+                    </Grid>
+                    {/* <Grid item xs={12} sm={12} md={12} lg={12}>
+                        <TextField label='No. of Days Applied' fullWidth  value = {selectedRehabilitationDates.length} InputLabelProps={{ shrink: true }} readOnly />
+                    </Grid> */}
+                    {previewInclusiveDates.length !==0
+                        ?
+                        <Grid item xs={12} sm={12} md={12} lg={12}>
+                            <TextField label='Inclusive Dates Selected' fullWidth  value = {previewInclusiveDates} InputLabelProps={{ shrink: true }} readOnly />
+                        </Grid>
+                        :
+                        ''
+                    }
+                    <Grid item xs={12} sm={12} md={12} lg={12}>
+                        <Tooltip title="Please upload a PDF/Image File" placement='top'>
+                        <TextField type = "file" label="Supporting Document *" fullWidth InputLabelProps={{shrink:true}} onChange = {handleSingleFile} InputProps={{ inputProps: { accept:'image/*,.pdf'} }} disabled={selectedBenefitForWomenDates.length >1 ?false:true}/>
+                        </Tooltip>
+                    </Grid>
+                    </>
+                    )
+                    break;
+            /**
+             * Special emergency Leave
+             */
+             case 12:
+                return(
+                    <>
+                    <Grid item xs={12} sm={12} md={12} lg={12}>
+                    <br/>
+                    <Typography sx={{color:'orange',fontSize:'17px',borderBottom:'solid 2px',paddingBottom:'10px'}}>
+                                    Details of Application
+                                </Typography>
+                    </Grid>
+                    <Grid item xs={12} sm={12} md={12} lg={12}>
+                    <Typography sx={{color:'#353232',fontSize:'.8em'}}>Inclusive Dates *</Typography>
+                    <DatePicker
+                        value = {selectedInclusiveDates}
+                        onChange = {handleSetInclusiveDates}
+                        multiple
+                        plugins={[
+                        <DatePanel />
+                        ]}
+                        minDate={inclusiveMinDate()}
+                        // render={<InputIcon/>}
+                        render={(value, openCalendar) => {
+                            return (
+                            <button onClick={openCalendar} className = "custom-inclusive-dates">
+                                <InputIcon/>
+                            </button>
+                            )
+                        }}
+                        // style={{
+                        //     width: "100%",
+                        //     boxSizing: "border-box",
+                        //     height: "26px"
+                        //   }}
+                        containerStyle={{
+                            width: "100%"
+                        }}
+                        mapDays={({ date }) => {
+                            let props = {}
+                            let isWeekend = [0, 6].includes(date.weekDay.index)
+                            let isDisabled = alreadyAppliedDays.includes(moment(new Date(date)).format('MM-DD-YYYY'))
+                            if (isWeekend) props.disabled = true
+                            if(isDisabled) props.disabled=true
+                            if(selectedInclusiveDates.length >=daysPeriod) props.disabled=true
+                            return props
+                        }}
+                        onClose = {handleSortInclusiveDates}
+                        onOpen = {()=>setInclusiveDatesOpen(true)}
+                        
+                    />
+                    </Grid>
+                    <Grid item xs={12} sm={12} md={12} lg={12}>
+                        <TextField label='No. of Days Applied' fullWidth  value = {selectedInclusiveDates.length} InputLabelProps={{ shrink: true }} readOnly />
+                    </Grid>
+                    {previewInclusiveDates.length !==0
+                    ?
+                    <Grid item xs={12} sm={12} md={12} lg={12}>
+                        <TextField label='Inclusive Dates Selected' fullWidth  value = {previewInclusiveDates} InputLabelProps={{ shrink: true }} readOnly />
+                    </Grid>
+                    :
+                    ''
+                    }
+                    
+                    <Grid item xs={12} sm={12} md={12} lg={12}>
+                        <Tooltip title="Please upload a PDF/Image File" placement='top'>
+                        <TextField type = "file" label="Supporting Document *" fullWidth InputLabelProps={{shrink:true}} onChange = {handleSingleFile} InputProps={{ inputProps: { accept:'image/*    ,.pdf'} }} disabled={selectedInclusiveDates.length !== 0 ?false:true}/>
+                        </Tooltip>
+                    </Grid>
+                    </>
+                    )
+                break;
+            /**
+             * Others
+             */
+            case 15:
+                if(leaveDetails === 9){
+                    return(
+                        <>
+                        {availableVL+availableSL === 0
+                        ?
+                        ''
+                        :
+                        <>
+                        <Grid item xs={12} sm={12} md={12} lg={12}>
+                        <br/>
+                        <Typography sx={{color:'orange',fontSize:'17px',borderBottom:'solid 2px',paddingBottom:'10px'}}>
+                                    Details of Application
+                                </Typography>
+                        </Grid>
+                        <Grid item xs ={12}>
+                            <table className='table'>
+                                <thead style={{background:'#1976d2',color:'#fff',borderTopLeftRadius: '10px',borderTopRightRadius: '10px'}}>
+                                    <tr>
+                                        <th>
+                                        Type of Leave 
+                                        </th>
+                                        <th>
+                                            Available
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            Vacation Leave
+                                        </td>
+                                        <td>
+                                        {monetizationVLFormat()}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            Sick Leave
+                                        </td>
+                                        <td>
+                                        {availableSL}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </Grid>
+                        {hasAppliedVL >= 5
+                        ?
+                        ''
+                        :
+                        <Grid item xs={12}>
+                            <Alert severity="info"><small><em> <strong>Note:</strong> You still have not availed a {5-hasAppliedVL} VL/FL (Approved application) as of today, so a number of {5-hasAppliedVL} day/s will be reserved for your <strong>Force Leave</strong>.</em></small></Alert>
+                        </Grid>
+                        }
+                        
+                        {/* <Grid item xs={12} sm={12} md={12} lg={12} sx = {{display:'flex',flexDirection:'row',justifyContent:'space-between'}}>
+                        <FormGroup>
+                        <FormControlLabel control={<Checkbox onChange = {handlesetisInludeSLMonetization}/>} label="Include SL from deduction" />
+                        </FormGroup>
+                        </Grid> */}
+                        {/* <Grid item xs={12} sm={12} md={12} lg={12}>
+                            <TextField label='No. of Days To Apply' type='number' fullWidth InputProps={{ inputProps: { inputMode: 'numeric', pattern: '[0-9]*',
+                            max:
+                            hasAppliedVL >= 5
+                            ?
+                                isInludeSLMonetization
+                                ?
+                                availableVL+availableSL
+                                :
+                                availableVL
+                            :
+                                isInludeSLMonetization
+                                ?
+                                (Math.floor(formatSubtractCreditAvailableDecimal(availableVL,5))+Math.floor(availableSL))/2
+                                :
+                                availableVL-5
+                            ,min:0} }} onChange = {(val)=>setdaysOfMonetization(val.target.value)} value = {daysOfMonetization}/>
+                        </Grid> */}
+                        <Grid item xs={12} sm={12} md={12} lg={12}>
+                            <TextField label='No. of Days To Apply' type='number' fullWidth InputProps={{ inputProps: { inputMode: 'numeric', pattern: '[0-9]*',
+                            max:
+                            hasAppliedVL >= 5
+                            ?
+                            (Math.floor(formatSubtractCreditAvailableDecimal(availableVL,5))+availableSL)/2
+                            :
+                            (Math.floor(formatSubtractCreditAvailableDecimal(availableVL,5-hasAppliedVL))+Math.floor(availableSL))/2
+                            ,min:0} }} onChange = {(val)=>setdaysOfMonetization(val.target.value)} value = {daysOfMonetization}/>
+                        </Grid>
+                        <Grid item xs={12}>
+                            <Typography sx={{background:'#d32f2f',color:'#fff',textAlign:'center',padding:'10px',borderTopLeftRadius: '10px',borderTopRightRadius: '10px'}}>Leave Credits Deduction Table</Typography>
+                            <table className='table table-bordered'>
+                                <thead style={{textAlign:'center'}}>
+                                    <tr>
+                                        <th>
+                                            VL
+                                        </th>
+                                        <th>
+                                            SL
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody style={{textAlign:'center'}}>
+                                    <tr>
+                                        <td>{totalVL}</td>
+                                        <td>{totalSL}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </Grid>
+                        {checkMonetizationAboveHalf()}
+                        </>
+                        }
+                        
+                        </>
+                        )
+                }else if(leaveDetails === 10){
+                    return(
+                        <>
+                        {
+                            availableVL+availableSL === 0
+                            ?
+                            ''
+                            :
+                            <>
+                            <Grid item xs={12} sm={12} md={12} lg={12}>
+                                <br/>
+                                <Typography sx={{color:'orange',fontSize:'17px',borderBottom:'solid 2px',paddingBottom:'10px'}}>
+                                    Details of Application
+                                </Typography>
+                                </Grid>
+                                <Grid item xs ={12}>
+                                    <table className='table'>
+                                        <thead>
+                                            <tr>
+                                                <th>
+                                                    Leave Type
+                                                </th>
+                                                <th>
+                                                    Available
+                                                </th>
+                                                
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    Vacation Leave
+                                                </td>
+                                                <td>
+                                                {availableVL}
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    Sick Leave
+                                                </td>
+                                                <td>
+                                                {availableSL}
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </Grid>
+                                <Grid item xs={12} sm={12} md={12} lg={12}>
+                                    <TextField label='Total Leave Balance' value={availableVL+availableSL} fullWidth InputLabel={{shrink:true}} readOnly/>
+                                </Grid>
+                                <Grid item xs={12} sm={12} md={12} lg={12}>
+                                    <Tooltip title="Please upload a PDF/Image File" placement='top'>
+                                    <TextField type = "file" label="Supporting Docs *" fullWidth InputLabelProps={{shrink:true}} onChange = {handleSingleFile} InputProps={{ inputProps: { accept:'image/*    ,.pdf'}}}/>
+                                    </Tooltip>
+                                </Grid>
+                            </>
+                        }
+                        
+                        </>
+                        )
+                }else{
+                    return null;
+                }
+                
+                break;
+            /**
+             * CTO
+             */
+            case 14:
+                return(
+                <>
+                <Grid item xs={12} sm={12} md={12} lg={12}>
+                    <br/>
+                    <Typography sx={{color:'orange',fontSize:'17px',borderBottom:'solid 2px',paddingBottom:'10px'}}>
+                                    Details of Application
+                                </Typography>
+                    </Grid>
+                <Grid item xs={12} sm={12} md={12} lg={12}>
+                    {/* <TextField label='No. of Hours to Apply' type="number" fullWidth inputProps={{ inputMode: 'numeric', pattern: '[0-9]*',step:4,min:4 }} value = {CTOHours} onChange={(val)=>setCTOHours(val.target.value)} onBlur ={(val)=>checkCTOHours(val.target.value)}/> */}
+                    <FormControl fullWidth>
+                        <InputLabel id="cto-hours-select-label">No. of Hours to Apply</InputLabel>
+                        <Select
+                            labelId="cto-hours-select-label"
+                            id="cto-hours-select"
+                            value={CTOHours}
+                            label="No. of Hours to Apply"
+                            // onChange={handleChange}
+                            onChange={handleSetCTOHours}
+                            // onBlur ={(val)=>checkCTOHours(val.target.value)}
+                        >
+                            {CTOHoursDropdown.map((data,key)=>
+                                <MenuItem key = {key} value ={data}>{data}</MenuItem>
+                            )}
+                        </Select>
+                        </FormControl>
+                </Grid>
+                <Grid item xs={12} sm={12} md={12} lg={12}>
+                <Typography sx={{color:'#353232',fontSize:'.8em'}}>Inclusive Dates *</Typography>
+                <DatePicker
+                    value = {selectedCTOInclusiveDates}
+                    onChange = {handleSetCTOInclusiveDates}
+                    multiple
+                    plugins={[
+                    <DatePanel />
+                    ]}
+                    minDate={inclusiveMinDate()}
+                    currentDate={currentMonth}
+                    // render={<InputIcon/>}
+                    render={(value, openCalendar) => {
+                        return (
+                        <button onClick={openCalendar} className = "custom-inclusive-dates">
+                            <InputIcon/>
+                        </button>
+                        
+                        )
+                    }}
+                    // style={{
+                    //     width: "100%",
+                    //     boxSizing: "border-box",
+                    //     height: "26px"
+                    //   }}
+                    containerStyle={{
+                        width: "100%"
+                    }}
+                    mapDays={({ date }) => {
+                        let props = {}
+                        let isWeekend = [0, 6].includes(date.weekDay.index)
+                        let isDisabled = alreadyAppliedDays.includes(moment(new Date(date)).format('MM-DD-YYYY'))
+                        // if (isWeekend) props.className = "disabled-date"
+                        if (isWeekend) props.className = "highlight highlight-red"
+
+                        var days = Math.round(CTOHours/8);
+                        // if(CTOHoursDropdown.length ===0){
+                        //     props.disabled = true;
+                        // }else{
+                            
+                        // }
+                        if(selectedCTOInclusiveDates.length>=5){
+                            props.disabled = true;
+                        }else{
+                            if(selectedCTOInclusiveDates.length>=days){
+                                props.disabled = true;
+                            }
+                        }
+                        if(isDisabled) props.disabled=true;
+                        if(currentMonth.format('MM-YYYY') !== date.format('MM-YYYY')){
+                            handleCurrentMonth(date)
+                        }
+                        
+                        // for(var i = 0 ;i<alreadyAppliedDays.length;i++){
+                        //     if(moment(new Date(date)).format('MM-DD-YYYY') === alreadyAppliedDays[i]){
+                        //         props.disabled = true;
+                        //     }
+                        // }
+                        
+                        return props
+                    }}
+                    onClose = {handleSortCTOInclusiveDates}
+                    // disabled = {CTOHours !== '0' ? false:true}
+                />
+                </Grid>
+                <Grid item xs={12}>
+                    <table className='table'>
+                        <thead>
+                            <tr>
+                                <th>Month Selected</th>
+                                <th>CTO Applied</th>
+                                <th>Available</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>{currentMonth.format('MMMM-YYYY')}</td>
+                                <td>{totalMonthHours}</td>
+                                <td>{40-totalMonthHours}</td>
+                            </tr>
+                            
+                        </tbody>
+                        
+                    </table>
+
+                </Grid>
+                {
+                    tempSelectedCTOInclusiveDates.length !==0
+                    ?
+                        CTOHours%8
+                        ?
+                            tempSelectedCTOInclusiveDates.map((data,key)=>
+                            <Grid item xs={12} sm={12} md = {12} lg ={12}
+                                key = {key}>
+                                {
+                                    key === 0
+                                    ?
+                                    <Typography sx={{color:'#353232',fontSize:'.8em',marginBottom:'7px'}}>Select date period *</Typography>
+                                    :
+                                    ''
+                                }
+                                <FormControl fullWidth disabled = {data.disabled ? true:false}>
+                                <InputLabel id="demo-simple-select-label"> {moment(data.date.toDate()).format('MMMM DD, YYYY')} Period</InputLabel>
+                                <Select
+                                    labelId="demo-simple-select-label"
+                                    id="demo-simple-select"
+                                    value={data.period}
+                                    label={moment(data.date.toDate()).format('MMMM DD, YYYY')+" Period"}
+                                    onChange={(value) => handlePeriodChange(value.target.value,key)}
+                                >
+                                    <MenuItem value='AM'>AM</MenuItem>
+                                    <MenuItem value='PM'>PM</MenuItem>
+                                    <MenuItem value=''>NONE</MenuItem>
+                                </Select>
+                                </FormControl>
+                            </Grid>
+
+                            )
+                        :
+                        ''
+                        
+                    :
+                    ''
+                    
+                }
+                
+                {ctodatestext.length !==0
+                        ?
+                        <Grid item xs={12} sm={12} md={12} lg={12}>
+                            <TextField label='Inclusive Dates Selected' fullWidth  value = {ctodatestext} InputLabelProps={{ shrink: true }} readOnly />
+                        </Grid>
+                        :
+                        ''
+                }
+                <Grid item xs={12} sm={12} md={12} lg={12}>
+                    <Tooltip title="Please upload a PDF / Image File" placement='top'>
+                    <TextField type = "file" label="Certificate of COC *" fullWidth InputLabelProps={{shrink:true}} InputProps={{ inputProps: { accept:'image/*    ,.pdf'} }}onChange = {handleCOCFile} disabled={CTOHoursDropdown.length ===0 || CTOHours === '0' ?  true:false}/>
+                    {/* <input type = "file" onChange = {handleCOCFile}/> */}
+                    </Tooltip>
+                </Grid>
+                </>
+                )
+                break;
+        }
+    }
+    const handleCurrentMonth = (date) => {
+        setCurrentMonth(date)
+    }
+    const [currentMonth,setCurrentMonth] = React.useState(new DateObject())
+    const [totalMonthHours,setTotalMonthHours] = React.useState('');
+    useEffect(()=>{
+        // loop for CTO dropdown hours based on available balance
+        var coc = availableCOC;
+        var result = [];
+
+        /**
+         * Check if has already applied 40 hrs based on month year calendar
+         */
+         getCTOAlreadyAppliedHours(currentMonth.format('MM-YYYY'))
+         .then(response=>{
+             var data;
+            //  console.log(response.data)
+             setTotalMonthHours(response.data.total)
+             if(response.data.length !==0){
+                 data = response.data.total
+             }else{
+                 data = 0;
+             }
+             /**
+              * Check if current month hours is greater than 40
+              */
+             if(data>=40){
+                 /**
+                  * Can't applied CTO
+                  */
+                 setCTOHoursDropdown([])
+             }else{
+                 if(data === 0){
+                     //limit only 5 days equals to 40 HRS per application
+                     var x=0;
+                     var start = data;
+                     for(var i = 4 ; x < 10 ;){
+                         if(i>coc){
+                             break;
+                         }else{
+                             result.push(i)
+                             i = i +4;
+                             x++;
+                         }
+                     
+                     }
+                     setCTOHoursDropdown(result)
+                 }else{
+                     //limit only remaining CTO hours per month
+                     var total=0;
+                     for(var i = 4 ; i <= coc;){
+                         if(i>coc){
+                             break;
+                         }else{
+                             result.push(i)
+                             total = i+data;
+                             i = i +4;
+                             if(total>=40){
+                                 break;
+                             }
+                         }
+                     
+                     }
+                     setCTOHoursDropdown(result)
+                 }
+                 
+             }
+             setCurrentMonthCTO(data)
+             setCTOInclusiveDates([])
+             setCTOHours('')
+            })
+            .catch(error=>{
+                console.log(error)
+            })
+        
+    },[currentMonth])
+    const showFileAttachment = (row) => {
+        switch(row.leave_type_id){
+            case 4:
+                var id = row.leave_application_id;
+                axios({
+                    url: 'api/fileupload/viewAllocationFile/'+id, //your url
+                    method: 'GET',
+                    responseType: 'blob', // important
+                }).then((response) => {
+                    const url = window.URL.createObjectURL(new Blob([response.data],{type:response.data.type}));
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.setAttribute('target', '_BLANK'); //or any other extension
+                    document.body.appendChild(link);
+                    link.click();
+                }).catch(error=>{
+                    toast.error(error.message+'. Access denied.')
+                });
+                break;
+            default:
+                var file_id = JSON.parse(row.file_ids);
+                axios({
+                    url: 'api/fileupload/viewFile/'+file_id, //your url
+                    method: 'GET',
+                    responseType: 'blob', // important
+                }).then((response) => {
+                    const url = window.URL.createObjectURL(new Blob([response.data],{type:response.data.type}));
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.setAttribute('target', '_BLANK'); //or any other extension
+                    document.body.appendChild(link);
+                    link.click();
+                }).catch(error=>{
+                    toast.error(error.message+'. Access denied.')
+                });
+                break;
+        }
+    }
+    const handleSetSpecifyDetails = React.useCallback(state=>{
+        setSpecifyDetails(state.target.value)
+    },[specifyDetails])
+    const [accordionCB,setAccordionCB] = React.useState(true)
+    const [accordionPending,setAccordionPending] = React.useState(false)
+    const [accordionHistory,setAccordionHistory] = React.useState(false)
+    useEffect(()=>{
+        if(accordionPending){
+            $('html, body').animate({
+                scrollTop: $("#pending-header").offset().top
+            }, 500);
+        }
+    },[accordionPending])
+    useEffect(()=>{
+        if(accordionHistory){
+            $('html, body').animate({
+                scrollTop: $("#history-header").offset().top
+            }, 500);
+        }
+    },[accordionHistory])
+    const formatSubtractCreditAvailableDecimal = (leaveBalance,onProcess) => {
+        let tens = [10,100,1000,10000,100000];
+        let b1 = leaveBalance.toString().split('.');
+        let b1_max = 0;
+        if(b1.length===2){
+            b1_max=b1[1].length
+        }
+        let tens_mult = tens[b1_max-1]
+        let b1_fin = Math.floor(leaveBalance * tens_mult);
+        let b2 = onProcess * tens_mult;
+        
+        if(onProcess>leaveBalance){
+            let b1_fin2 = Math.floor(leaveBalance) * tens_mult;
+            let comp = (b1_fin - b1_fin2 ) / tens_mult
+            return comp;
+        }else{
+            let comp = (b1_fin - b2 ) / tens_mult
+            return comp;
+        }
+        
+        // {balanceData[0].vl_bal-onProcess.vl < 0 ?(Math.round((balanceData[0].vl_bal-Math.floor(balanceData[0].vl_bal)) * 100) / 100):(Math.round((balanceData[0].vl_bal-onProcess.vl) * 100) / 100)} 
+    }
+    const formatAddCreditAvailableDecimal = (a,b) => {
+        let tens = [10,100,1000,10000,100000];
+        let b1 = a.toString().split('.');
+        let b1_max = 0;
+        if(b1.length===2){
+            b1_max=b1[1].length
+        }
+        let tens_mult = tens[b1_max-1]
+        let b1_fin = Math.floor(a * tens_mult);
+        let b2 = b * tens_mult;
+        
+        let comp = (b1_fin + b2 ) / tens_mult
+        return comp;
+        
+        // {balanceData[0].vl_bal-onProcess.vl < 0 ?(Math.round((balanceData[0].vl_bal-Math.floor(balanceData[0].vl_bal)) * 100) / 100):(Math.round((balanceData[0].vl_bal-onProcess.vl) * 100) / 100)} 
+    }
+    return(
+        <Box sx={{margin:'20px',paddingBottom:'20px'}}>
+            {isLoading
+            ?
+            <Stack spacing={2}>
+                        <Skeleton variant="text" height={'70px'} animation="wave"/>
+            </Stack>
+            :
+            <Fade in={!isLoading}>
+                <Grid container>
+                    <Grid item xs={12} sm={12} md={12} lg={12} component={Paper} sx={{margin:'10px 0 10px 0'}}>
+                        <Box sx={{display:'flex',flexDirection:'row',background:'#008756',justifyContent:'space-between'}}>
+                            <Typography variant='h5' sx={{fontSize:matches?'18px':'auto',color:'#fff',textAlign:'center',padding:'15px 0 15px 0'}}  >
+                            {/* <StickyNote2 fontSize='large'/> */}
+                            &nbsp;
+                            Online Leave Application
+                            </Typography>
+                            {open?<HourglassBottomIcon sx={{position:'relative',top:'15px',right:'15px',color:'#fff'}} className = 'rotate-infinite'/>:''}
+                            
+                        </Box>
+                    </Grid>
+                </Grid>
+            </Fade>
+            }
+            
+            
+            {isLoading
+                ?
+                <Grid item xs={12}>
+                    <Box sx={{display:'flex',flexDirection:'column',float:'right'}}>
+                        <Skeleton variant="text" width={'150px'} height={'60px'} animation="wave"/>
+                        <Skeleton variant="text" width={'150px'} height={'60px'} animation="wave"/>
+                    </Box>
+                </Grid>
+                :
+                <Fade in={!isLoading}>
+                    <Grid item xs={12}>
+                    <Grid item xs={12} sm={12} md={12} lg={12} sx={{display:'flex',flexDirection:'row',justifyContent:'flex-end'}}>
+                        <Tooltip title='Apply Leave Application' placement='left'>
+                        <Button variant='contained' onClick = {()=>setOpen(true)} sx={{width:matches?'100%':'auto',minWidth:'20vh',fontSize:matches?'13px':'auto'}} startIcon={<AddIcon/>}> APPLY </Button>
+                        </Tooltip>
+                    </Grid>
+
+                    <Grid item xs={12} sm={12} md={12} lg={12} sx={{display:'flex',flexDirection:'row',justifyContent:'flex-end',margin:'10px 0 10px 0'}}>
+                        <Tooltip title="Refresh Data" placement='left'>
+                        <Button variant = "outlined" onClick = {refreshPendingApplication} sx={{width:matches?'100%':'auto',minWidth:'20vh'}}><CachedIcon sx={{transition:'0.4s ease-in-out','&:hover':{transform:'rotate(-180deg)'}}}/></Button>
+                        </Tooltip>
+                    </Grid>
+                    </Grid>
+                </Fade>
+            }
+            <Grid container>
+            {isLoading
+            ?
+                <Grid item xs={12}>
+                    <Stack spacing={2}>
+                        <Skeleton variant="text" width={'350px'} height={'50px'} animation="wave"/>
+                        <Skeleton variant="text" width={'100%'} height={'70px'} animation="wave"/>
+                        <Skeleton variant="rectangular" width={'100%'} height={'30vh'} animation="wave"/>
+                    </Stack>
+                </Grid>
+            :
+            <Fade in={!isLoading}>
+                {/* <Box sx={{marginTop:'20px',boxShadow:'0 0 5px #acacac',padding:'10px',width:'100%'}}> */}
+                <Box sx={{marginTop:'20px',width:'100%'}}>
+                <Grid item xs={12}>
+                <Accordion expanded = {accordionCB}>
+                    <AccordionSummary
+                    expandIcon={<ExpandMoreIcon />}
+                    aria-controls="credit-content"
+                    id="credit-header"
+                    onClick={()=>setAccordionCB(!accordionCB)}
+                    sx={{'&:hover':{background:'#f2f2f2'}}}
+                    >
+                    <Typography sx={{borderLeft:'solid 5px',paddingLeft:'10px',marginBottom:'10px',color:'#01579b',fontWeight:'bold'}}><em>Leave Credits Balance</em></Typography>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                    <TableContainer>
+                        <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                            <TableHead>
+                            <TableRow>
+                                <StyledBalanceTableCell>Leave Name</StyledBalanceTableCell>
+                                <StyledBalanceTableCell align="right">Balance</StyledBalanceTableCell>
+                                <StyledBalanceTableCell align="right">On Process</StyledBalanceTableCell>
+                                <StyledBalanceTableCell align="right">Available</StyledBalanceTableCell>
+                            </TableRow>
+                            </TableHead>
+                            <TableBody>
+                            <TableRow
+                                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                >
+                                <TableCell component="th" scope="row">
+                                    Vacation Leave
+                                </TableCell>
+                                <TableCell align="right">{balanceData[0].vl_bal}</TableCell>
+                                <TableCell align="right">{onProcess.vl}</TableCell>
+                                <TableCell align="right">
+                                    {formatSubtractCreditAvailableDecimal(balanceData[0].vl_bal,onProcess.vl)}
+                                </TableCell>
+                            </TableRow>
+                            <TableRow
+                                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                >
+                                <TableCell component="th" scope="row">
+                                    Sick Leave
+                                </TableCell>
+                                <TableCell align="right">{balanceData[0].sl_bal}</TableCell>
+                                <TableCell align="right">{onProcess.sl}</TableCell>
+                                <TableCell align="right">                                    {formatSubtractCreditAvailableDecimal(balanceData[0].sl_bal,onProcess.sl)}
+                            </TableCell>
+                            </TableRow>
+                            <TableRow
+                                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                >
+                                <TableCell component="th" scope="row">
+                                    COC
+                                </TableCell>
+                                <TableCell align="right">{availableCOC} <small>hr/s</small></TableCell>
+                                <TableCell align="right">{onProcess.coc}</TableCell>
+                                <TableCell align="right">{availableCOC-onProcess.coc < 0 ?0:availableCOC-onProcess.coc}</TableCell>
+                            </TableRow>
+                            <TableRow
+                                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                >
+                                <TableCell component="th" scope="row">
+                                    Special Privilege Leave
+                                </TableCell>
+                                <TableCell align="right">{availableSPL}</TableCell>
+                                <TableCell align="right">{onprocessSPL}</TableCell>
+                                <TableCell align="right">{availableSPL-onprocessSPL}</TableCell>
+                            </TableRow>
+                            {/* {balanceData.map((row,key) => (
+                                <TableRow
+                                key={key}
+                                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                >
+                                <TableCell component="th" scope="row">
+                                    {row.vl_bal}
+                                </TableCell>
+                                <TableCell align="right">{row.sl_bal}</TableCell>
+                                <TableCell align="right">{row.coc_bal}</TableCell>
+                                </TableRow>
+                            ))} */}
+                            </TableBody>
+                        </Table>
+                        </TableContainer>
+                    </AccordionDetails>
+                </Accordion>
+                </Grid>
+                {pendingLeaveApplicationData.length !==0
+                ?
+                <Accordion expanded={accordionPending} sx={{marginTop:'10px'}}>
+                    <AccordionSummary
+                    expandIcon={<ExpandMoreIcon />}
+                    aria-controls="pending-content"
+                    id="pending-header"
+                    onClick = {()=>setAccordionPending(!accordionPending)}
+                    sx={{'&:hover':{background:'#f2f2f2'}}}
+                    >
+                    <Typography color="#fda400" sx={{borderLeft:'solid 5px',paddingLeft:'10px',marginBottom:'10px',fontWeight:'bold'}}><em>Pending Application</em></Typography> &nbsp;
+                    {
+                        accordionPending
+                        ?
+                        ''
+                        :
+                        <Fade in={!accordionPending}>
+                        <Badge badgeContent={pendingLeaveApplicationData.length} color="primary" className = 'animate__animated animate__tada'>
+                            <PendingIcon color="action" />
+                        </Badge>
+                        </Fade>
+                    }
+                    </AccordionSummary>
+                    <AccordionDetails>
+                    <DataTable
+                        columns={pendingColumns}
+                        data = {pendingLeaveApplicationData}
+                        customStyles={pendingCustomStyles}
+                        paginationPerPage={5}
+                        paginationRowsPerPageOptions={[5, 15, 25, 50]}
+                        paginationComponentOptions={{
+                            rowsPerPageText: 'Records per page:',
+                            rangeSeparatorText: 'out of',
+                        }}
+                        pagination
+                        highlightOnHover
+                    /> 
+                    </AccordionDetails>
+                </Accordion>
+                :
+                ''
+                }
+                {historyLeaveApplicationData.length !==0
+                ?
+                <Accordion expanded={accordionHistory} sx={{marginTop:'10px'}}>
+                    <AccordionSummary
+                    expandIcon={<ExpandMoreIcon />}
+                    aria-controls="history-content"
+                    id="history-header"
+                    onClick = {()=>setAccordionHistory(!accordionHistory)}
+                    sx={{'&:hover':{background:'#f2f2f2'}}}
+                    >
+                    <Typography color="#2196f3" sx={{borderLeft:'solid 5px',paddingLeft:'10px',marginBottom:'10px',fontWeight:'bold'}}><em>Application History</em></Typography> &nbsp;
+                    {accordionHistory
+                    ?
+                    ''
+                    :
+                    <Fade in={!accordionHistory}>
+                        <Badge badgeContent={historyLeaveApplicationData.length} color="primary" className = 'animate__animated animate__tada'>
+                        <PendingIcon color="action"/>
+                        </Badge>
+                    </Fade>
+                    }
+                    
+                    </AccordionSummary>
+                    <AccordionDetails>
+                    <DataTable
+                        columns={historyColumns}
+                        data = {historyLeaveApplicationData}
+                        customStyles={historyColumnsStyles}
+                        paginationPerPage={5}
+                        paginationRowsPerPageOptions={[5, 15, 25, 50]}
+                        paginationComponentOptions={{
+                            rowsPerPageText: 'Records per page:',
+                            rangeSeparatorText: 'out of',
+                        }}
+                        pagination
+                        highlightOnHover
+                    /> 
+                    </AccordionDetails>
+                </Accordion>
+                :
+                ''
+                }
+                
+                
+                </Box>
+                
+            </Fade>
+            }
+        </Grid>
+        <Modal
+            open={open}
+            onClose={()=> setOpen(false)}
+            aria-labelledby="modal-modal-title"
+            aria-describedby="modal-modal-description"
+        >
+            <Box sx={style}>
+            <Typography id="modal-modal-title" sx={{'textAlign':'center','paddingBottom':'20px','color':'#2196F3'}} variant="h6" component="h2">
+                APPLICATION FOR LEAVE
+            </Typography>
+            <hr/>
+                <Box sx={{maxHeight:'60vh',overflowY:'scroll',padding:'20px 5px 20px 5px'}}>
+
+                <Grid container spacing={2}>
+                    <Grid item xs={12} sm={12} md={12} lg={12} >
+                        <FormControl fullWidth>
+                            <InputLabel id="demo-simple-select-label">Type of Leave to be Availed of *</InputLabel>
+                            <Select
+                            labelId="demo-simple-select-label"
+                            id="demo-simple-select"
+                            value={leaveType}
+                            label="Type of Leave to be Availed of *"
+                            onChange={handleSetTypeOfLeave}
+                            >
+                             {typeOfLeaveData.map((data,index)=>
+                            <MenuItem value={data.leave_type_id} key = {index}>{data.leave_type_name}</MenuItem>
+                        )}
+                            </Select>
+                        </FormControl>
+                    </Grid>
+                    {/* {leaveType === 15
+                    ?
+                    <Grid item xs={12} sm={12} md={12} lg={12} >
+                    <TextField variant='outlined' label="Others *" fullWidth/>
+                    </Grid>
+                    :
+                    ''
+                    } */}
+                  
+                    {
+                        leaveType.length !==0 &&  (leaveType === 1 ||  leaveType ===2 ||  leaveType ===3 ||  leaveType === 6 || leaveType ===15)
+                        ?
+                        <Grid item xs={12} sm={12} md={12} lg={12} >
+                        <FormControl fullWidth>
+                            <InputLabel id="demo-simple-select-label">Details of Leave *</InputLabel>
+                            <Select
+                            labelId="demo-simple-select-label"
+                            id="demo-simple-select"
+                            value={leaveDetails}
+                            label="Details of Leave *"
+                            onChange={selectLeaveDetails}
+                            >
+                            {
+                                leaveDetailsData.map((data,key)=>
+                                    <MenuItem value={data.details_of_leave_id } key = {key}>{data.details_name}</MenuItem>
+                                )
+                            }
+                            
+                           
+                            </Select>
+                            {leaveType === 3
+                                ?
+                                    <TextField label='Specify Illness *' sx={{marginTop:'15px'}} value = {specifyDetails} onChange={handleSetSpecifyDetails} color={specifyDetails.length ===0 ?'error':'primary'}/>
+                                :
+                                    leaveType === 1 || leaveType === 2 || leaveType === 6 || leaveType === 15
+                                    ?
+                                    <TextField label='Specify *' sx={{marginTop:'15px'}} value = {specifyDetails} onChange={handleSetSpecifyDetails} color={specifyDetails.length ===0 ?'error':'primary'}/>
+                                    // <TextField label='Specify' sx={{marginTop:'15px'}} ref={specifyRef} onChange={(val) => specifyRef.current.value = val.target.value} value = {specifyRef.current.value}/>
+                                    :
+                                    ''
+
+                            }
+                        </FormControl>
+                        </Grid>
+                        :
+                            leaveType === 11
+                            ?
+                            <Grid item xs={12} sm={12} md={12} lg={12} >
+                            <TextField label='Specify Illness *' sx={{marginTop:'15px'}} value = {specifyDetails} onChange={(value)=>setSpecifyDetails(value.target.value)} fullWidth/>
+                            </Grid>
+                            :
+                            ''
+                    }
+                    {/* {
+                        leaveType
+                        ?
+                            leaveType !==14
+                            ?
+                            <Grid item xs={12} sm={12} md={12} lg={12}>
+                                <FormControl fullWidth>
+                                    <InputLabel id="demo-simple-select-label">Commutation *</InputLabel>
+                                    <Select
+                                        labelId="demo-simple-select-label"
+                                        id="demo-simple-select"
+                                        value={commutation}
+                                        label="Commutation *"
+                                        onChange={handleChangeCommutation}
+                                    >
+                                        <MenuItem value={'Requested'}>Requested</MenuItem>
+                                        <MenuItem value={'Not Requested'}>Not Requested</MenuItem>
+                                    </Select>
+                                </FormControl>
+                            </Grid>
+                            :
+                            ''
+                        :
+                        ''
+                    } */}
+                    {
+                        leaveType === 1 || leaveType === 2 || leaveType === 3 || leaveType === 14
+                        ?
+                        <Grid item xs={12} sm={12} md={12} lg={12} sx = {{textAlign:'center'}} >
+                        <br/>
+                        <Typography sx={{fontWeight:'bold',color:'#00ac10',padding:'10px',borderRadius:'5px',borderTop:'solid 1px',borderBottom:'solid 1px'}}
+                        >
+                        {balance.length !==0
+                        ?   
+                            leaveType === 14
+                            ?
+                            <span> 
+                            AVAILABLE BALANCE: <strong>{balance} HOURS </strong></span>
+                            :
+                                leaveType === 3
+                                ?
+                                <span> 
+                            AVAILABLE BALANCE: <strong>{balance}</strong></span>
+                                :
+                                    leaveType === 1 || leaveType === 2 || leaveType === 6
+                                    ?
+                                    <span> 
+                            AVAILABLE BALANCE: <strong>{balance}</strong> </span>
+                                    :
+                                    ''
+                        :
+                        ''
+                        }
+                        </Typography>
+                        </Grid>
+                        :
+                        ''
+                    }
+                    
+                    {leaveType
+                    ?
+                    <>
+                    {
+                        showLeaveDetailsApplication()
+                    }
+                    
+                    </>
+                    :
+                    ''
+                    }
+                    <Grid item xs={12} sm={12} md={12} lg={12}>
+                    {
+                    leaveType === 1 || leaveType === 2 || leaveType === 14
+                    ?
+                        selectedInclusiveDates.length >Math.floor(balance)
+                        ?
+                        <Typography sx={{padding:'5px',color:'#d32f2f',textAlign:'center'}}className='animate__animated animate__headShake'> <PriorityHighIcon fontSize='small' /> Days Without Pay: {selectedInclusiveDates.length-Math.floor(balance)}</Typography>
+                        :
+                        ''
+                    :
+                        leaveType === 3
+                        ?
+                            slTotalWithoutPay ===0
+                            ?
+                            ''
+                            :
+                            <Typography sx={{padding:'5px',color:'#d32f2f',textAlign:'center'}} className='animate__animated animate__headShake'><PriorityHighIcon fontSize='small'/> Days Without Pay: {slTotalWithoutPay}</Typography>
+                        :
+                        ''
+                    }
+                    </Grid>
+                    
+                    
+                </Grid>
+                </Box>
+                {leaveType
+                    ?
+                    <>
+                    <br/>
+
+                    <Grid item xs={12} sm={12} md={12} lg={12}>
+                        {/* <Button fullWidth variant='outlined'>Preview</Button> */}
+                        {showLeaveTypePreview()}
+                    </Grid>
+                    <br/>
+                    <Grid item xs={12} sm={12} md={12} lg={12}>
+                    <hr/>
+
+                    <Box sx={{display:'flex',flexDirection:'row',justifyContent:'flex-end'}}>
+                    <Button variant='contained' color="success" onClick = {submitApplication} disabled = {
+                        leaveType === 14
+                        ?
+                            CTOHoursDropdown.length ===0
+                            ?
+                            true
+                            :
+                            false
+                        :
+                            leaveType === 5
+                            ?
+                            isApplicableForFiling === true
+                                ?
+                                false
+                                :
+                                true
+                            :
+                            false
+                        } startIcon={<CheckIcon/>} size={'small'}>SUBMIT</Button>
+                        &nbsp;
+                    <Button variant='contained' color="error" onClick={()=> setOpen(false)} startIcon={<CloseIcon/>}size={'small'}>CANCEL</Button>
+                    </Box>
+                    </Grid>
+                    </>
+                    :
+                    ''
+                    }
+            {/* <Button variant="contained" color="success" size="large" fullWidth ><CheckIcon/> &nbsp; Confirm Update</Button>
+            <br/>
+            <Button variant="contained" color="error" size="large" fullWidth ><CancelIcon/> &nbsp; Cancel</Button> */}
+            
+
+            </Box>
+            {/* <ToastContainer /> */}
+
+        </Modal>
+        <Modal
+            open={openAllocation}
+            onClose={()=> setOpenAllocation(false)}
+            aria-labelledby="modal-modal-title"
+            aria-describedby="modal-modal-description"
+        >
+            <Box sx={style}>
+            <Typography id="modal-modal-title" sx={{'textAlign':'center','paddingBottom':'20px','color':'#2196F3'}} variant="h6" component="h2">
+                NOTICE OF ALLOCATION OF MATERNITY LEAVE FORM
+            </Typography>
+            <Box sx ={{maxHeight:'70vh',overflowY:'scroll',padding:'5px'}}>
+                <Grid container spacing={2}>
+                    <AllocationOfMaternityLeaveFillout employeeInfo = {employeeInfo} onClose = {()=> setOpenAllocation(false)} save = {saveAllocationForm} allocationInfo = {allocationInfo}/>
+                </Grid>
+            </Box>
+            </Box>
+        </Modal>
+        {/* <ReactToPrint
+            trigger={() => <button>Preview</button>}
+            content={() => componentRef.current}
+        /> */}
+        {/* <div style={{ display: "none" }}><PreviewLeaveApplicationForm ref={componentRef} /></div> */}
+        
+        <div style={{ display: "none" }}><PreviewLeaveApplicationForm ref={leaveRef} data={typeOfLeaveData} leaveType = {leaveType} info={employeeInfo} applied_days = {leaveType === 1 || leaveType === 2 || leaveType === 3 ? selectedInclusiveDates.length: leaveType === 5 ? 7:leaveType === 6 ? selectedSPL:leaveType===9?10:leaveType===10?getAllDatesInRange(selectedRehabilitationDates).length:leaveType===11?getAllDatesInRange(selectedBenefitForWomenDates).length:leaveType===15?appliedOthersDays:selectedInclusiveDates.length} leaveDetails = {leaveDetails} specifyDetails = {specifyDetails} inclusiveDates = {previewInclusiveDates} balance = {balance} signatory={signatory} vl = {balanceData.length !==0 ? balanceData[0].vl_bal:0} sl = {balanceData.length !==0 ? balanceData[0].sl_bal:0} coc = {balanceData.length !==0 ? balanceData[0].coc_bal:0} office_head = {officeHead} office_ao = {officeAO} commutation = {commutation} maternity_days = {isAppliedAllocationOfMaternityLeave?105-allocationInfo.allocated_days:105} previewType='applicant' availableVL = {availableVL} availableSL = {availableSL} totalVL ={totalVL} totalSL = {totalSL} slTotalWithoutPay = {slTotalWithoutPay} slAutoWithoutPay = {slAutoWithoutPay}/></div>
+
+        <div style={{ display: "none" }}><PreviewLeaveApplicationForm ref={printLeaveRef} data={typeOfLeaveData} leaveType = {printPendingInfo.leave_type_id} info={employeeInfo} pendinginfo = {printPendingInfo} applied_days = {printPendingInfo.days_hours_applied} leaveDetails = {printPendingInfo.details_of_leave_id} specifyDetails = {printPendingInfo.specify_details} inclusiveDates = {printPendingInfo.inclusive_dates_text} balance = {pendingBalance} signatory={signatory} vl = {balanceData.length !==0 ? balanceData[0].vl_bal:0} sl = {balanceData.length !==0 ? balanceData[0].sl_bal:0} coc = {balanceData.length !==0 ? balanceData[0].coc_bal:0} office_head = {officeHead} office_ao = {officeAO} commutation = {printPendingInfo.commutation} status = {printPendingInfo.status} maternity_days = {printPendingInfo.days_with_pay}  /></div>
+        
+
+        <div style={{ display: "none" }}>
+            <PreviewCTOApplicationForm ref={cocRef} info={employeeInfo} coc = {balanceData.length !==0 ? balanceData[0].coc_bal:0} CTOHours = {CTOHours} cto_dates = {ctodatestext} date_of_filing ={new Date()}/>
+        </div>
+        <div style={{ display: "none" }}>
+            <PreviewCTOApplicationForm ref={printLeaveCTORef} info={employeeInfo} pendinginfo = {printPendingInfo} bal_before_review = {printPendingInfo.bal_before_review} bal_after_review = {printPendingInfo.bal_after_review}coc = {balanceData.length !==0 ? balanceData[0].coc_bal:0} CTOHours = {printPendingInfo.days_hours_applied} cto_dates = {printPendingInfo.inclusive_dates_text} date_of_filing ={employeeInfo.date_of_filing} status = {printPendingInfo.status}/>
+        </div>
+        
+        </Box>
+    )
+}

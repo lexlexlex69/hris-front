@@ -1,0 +1,31 @@
+#card-table{
+    font-family: 'latoreg';
+}
+#card-div table{
+    width: 100%;
+}
+#card-table th{
+    font-size: 15px;
+    text-align: right;
+    padding:5px;
+}
+#card-table .no-padding{
+    padding: 0;
+}
+#card-table tr .orange{
+    /* color:#e65100; */
+    color:#ff6918;
+}
+#card-table tr .green{
+    /* color:#2e7d32; */
+    color:#38a13d;
+}
+#card-table td{
+    font-size: 14px;
+    text-align: right;
+    padding: 5px;
+    color:#616161;
+}
+#card-table .hover-row:hover{
+    background: #f1f1f1;
+}

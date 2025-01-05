@@ -1,0 +1,123 @@
+@font-face {
+    font-family: 'droid-serif';
+    src: local("droid-serif"),
+    url('/src/fonts/droid-serif.ttf') format("truetype");
+    /* font-weight: bold; */
+}
+#cos-template *,
+#cos-template *::before,
+#cos-template *::after {
+  box-sizing: border-box;
+  /* font-family: Arial, Helvetica, sans-serif; */
+  font-family: 'droid-serif';
+
+}
+#cos-template * {
+  margin: 0;
+  padding: 0;
+  /* font: inherit; */
+  position: relative;
+
+}
+
+#cos-template body {
+  padding: 96px;
+  font-size: 10.667px; /* 6pt */
+  width: 2048px;
+  /* font-family: Arial, Helvetica, sans-serif; */
+}
+
+#cos-template img,
+#cos-template picture,
+#cos-template svg,
+#cos-template video {
+  display: block;
+  max-width: 100%;
+}
+
+#cos-template input,
+#cos-template textarea,
+#cos-template button,
+#cos-template select {
+  font: inherit;
+}
+#cos-template table{
+  width: 100%;
+}
+/* Table styling */
+#cos-template table,
+#cos-template td,
+#cos-template th {
+  border: 1px solid;
+  border-style: dotted;
+  vertical-align: center;
+}
+
+#cos-template thead th,
+#cos-template thead td {
+  font-weight: bold;
+  vertical-align: center;
+  text-align: center;
+
+  /* padding-top: 2rem; */
+}
+
+#cos-template table {
+  border-collapse: collapse;
+  border-style: dotted;
+  /* width: 100%; */
+}
+
+#cos-template td,
+#cos-template th {
+  padding: 4px 8px;
+  font-size: .6rem;
+}
+
+#cos-template i {
+  font-style: italic;
+}
+
+#cos-template .flex-column-center {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Footer styling */
+#cos-template footer {
+  display: grid;
+  grid-template-columns: 1fr 190px 200px 190px 1fr;
+  gap: 5rem;
+}
+
+#cos-template footer section {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 15rem;
+}
+
+#cos-template footer .under-line {
+  border-bottom: 1px solid black;
+  border-bottom-style: dotted;
+}
+
+#cos-template .flex-center {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+#cos-template .flex-end {
+  display: flex;
+  justify-content: end;
+}
+#cos-template span{
+    font-size: .6rem;
+}
+#cos-template .page-break{
+  page-break-before: always;
+}

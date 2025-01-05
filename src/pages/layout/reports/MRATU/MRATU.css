@@ -1,0 +1,54 @@
+.custom-input {
+  border-radius: 5px;
+  border: 1px #0c8af8 solid;
+  padding: 4px 12px;
+  background-color: white;
+  /* height: 30px; */
+  box-shadow: 0 0 1px #0074d9;
+}
+
+.custom-input:focus {
+  outline: none;
+  border: 1px solid #0c8af8;
+  box-shadow: 0 0 5px 1px #0074d9;
+}
+#mratu-print{
+    margin-top: 5px;
+}
+#table {
+    font-size: .7rem;
+    margin:10px;
+}
+#table .mratu-custom-table{
+    width: 100%;
+    /* font-family: 'latoreg'; */
+}
+#table .mratu-custom-table table,.mratu-custom-table thead,.mratu-custom-table td,.mratu-custom-table tr {
+    border: solid 1px;
+}
+#table .mratu-custom-header{
+    background: #90d1ff; 
+    font-weight: bold;
+}
+#table .mratu-custom-header td{
+    padding: 5px;
+}
+#table .mratu-custom-center-tr{
+    text-align: center;
+}
+#table .mratu-custom-table tbody>tr:hover{
+    background: #dbdbdb;
+}
+@media print {
+    #table {
+    /* font-size: .7rem; */
+    margin:0 20px 10px 20px;
+    }
+    /* #mratu-print .pagebreak { page-break-before: always; } */
+    #mratu-print .footer-print{
+        width: 95%;
+        position: fixed;
+        bottom:0;
+        margin: 10px;
+    }
+}

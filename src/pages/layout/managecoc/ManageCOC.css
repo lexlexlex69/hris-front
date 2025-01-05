@@ -1,0 +1,29 @@
+#earn-coc .header-text{
+    background: #004a85;
+    color: #fff;
+    /* border-top-right-radius: 20px;
+    border-bottom-right-radius: 20px; */
+    padding: 5px 10px;
+}
+#earn-coc .header-text1{
+    /* background: #004a85; */
+    border-bottom: solid 1px;
+    padding: 5px;
+    margin-bottom: 10px;
+    color: #004a85;
+    font-size: 1.2rem;
+}
+#earn-coc .header-text2{
+    background: #ff8d00;
+    color: #fff;
+    width: fit-content;
+    border-top-right-radius: 20px;
+    border-bottom-right-radius: 20px;
+    padding: 5px 10px;
+}
+@media print {
+    #pagebreak { page-break-before: always; } /* page-break-after works, as well */
+}
+.div-border{
+    /* margin:10px 20px 0 20px; */
+}

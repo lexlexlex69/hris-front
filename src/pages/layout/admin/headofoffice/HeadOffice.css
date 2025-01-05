@@ -1,0 +1,17 @@
+/* .search-btn{
+    width: 50px;
+    transition: width 2s !important;
+}
+.search-btn:hover{
+    width: 50% !important;
+}
+.search-btn:hover .search-btn-text{
+    transition: ease-in-out;
+    position: relative;
+    color:inherit;
+}
+.search-btn-text{
+    position: absolute;
+    color: #fff;
+    z-index: -100;
+} */

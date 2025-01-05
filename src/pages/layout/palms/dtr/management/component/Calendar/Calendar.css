@@ -1,0 +1,104 @@
+.calendar-wrapper {
+  margin: 15px;
+  position: relative;
+}
+
+.view-navigation {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: end;
+}
+
+.time-date-picker-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+
+  :nth-child(2) {
+    margin-left: 10px;
+  }
+}
+
+/* Days string */
+.days-component__day {
+  color: #205c97;
+  cursor: pointer;
+}
+
+/* Hour unit on left side */
+.week-time-week__border-bottom-hour-unit {
+  color: #205c97;
+}
+.day-hour-rows__border-bottom-hour-unit {
+  color: #205c97;
+}
+.week-in-place-row__hour-cell-hour-number {
+  color: #205c97;
+}
+.day-in-place-hour-row__hour-cell-hour-number {
+  color: #205c97;
+}
+
+/* Day number */
+.week-time-header__number {
+  color: #205c97;
+  cursor: pointer;
+}
+.day-header__number {
+  color: #205c97;
+  cursor: pointer;
+}
+.month-cell-header__number {
+  color: #205c97;
+  cursor: pointer;
+}
+.week-view-cell-header__number {
+  color: #205c97;
+  cursor: pointer;
+}
+.week-in-place-cell-header__number {
+  color: #205c97;
+  cursor: pointer;
+}
+.day-in-place-cell-header__number {
+  color: #205c97;
+  cursor: pointer;
+}
+
+/* Calendar navigation */
+.arrow-button {
+  color: #205c97;
+  &::after {
+    border: solid #205c97;
+    border-width: 0 2px 2px 0;
+  }
+}
+.calendar__navigation__month-text {
+  color: #205c97;
+}
+
+/* Views inside background */
+.week-time-view-inside {
+  background-color: #f8faff;
+}
+.day-view-inside {
+  background-color: #f8faff;
+}
+.week-view-inside {
+  background-color: #f8faff;
+}
+.month-view-inside {
+  background-color: #f8faff;
+}
+.week-time-in-place-view-inside {
+  background-color: #f8faff;
+}
+.day-in-place-view-inside {
+  background-color: #f8faff;
+}
+
+/* Item */
+.item {
+  cursor: pointer;
+}

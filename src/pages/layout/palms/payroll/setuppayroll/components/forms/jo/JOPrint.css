@@ -1,0 +1,137 @@
+@font-face {
+  font-family: 'droid-serif';
+  src: local("droid-serif"),
+    url('/src/fonts/droid-serif.ttf') format("truetype");
+  /* font-weight: bold; */
+}
+
+#jo-template *,
+#jo-template *::before,
+#jo-template *::after {
+  box-sizing: border-box;
+  /* font-family: Arial, Helvetica, sans-serif; */
+  font-family: 'droid-serif';
+
+}
+
+#jo-template {
+  position: relative;
+  /* width: 2048px; */
+  /* width: 100%; */
+  /* margin: '0 1rem';
+  padding: '0 1rem'; */
+}
+
+#jo-template * {
+  margin: 0;
+  padding: 0;
+  /* font: inherit; */
+  position: relative;
+}
+
+#jo-template body {
+  padding: 96px;
+  font-size: 10.667px;
+  /* 6pt */
+  /* font-family: Arial, Helvetica, sans-serif; */
+}
+
+#jo-template img,
+#jo-template picture,
+#jo-template svg,
+#jo-template video {
+  display: block;
+  max-width: 100%;
+}
+
+#jo-template input,
+#jo-template textarea,
+#jo-template button,
+#jo-template select {
+  font: inherit;
+}
+
+#jo-template table {
+  /* width: 100%; */
+}
+
+/* Table styling */
+#jo-template table,
+#jo-template td,
+#jo-template th {
+  border: 1px solid;
+  border-style: dotted;
+  vertical-align: center;
+}
+
+#jo-template thead th,
+#jo-template thead td {
+  font-weight: bold;
+  vertical-align: center;
+  text-align: center;
+
+  /* padding-top: 2rem; */
+}
+
+#jo-template table {
+  border-collapse: collapse;
+  border-style: dotted;
+  /* width: 100%; */
+}
+
+#jo-template td,
+#jo-template th {
+  padding: 4px 8px;
+  font-size: .6rem;
+}
+
+#jo-template i {
+  font-style: italic;
+}
+
+#jo-template .flex-column-center {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Footer styling */
+#jo-template footer {
+  display: grid;
+  grid-template-columns: 1fr 210px 210px 210px 1fr;
+  gap: 4rem;
+  width: 100%;
+}
+
+#jo-template footer section {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 15rem;
+}
+
+#jo-template footer .under-line {
+  border-bottom: 1px solid black;
+  border-bottom-style: dotted;
+}
+
+#jo-template .flex-center {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+#jo-template .flex-end {
+  display: flex;
+  justify-content: end;
+}
+
+#jo-template span {
+  font-size: .6rem;
+}
+
+#jo-template .page-break {
+  page-break-before: always;
+}

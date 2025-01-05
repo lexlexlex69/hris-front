@@ -1,0 +1,21 @@
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@300&display=swap');
+#trn-row .tbl-row:hover{
+    /* font-weight: bold; */
+    cursor: pointer;
+    background: rgb(161, 229, 252);
+}
+.ul-list{
+    margin: 0;
+}
+#print-participants {
+    margin: 10px;
+}
+#print-participants .print-participants-table{
+    width: 100%; 
+}
+#print-participants .print-participants-table tr,.print-participants-table th,.print-participants-table td{
+    border-collapse: collapse;
+    border: solid 1px;
+    padding: 5px;
+    font-size: 14px;
+}

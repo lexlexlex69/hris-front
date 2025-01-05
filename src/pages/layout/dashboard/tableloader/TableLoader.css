@@ -1,0 +1,7 @@
+.loading-text{
+    position: absolute;
+    top: 50%;
+    text-align: center;
+    width: 100%;
+    /* animation: fadeIn 2s; */
+}

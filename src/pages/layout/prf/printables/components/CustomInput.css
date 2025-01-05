@@ -1,0 +1,85 @@
+.PRF_CustomInput {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: auto;
+  border: 1px solid rgb(201, 201, 201);
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: rgba(0, 0, 0, 0.15) 3px 3px 6px;
+}
+
+.PRF_CustomInput_Header {
+  background-color: #1576d4;
+  padding: 6px 20px;
+  color: white;
+  font-weight: 600;
+}
+.PRF_CustomInput_Body {
+  height: 100%;
+  padding: 20px 20px;
+  display: flex;
+  flex-direction: column;
+  /* justify-content: center; */
+  align-items: center;
+  gap: 15px;
+}
+.PRF_CustomInput_Body2 {
+  height: 100%;
+  padding: 20px 20px;
+  /* justify-content: center; */
+  align-items: center;
+  gap: 15px;
+}
+.PRF_CustomInput_Body div {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  /* background-color: red; */
+  align-items: center;
+  gap: 15px;
+}
+.PRF_CustomInput_Body div label {
+  width: 100px;
+}
+.PRF_CustomInput_Body input {
+  flex: 1;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid gray;
+}
+.PRF_Modal_CustomInput input {
+  flex: 1;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid gray;
+}
+.PRF_CustomInput_Button {
+  padding: 10px 15px;
+  border-radius: 10px;
+  border: none;
+  background-color: #1576d4;
+  color: white;
+}
+.PRF_CustomInput_Design_Container {
+  width: 100%;
+}
+.PRF_CustomInput_Design_Image_Container {
+  background-color: #f0f1f5;
+  height: 130px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+}
+.PRF_CustomInput_Design_Input {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.PRF_CustomInput_Design_Input_Department {
+  margin: 0px;
+  color: gray;
+  font-size: 0.8rem;
+}

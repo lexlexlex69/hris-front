@@ -1,0 +1,542 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
+.biotTest-title {
+  margin-bottom: 30px;
+}
+.bioTest-page {
+  /* background-color: red; */
+  width: 100vw;
+  padding: 30px 230px;
+  font-family: "Inter", sans-serif;
+}
+.bioTest-page input,
+.bioTest-page select {
+  cursor: pointer;
+}
+.bioTest-main-container {
+  overflow: hidden;
+  /* background-color: red; */
+  border: 1px solid #c9cbcf;
+  border-radius: 0.8rem;
+  padding-top: 10px;
+}
+.bioTest-page p {
+  margin: 0px;
+}
+
+.bioTest-header {
+  padding: 5px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.bioTest-header-after {
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 15px;
+}
+.bioTest-header-right {
+  display: flex;
+  align-items: center;
+}
+.bioTest-header-right select {
+  border-radius: 0.5rem; /* Rounded corners */
+  border: 1px solid #d1d5db; /* Light mode: gray-300 */
+  background-color: #f9fafb; /* Light mode: gray-50 */
+  padding: 0.625rem; /* 2.5 in Tailwind */
+  font-size: 0.875rem; /* Text size: text-sm */
+  color: #111827; /* Light mode: gray-900 */
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.bioTest-header-right select:focus {
+  border-color: #3b82f6; /* Primary-500 */
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5); /* Focus ring */
+  outline: none;
+}
+.bioTest-header-right select::placeholder {
+  color: #9ca3af; /* Placeholder text color: gray-400 */
+}
+.bioTest-header-right {
+  display: flex;
+  gap: 10px;
+}
+
+.bioTest-header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #e5e7eb; /* Light mode: gray-200 */
+}
+.bioTest-custom-divider > * {
+  border-bottom: 1px solid #e5e7eb; /* Light mode: gray-200 */
+}
+
+.bioTest-custom-divider > *:last-child {
+  border-bottom: none; /* Remove the border for the last child */
+}
+.bioTest-custom-divider2 > * {
+  border-bottom: 1px solid #88898d; /* Light mode: gray-200 */
+}
+
+.bioTest-custom-divider2 > *:last-child {
+  border-bottom: none; /* Remove the border for the last child */
+}
+.bioTest-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px 10px;
+  cursor: pointer;
+}
+.bioTest-container:hover {
+  background-color: rgb(237, 243, 249);
+}
+
+.bioTest-sub-container p {
+  font-size: 0.8rem;
+  color: #6b7280;
+}
+.bioTest-sub-container span {
+  font-size: 0.9rem;
+  color: #1b1b1b;
+}
+@media (min-width: 640px) {
+  .bioTest-container {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .bioTest-container {
+    grid-template-columns: repeat(5, 1fr);
+  }
+}
+
+.bioTest-order-id {
+  grid-column: span 2;
+}
+
+@media (min-width: 640px) {
+  .bioTest-order-id {
+    grid-column: span 4;
+  }
+}
+
+@media (min-width: 1024px) {
+  .bioTest-order-id {
+    grid-column: span 1;
+  }
+}
+
+.bioTest-order-link {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1f2937;
+  text-decoration: none;
+}
+
+.bioTest-order-link:hover {
+  text-decoration: underline;
+}
+
+.bioTest-date-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.bioTest-icon {
+  width: 21px;
+  height: 21px;
+  color: #9ca3af;
+}
+
+.bioTest-date-text {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #6b7280;
+}
+
+.bioTest-reason-text {
+  display: flex;
+  gap: 4px;
+}
+
+.bioTest-reason-label {
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.bioTest-status {
+  position: absolute;
+  top: 28px;
+  right: 0;
+}
+
+@media (min-width: 640px) {
+  .bioTest-status {
+    position: relative;
+    top: auto;
+    right: auto;
+  }
+}
+
+.bioTest-status-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  background: rgb(220 252 231);
+  color: rgb(22 101 52);
+  border-radius: 4px;
+}
+
+.bioTest-badge-icon {
+  width: 12px;
+  height: 12px;
+  margin-right: 4px;
+}
+
+.bioTest-action {
+  grid-column: span 2;
+  display: flex;
+  justify-content: flex-end;
+}
+
+@media (min-width: 640px) {
+  .bioTest-action {
+    grid-column: span 1;
+  }
+}
+
+.bioTest-details-button {
+  width: 100%;
+  padding: 8px 12px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #1f2937;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.bioTest-details-button:hover {
+  background: #f3f4f6;
+  color: #2563eb;
+}
+
+.bioTest-button {
+  color: #1b458d; /* gray-400 */
+  background-color: transparent;
+  border-radius: 0.375rem; /* rounded-lg */
+  font-size: 0.875rem; /* text-sm */
+  padding: 0.375rem; /* p-1.5 */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  transition: background-color 0.2s, color 0.2s; /* Smooth hover effect */
+}
+
+.bioTest-button:hover {
+  background-color: #e5e7eb; /* gray-200 */
+  color: #111827; /* gray-900 */
+}
+
+.bioTest-button:focus {
+  outline: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  .bioTest-button {
+    color: #ffffff; /* white */
+  }
+
+  .bioTest-button:hover {
+    background-color: #dcdfe2; /* gray-600 */
+    color: #ffffff; /* white */
+  }
+}
+
+.bioTest-svg {
+  width: 1.5rem; /* w-5 */
+  height: 1.5rem; /* h-5 */
+  fill: rgb(82, 82, 82);
+}
+
+.bioTest-modal-header {
+  display: flex;
+  flex-direction: column;
+}
+
+.bioTest-modal-status-svg {
+  width: 1rem; /* w-3.5 */
+  height: 1rem; /* h-3.5 */
+  margin-inline-end: 0.5rem; /* me-2 */
+  color: #22c55e; /* green-500 */
+  flex-shrink: 0; /* flex-shrink-0 */
+  fill: currentColor;
+}
+.bioTest-modal-status-svg2 {
+  width: 0.875rem; /* w-3.5 */
+  height: 0.875rem; /* h-3.5 */
+  margin-inline-end: 0.5rem; /* me-2 */
+  color: #6b7280; /* gray-500 */
+  flex-shrink: 0; /* flex-shrink-0 */
+  fill: currentColor;
+}
+
+.testBio-modal-button {
+  background-color: transparent;
+  border: none;
+  display: flex;
+  justify-content: space-between;
+}
+/* .testBio-modal-button:active {
+  background-color: red;
+  border: none;
+} */
+
+.bioTest-button-container {
+  width: 100%; /* w-full */
+  display: grid; /* grid */
+  gap: 1rem; /* gap-4 */
+}
+
+@media (min-width: 640px) {
+  /* sm:grid-cols-2 */
+  .bioTest-button-container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  /* lg:flex */
+  .bioTest-button-container {
+    display: flex; /* flex */
+    width: 16rem; /* lg:w-64 */
+    align-items: center; /* lg:items-center */
+    justify-content: flex-end; /* lg:justify-end */
+  }
+}
+
+/* Order Again Button */
+.bioTest-button-order-again {
+  width: 100%; /* w-full */
+  border-radius: 0.5rem; /* rounded-lg */
+  background-color: #1d4ed8; /* primary-700 */
+  padding: 0.5rem 0.75rem; /* px-3 py-2 */
+  font-size: 0.875rem; /* text-sm */
+  font-weight: 500; /* font-medium */
+  color: #ffffff; /* text-white */
+  transition: background-color 0.3s ease;
+  pointer-events: fill;
+  outline: none;
+}
+
+.bioTest-button-order-again:hover {
+  background-color: #1e40af; /* primary-800 */
+}
+
+.bioTest-button-order-again:focus {
+  outline: none; /* focus:outline-none */
+  box-shadow: 0 0 0 4px rgba(96, 165, 250, 0.3); /* focus:ring-4 focus:ring-primary-300 */
+}
+
+@media (prefers-color-scheme: dark) {
+  .bioTest-button-order-again {
+    background-color: #2563eb; /* primary-600 */
+  }
+
+  .bioTest-button-order-again:hover {
+    background-color: #1d4ed8; /* primary-700 */
+  }
+
+  .bioTest-button-order-again:focus {
+    box-shadow: 0 0 0 4px rgba(29, 78, 216, 0.5); /* dark:focus:ring-primary-800 */
+  }
+}
+
+/* View Details Link */
+.bioTest-button-view-details {
+  width: 100%; /* w-full */
+  display: inline-flex; /* inline-flex */
+  justify-content: center; /* justify-center */
+  border-radius: 0.5rem; /* rounded-lg */
+  border: 1px solid #e5e7eb; /* border-gray-200 */
+  background-color: #ffffff; /* bg-white */
+  padding: 0.5rem 0.75rem; /* px-3 py-2 */
+  font-size: 0.875rem; /* text-sm */
+  font-weight: 500; /* font-medium */
+  color: #111827; /* text-gray-900 */
+  transition: background-color 0.3s ease, color 0.3s ease;
+  pointer-events: none;
+}
+
+.bioTest-button-view-details:hover {
+  background-color: #f3f4f6; /* hover:bg-gray-100 */
+  color: #1d4ed8; /* hover:text-primary-700 */
+}
+
+.bioTest-button-view-details:focus {
+  outline: none; /* focus:outline-none */
+  z-index: 10; /* focus:z-10 */
+  box-shadow: 0 0 0 4px rgba(243, 244, 246, 0.5); /* focus:ring-4 focus:ring-gray-100 */
+}
+
+@media (min-width: 1024px) {
+  /* lg:w-auto */
+  .bioTest-button-order-again,
+  .bioTest-button-view-details {
+    width: auto;
+  }
+}
+
+.bioTest-modal-row {
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 10px;
+}
+.bioTest-modal-row button {
+  border: none;
+}
+.bioTest-modal-row:hover {
+  background-color: rgb(237, 243, 249);
+}
+
+.bioTest-row-date {
+  font-weight: 500;
+}
+
+/* Container */
+.bioTest-custom-dropdown-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 11px;
+}
+.bioTest-custom-dropdown-container label {
+  margin: 0px;
+}
+
+/* Screen Reader Only Label */
+.bioTest-custom-dropdown-sr-only {
+  margin-bottom: 0.5rem; /* mb-2 */
+  display: block; /* block */
+  font-size: 0.875rem; /* text-sm */
+  font-weight: 500; /* font-medium */
+  color: #111827; /* text-gray-900 */
+}
+
+/* Select Element */
+.bioTest-custom-dropdown-select {
+  display: block; /* block */
+  width: 100%; /* w-full */
+  border-radius: 0.5rem; /* rounded-lg */
+  border: 1px solid #d1d5db; /* border-gray-300 */
+  background-color: #f9fafb; /* bg-gray-50 */
+  padding: 0.625rem; /* p-2.5 */
+  font-size: 0.875rem; /* text-sm */
+  color: #111827; /* text-gray-900 */
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.bioTest-custom-dropdown-select:focus {
+  border-color: #3b82f6; /* focus:border-primary-500 */
+  outline: none; /* focus:outline-none */
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.3); /* focus:ring-primary-500 */
+}
+
+/* For Small Screen Width Adjustment */
+@media (min-width: 640px) {
+  /* sm:w-[144px] */
+  .bioTest-custom-dropdown-select {
+    width: 144px;
+  }
+}
+
+.bioTest-radiobutton-group {
+  display: flex;
+  gap: 15px;
+  font-weight: 500;
+}
+.bioTest-radiobutton-group div {
+  display: flex;
+  gap: 5px;
+}
+.bioTest-radiobutton-group label {
+  cursor: pointer;
+}
+
+.bioTest-modal-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+}
+
+.bioTest-modal-inputs-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 0px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.bioTest-header-right-container {
+  display: flex;
+  gap: 20px;
+}
+
+.bioTest-modal-show-container {
+  display: flex;
+  gap: 15;
+  align-items: center;
+}
+.bioTest-modal-show-container button {
+  background-color: transparent;
+  border: none;
+}
+
+.bioTest-custom-inputText {
+  display: flex;
+  position: relative;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  border: 1px solid #d1d5db;
+}
+.bioTest-custom-inputText input,
+.bioTest-custom-inputText input:focus,
+.bioTest-custom-inputText button {
+  border: none;
+  outline: none;
+}
+
+.bioTest-custom-inputText input {
+  flex: 1;
+  padding-left: 15px;
+}
+
+.bioTest-custom-inputText-icon-container {
+  position: absolute;
+}
+
+.custom-button-2 {
+  border-top-left-radius: 0px;
+  border-bottom-left-radius: 0px;
+}
+
+.bioTest-reExec-button-container {
+  display: flex;
+  flex-direction: row-reverse;
+  border-bottom: 1px solid #e5e7eb;
+  padding: 10px 0px;
+}
+
+.bioTest-custom-actions-container {
+  display: flex;
+  gap: 15px;
+}

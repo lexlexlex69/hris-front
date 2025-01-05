@@ -1,0 +1,39 @@
+/* .main {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6rem;
+  min-height: 100vh;
+}
+
+.description {
+  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+  width: 100%;
+  justify-content: center;
+  text-align: center;
+}
+
+.description h1 {
+  font-size: 82px;
+  margin-bottom: 30px;
+}
+
+.description a {
+  font-size: 30px;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.video {
+  width: 200px;
+  height: 200px;
+  border: 1px dashed #fff;
+}
+.snapshot {
+  font-size: 65px;
+  background: none;
+  padding: 10px;
+  border: 1px solid #fff;
+  cursor: pointer;
+} */

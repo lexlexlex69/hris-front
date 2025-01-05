@@ -1,0 +1,122 @@
+@font-face {
+    font-family: 'droid-serif';
+    src: local("droid-serif"),
+    url('/src/fonts/droid-serif.ttf') format("truetype");
+    /* font-weight: bold; */
+}
+#regular-template *,
+#regular-template *::before,
+#regular-template *::after {
+  box-sizing: border-box;
+  /* font-family: Arial, Helvetica, sans-serif; */
+  font-family: 'droid-serif';
+
+}
+
+#regular-template * {
+  margin: 0;
+  padding: 0;
+  /* font: inherit; */
+  position: relative;
+
+}
+
+#regular-template body {
+  padding: 96px;
+  font-size: 10.667px; /* 6pt */
+  width: 2048px;
+  /* font-family: Arial, Helvetica, sans-serif; */
+}
+
+#regular-template img,
+#regular-template picture,
+#regular-template svg,
+#regular-template video {
+  display: block;
+  max-width: 100%;
+}
+
+#regular-template input,
+#regular-template textarea,
+#regular-template button,
+#regular-template select {
+  font: inherit;
+}
+
+/* Table styling */
+#regular-template table,
+#regular-template td,
+#regular-template th {
+  border: 1px solid;
+  border-style: dotted;
+  vertical-align: center;
+}
+
+#regular-template thead th,
+#regular-template thead td {
+  font-weight: bold;
+  vertical-align: center;
+  text-align: center;
+
+  /* padding-top: 2rem; */
+}
+
+#regular-template table {
+  border-collapse: collapse;
+  border-style: dotted;
+  /* width: 100%; */
+}
+
+#regular-template td,
+#regular-template th {
+  padding: 4px 8px;
+  font-size: .6rem;
+}
+
+#regular-template i {
+  font-style: italic;
+}
+
+#regular-template .flex-column-center {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Footer styling */
+#regular-template footer {
+  display: grid;
+  grid-template-columns: 1fr 200px 200px 200px 1fr;
+  gap: 5rem;
+}
+
+#regular-template footer section {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 15rem;
+}
+
+#regular-template footer .under-line {
+  border-bottom: 1px solid black;
+  border-bottom-style: dotted;
+}
+
+#regular-template .flex-center {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+#regular-template .flex-end {
+  display: flex;
+  justify-content: end;
+}
+#regular-template span{
+    font-size: .6rem;
+}
+#regular-template .page-break{
+  page-break-before: always;
+}

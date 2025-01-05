@@ -1,0 +1,8 @@
+
+#lock-div .lock:hover .icon-unlock,
+.lock .icon-lock {
+    display: none;
+}
+#lock-div .lock:hover .icon-lock {
+    display: inline;
+}

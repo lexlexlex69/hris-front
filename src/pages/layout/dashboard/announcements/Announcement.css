@@ -1,0 +1,14 @@
+#announcement-div .scholarship-name{
+    /* font-size: .9rem; */
+    color: #3c3c3c;
+}
+#announcement-div .scholarship-sponsor{
+    font-size: .8rem;
+    font-style: italic;
+    color:#959595;
+}
+#announcement-div .scholarship-until{
+    font-size: .8rem;
+    /* font-style: italic; */
+    color:#f35d5d;
+}

@@ -1,0 +1,33 @@
+/* styles.css */
+.custom-radio-group-flex {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem; /* Tailwind's mb-4 equivalent */
+}
+
+.custom-radio-group-flex:last-child {
+  margin-bottom: 0;
+}
+
+.custom-radio-group-input {
+  width: 1rem; /* Tailwind's w-4 equivalent */
+  height: 1rem; /* Tailwind's h-4 equivalent */
+  background-color: #f3f4f6; /* Tailwind's bg-gray-100 equivalent */
+  border: 1px solid #d1d5db; /* Tailwind's border-gray-300 equivalent */
+  color: #2563eb; /* Tailwind's text-blue-600 equivalent */
+  outline: none;
+  appearance: none;
+  border-radius: 50%; /* To style it like a radio button */
+  cursor: pointer;
+}
+
+.custom-radio-group-input:focus {
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5); /* Tailwind's focus:ring-blue-500 equivalent */
+}
+
+.custom-radio-group-label {
+  margin-left: 0.5rem; /* Tailwind's ms-2 equivalent */
+  font-size: 0.875rem; /* Tailwind's text-sm equivalent */
+  font-weight: 500; /* Tailwind's font-medium equivalent */
+  color: #111827; /* Tailwind's text-gray-900 equivalent */
+}

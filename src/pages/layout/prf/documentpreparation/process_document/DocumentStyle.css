@@ -1,0 +1,15 @@
+@media print {
+    .header {
+        position: fixed !important;
+        top: 40px;
+        left: 0;
+        right: 0;
+    }
+
+    .footer {
+        position: fixed !important;
+        bottom: 40px;
+        left: 0;
+        right: 0;
+    }
+}

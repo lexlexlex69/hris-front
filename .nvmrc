@@ -1,0 +1,6 @@
+# in project root directory
+$ echo "18.12.0" > .nvmrc
+# "node server.js" with Node version from .nvmrc
+$ nvm run server.js
+# "npm start" with Node version from .nvmrc
+$ nvm exec npm start

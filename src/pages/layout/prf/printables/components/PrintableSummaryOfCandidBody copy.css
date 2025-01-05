@@ -1,0 +1,139 @@
+.prf_printable_container {
+  padding: 30px 0px;
+  display: flex;
+  justify-content: center;
+  overflow-y: auto;
+  height: 90%;
+}
+
+.prf_printable_content {
+  width: 800px;
+  /* height: 100%; */
+}
+.prf_printable_content_page {
+  height: 2000px;
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+  box-shadow: rgba(0, 0, 0, 0.15) 3px 3px 6px;
+  margin-bottom: 20px;
+  padding: 0px 60px;
+}
+.prf_printable_content_page p,
+.prf_printable_content_page td {
+  font-size: 0.7rem;
+}
+
+.PrintableSummaryOfCandidBody {
+  margin-bottom: 30px;
+  font-size: 0.7rem;
+  background-color: red;
+  flex: 1;
+}
+.PrintableSummaryOfCandidBody p {
+  font-size: 0.7rem !important;
+}
+.PrintableSummaryOfCandidBody table {
+  table-layout: fixed;
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid black;
+}
+
+.PrintableSummaryOfCandidBody th,
+.PrintableSummaryOfCandidBody td {
+  padding: 5px;
+  border: 1px solid black;
+}
+
+.PrintableSummaryOfCandidBody th {
+  background-color: #d9d9d9;
+  text-align: center;
+}
+
+.printableLoopsection {
+  background-color: pink;
+}
+
+.prf_printable_content_page_title {
+  text-align: center;
+}
+.innerBoxStyle td {
+  padding: 0px;
+}
+.innerBoxStyle p {
+  margin: 0px !important;
+  font-size: 1rem;
+}
+.innerBoxStyle div {
+  padding: 10px;
+}
+.page {
+  page-break-after: always; /* Forces a page break after each page */
+  display: flex;
+  flex-direction: column;
+  height: 150vh; /* Full viewport height for each page */
+  background-color: white;
+  box-shadow: rgba(0, 0, 0, 0.15) 3px 3px 6px;
+  margin-bottom: 20px;
+  padding: 0px 10px;
+}
+
+.testtable {
+  width: 100%;
+  height: 100%;
+  border-collapse: collapse;
+}
+
+.testtable thead,
+.testtable tfoot {
+  /* position: sticky; */
+  background-color: blue; /* Ensures the header and footer are visible */
+}
+
+.testtable thead {
+  top: 0;
+}
+
+.testtable tfoot {
+  bottom: 0;
+}
+
+.testtable tbody {
+  flex: 1; /* Makes the body content fill the available space */
+  overflow: auto; /* Allows scrolling if needed */
+}
+
+.printableEssentials {
+  flex: 1;
+  display: flex;
+  gap: 20px;
+  width: 100%;
+  text-align: center;
+  background-color: yellow;
+}
+.printableEssentials div {
+  min-width: 40%;
+}
+
+.printableEssentials div p:first-child {
+  text-align: left;
+}
+.printableEssentials div p:nth-child(2) {
+  border-bottom: 1px solid black;
+}
+@media print {
+  .prf_printable_content {
+    box-shadow: none;
+    width: auto;
+  }
+  .testtable {
+    height: 100%;
+  }
+  .page {
+    height: 100vh;
+  }
+  /* p {
+    background-color: none !important;
+  } */
+}

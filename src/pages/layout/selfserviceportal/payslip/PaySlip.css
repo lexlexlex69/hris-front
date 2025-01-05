@@ -1,0 +1,17 @@
+#payslip .payslip-div table,.payslip-div tr,.payslip-div td,.payslip-div th,.payslip-div tfoot{
+    border-style: solid;
+    border-width: thin;
+    padding:5px;
+    font-family: 'Times New Roman', Times, serif;
+    font-weight: lighter;
+}
+#payslip .payslip-div  table{
+    width: 100%;
+}
+
+@media print {
+    #pagebreak { page-break-before: always; } /* page-break-after works, as well */
+    #payslip{
+        margin:10px;
+    }
+}

@@ -1,0 +1,161 @@
+@font-face {
+    font-family: 'droid-serif';
+    src: local("droid-serif"),
+    url('/src/fonts/droid-serif.ttf') format("truetype");
+    /* font-weight: bold; */
+}
+#year-end-template *,
+#year-end-template *::before,
+#year-end-template *::after {
+  box-sizing: border-box;
+  /* font-family: Arial, Helvetica, sans-serif; */
+  font-family: 'droid-serif';
+}
+#year-end-template{
+  position: relative;
+
+}
+#year-end-template * {
+  margin: 0;
+  /* padding: 0; */
+  /* position: relative; */
+  /* height: 100vh; */
+
+  /* font: inherit; */
+}
+
+#year-end-template body {
+  padding: 96px;
+  font-size: 10.667px; /* 6pt */
+  width: 2048px;
+  /* font-family: Arial, Helvetica, sans-serif; */
+}
+
+#year-end-template img,
+#year-end-template picture,
+#year-end-template svg,
+#year-end-template video {
+  display: block;
+  max-width: 100%;
+}
+
+#year-end-template input,
+#year-end-template textarea,
+#year-end-template button,
+#year-end-template select {
+  font: inherit;
+}
+#year-end-templage table{
+  width: 100%;
+}
+/* Table styling */
+#year-end-template table,
+#year-end-template td,
+#year-end-template th {
+  border: 1px solid;
+  border-style: dotted;
+  vertical-align: center;
+}
+
+#year-end-template thead th,
+#year-end-template thead td {
+  font-weight: bold;
+  vertical-align: center;
+  text-align: center;
+
+  /* padding-top: 2rem; */
+}
+
+#year-end-template table {
+  border-collapse: collapse;
+  border-style: dotted;
+  /* width: 100%; */
+}
+
+#year-end-template td,
+#year-end-template th {
+  padding: 0px 8px;
+  font-size: .6rem;
+}
+
+#year-end-template i {
+  font-style: italic;
+}
+
+#year-end-template .flex-column-center {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Footer styling */
+#year-end-template footer {
+  display: grid;
+  grid-template-columns: 1fr 180px 200px 1fr;
+  gap: 5rem;
+}
+
+#year-end-template footer section {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 10rem;
+}
+
+#year-end-template footer .under-line {
+  border-bottom: 1px solid black;
+  border-bottom-style: dotted;
+}
+
+#year-end-template .flex-center {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+#year-end-template .flex-end {
+  display: flex;
+  justify-content: end;
+}
+#year-end-template span{
+    font-size: .6rem;
+}
+#year-end-template .page-break{
+  page-break-before: always;
+}
+#year-end-template .side-text{
+  max-width: 200px;
+  flex-direction: column;
+  padding: 5px;
+  display: flex;
+  justify-content: center;
+}
+#year-end-template .side-text b,p,i{
+  font-size: .6rem;
+}
+/* @media print {
+  #auto-fit{
+    height: 90vh;
+    width: 100%;
+  }
+} */
+/* #year-end-template {
+    display: table;
+    counter-reset: page 0;
+    page-break-inside: avoid;
+}
+#pageFooter2 {
+    display: table-footer-group;
+}
+#pageFooter2:after {
+    counter-increment: page;
+    content:counter(page);
+} */
+/* @media print {
+  #footer-content {
+    position: fixed;
+    bottom: 0;
+  }
+} */

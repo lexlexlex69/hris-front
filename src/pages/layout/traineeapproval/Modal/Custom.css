@@ -1,0 +1,19 @@
+#nomination-form .print-form{
+    /* color:blue !important; */
+    page-break-after: always;
+
+}
+
+@media print{
+    /* #nomination-form .print-form{
+        position: relative;
+        margin:10px 20px 0 20px;
+    }
+    #nomination-form .print-form1{
+        margin:10px 20px 0 20px;
+
+    } */
+    #nomination-form{
+        margin:10px 20px 0 20px;
+    }
+}

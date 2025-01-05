@@ -1,0 +1,129 @@
+@font-face {
+    font-family: 'droid-serif';
+    src: local("droid-serif"),
+    url('/src/fonts/droid-serif.ttf') format("truetype");
+    /* font-weight: bold; */
+}
+#casual-template *,
+#casual-template *::before,
+#casual-template *::after {
+  box-sizing: border-box;
+  /* font-family: Arial, Helvetica, sans-serif; */
+  font-family: 'droid-serif';
+
+}
+#casual-template * {
+  margin: 0;
+  padding: 0;
+  /* font: inherit; */
+  position: relative;
+
+
+}
+
+#casual-template body {
+  padding: 96px;
+  font-size: 10.667px; /* 6pt */
+  width: 2048px;
+  /* width: 11.7in;
+  height: 16.5in;
+  background: #000 !important; */
+  /* font-family: Arial, Helvetica, sans-serif; */
+}
+
+#casual-template img,
+#casual-template picture,
+#casual-template svg,
+#casual-template video {
+  display: block;
+  max-width: 100%;
+}
+
+#casual-template input,
+#casual-template textarea,
+#casual-template button,
+#casual-template select {
+  font: inherit;
+}
+#casual-template table{
+  width: 100%;
+}
+/* Table styling */
+#casual-template table,
+#casual-template td,
+#casual-template th {
+  border: 1px solid;
+  border-style: dotted;
+  vertical-align: center;
+}
+
+#casual-template thead th,
+#casual-template thead td {
+  font-weight: bold;
+  vertical-align: center;
+  text-align: center;
+
+  /* padding-top: 2rem; */
+}
+
+#casual-template table {
+  border-collapse: collapse;
+  border-style: dotted;
+  /* width: 100%; */
+}
+
+#casual-template td,
+#casual-template th {
+  padding: 4px 8px;
+  font-size: .6rem;
+}
+
+#casual-template i {
+  font-style: italic;
+}
+
+#casual-template .flex-column-center {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Footer styling */
+#casual-template footer {
+  display: grid;
+  grid-template-columns: 1fr 200px 200px 200px 1fr;
+
+  /* grid-template-columns: 190px 190px 200px 190px 1fr; */
+  gap: 5rem;
+}
+
+#casual-template footer section {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 15rem;
+}
+
+#casual-template footer .under-line {
+  border-bottom: 1px solid black;
+  border-bottom-style: dotted;
+}
+
+#casual-template .flex-center {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+#casual-template .flex-end {
+  display: flex;
+  justify-content: end;
+}
+#casual-template span{
+    font-size: .6rem;
+}
+#casual-template .page-break{
+  page-break-before: always;
+}

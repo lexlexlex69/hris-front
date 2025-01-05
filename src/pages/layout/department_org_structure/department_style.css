@@ -1,0 +1,143 @@
+/* * {
+  padding: 0px;
+  margin: 0px;
+  box-sizing: border-box;
+}
+
+body {
+  height: 100vh;
+  display: grid;
+  align-items: center;
+  font-family: "Poppins", sans-serif;
+} */
+
+.tree {
+  width: 100%;
+  height: auto;
+  text-align: center;
+}
+
+.tree .tree-ul {
+  padding-top: 20px;
+  position: relative;
+  transition: 0.5s;
+  padding-left: 0px;
+  display: flex;
+  justify-content: center;
+  align-items: start;
+  flex-wrap: wrap;
+}
+
+.tree .tree-li {
+  display: inline-table;
+  text-align: center;
+  list-style-type: none;
+  position: relative;
+  padding: 10px;
+  transition: 0.5s;
+}
+
+.tree .tree-li::before,
+.tree .tree-li::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 50%;
+  border-top: 1px solid #ccc;
+  width: 51%;
+  height: 10px;
+}
+
+.tree .tree-li::after {
+  right: auto;
+  left: 50%;
+  border-left: 1px solid #ccc;
+}
+
+.tree .tree-li:only-child::after,
+.tree .tree-li:only-child::before {
+  display: none;
+}
+
+.tree .tree-li:only-child {
+  padding-top: 0;
+}
+
+.tree .tree-li:first-child::before,
+.tree .tree-li:last-child::after {
+  border: 0 none;
+}
+
+.tree .tree-li:last-child::before {
+  border-right: 1px solid #ccc;
+  border-radius: 0 5px 0 0;
+  -webkit-border-radius: 0 5px 0 0;
+  -moz-border-radius: 0 5px 0 0;
+}
+
+.tree .tree-li:first-child::after {
+  border-radius: 5px 0 0 0;
+  -webkit-border-radius: 5px 0 0 0;
+  -moz-border-radius: 5px 0 0 0;
+}
+
+.tree .tree-ul .tree-ul::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  border-left: 1px solid #ccc;
+  width: 0;
+  height: 20px;
+}
+
+.tree .tree-link {
+  border: 1px solid #ccc;
+  /* padding: 10px; */
+  display: inline-grid;
+  border-radius: 5px;
+  text-decoration-line: none;
+  border-radius: 5px;
+  transition: 0.5s;
+}
+
+.tree .tree-link .tree-img {
+  width: 50px;
+  height: 50px;
+  margin-bottom: 10px !important;
+  border-radius: 100px;
+  margin: auto;
+}
+
+.tree .tree-link .tree-span {
+  /* border: 1px solid #ccc; */
+  /* border-radius: 5px; */
+  color: #666;
+  padding: 8px;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 500;
+  width: 200px;
+  min-height: 4rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Hover-Section */
+.tree .tree-link:hover,
+.tree .tree-link:hover i,
+/* .tree .tree-link:hover .tree-span, */
+.tree .tree-link:hover+.tree-ul .tree-link {
+  background: #cce1f9;
+  color: #000;
+  /* border: 1px solid #94a0b4; */
+}
+
+/* .tree .tree-link:hover+.tree-ul .tree-li::after,
+.tree .tree-link:hover+.tree-ul .tree-li::before,
+.tree .tree-link:hover+.tree-ul::before,
+.tree .tree-link:hover+.tree-ul .tree-ul::before {
+  border-color: #94a0b4;
+} */
