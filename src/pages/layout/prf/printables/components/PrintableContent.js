@@ -1,10 +1,11 @@
-import React, { forwardRef, useEffect, useState } from "react";
-import PrintableHeader from "./PrintableHeader";
-import SummaryOfCandidBody1 from "./SummaryOfCandidBody1";
-import { capitalizeWords } from "../Utils";
-import { usePrfData } from "../context/PrintableDataProvider";
-import PrintableHeaderContainer from "./PrintableHeaderContainer";
-import { toWords } from "number-to-words";
+import React, { forwardRef, useEffect, useState } from "react"
+import PrintableHeader from "./PrintableHeader"
+import SummaryOfCandidBody1 from "./SummaryOfCandidBody1"
+import { capitalizeWords } from "../Utils"
+import { usePrfData } from "../context/PrintableDataProvider"
+import PrintableHeaderContainer from "./PrintableHeaderContainer"
+import { toWords } from "number-to-words"
+import { phpPesoIntFormater } from "../../components/export_components/ExportComp"
 
 const PrintableContent = forwardRef((props, ref) => {
   const {
@@ -14,17 +15,17 @@ const PrintableContent = forwardRef((props, ref) => {
     forDesignHeader,
     forDesignFooter,
     designPreview,
-  } = usePrfData();
-  console.log("chunkState", chunkState);
-  console.log("designPreview", designPreview);
+  } = usePrfData()
+  console.log("chunkState", chunkState)
+  console.log("designPreview", designPreview)
   const arrayDisplay = (array) => {
     return array.map((item, index) => (
       <React.Fragment key={index}>
         {item}
         {array.length > 1 && !(array.length - 1 === index) && `, `}
       </React.Fragment>
-    ));
-  };
+    ))
+  }
   return (
     <>
       <div className="prf_printable_content" ref={ref}>
@@ -180,6 +181,10 @@ const PrintableContent = forwardRef((props, ref) => {
                     </div>
                     <p>To: Name</p>
                     <span>
+                      {toWords(prfData.SummaryOfCandidPrfDetails.sal_value)}{" "}
+                      {phpPesoIntFormater.format(
+                        prfData.SummaryOfCandidPrfDetails.sal_value
+                      )}{" "}
                       {
                         "We would like to inform you that you are hired as a ADMINISTRATIVE OFFICER II (BUDGET OFFICER I) on a Casual status to be assigned at the CITY BUDGET DEPARTMENT with salary grade 11 (SG 11) equivalent to a monthly basic pay of (Twenty-six Thousand, Twelve Pesos) (Php 26,012.00). Please submit the following requirements for the processing of your casual appointment:"
                       }
@@ -225,7 +230,7 @@ const PrintableContent = forwardRef((props, ref) => {
         )}
       </div>
     </>
-  );
-});
+  )
+})
 
-export default PrintableContent;
+export default PrintableContent
