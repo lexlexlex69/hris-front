@@ -1,50 +1,55 @@
-import React, { useEffect, useRef, useState } from "react"
-import PrfProvider from "../PrfProvider"
-import "./prf_printable.css"
-import TabComponent from "./components/TabComponent"
-import { useParams } from "react-router-dom"
-import { get_all_prf_summaryOfCandidContent } from "../axios/prfRequest"
-import PrintableContent from "./components/PrintableContent"
-import { useReactToPrint } from "react-to-print"
-import { usePrfData } from "./context/PrintableDataProvider"
-import CustomModal from "./components/CustomModal"
+import React, { useEffect, useRef, useState } from "react";
+import PrfProvider from "../PrfProvider";
+import "./prf_printable.css";
+import TabComponent from "./components/TabComponent";
+import { useParams } from "react-router-dom";
+import { get_all_prf_summaryOfCandidContent } from "../axios/prfRequest";
+import PrintableContent from "./components/PrintableContent";
+import { useReactToPrint } from "react-to-print";
+import { usePrfData } from "./context/PrintableDataProvider";
+import CustomModal from "./components/CustomModal";
 
 export default function PrintablesPage() {
-  const { process, prf_id } = useParams()
-  const { setPrfId, fetchPrintableContent, showModal } = usePrfData()
+  const { process, prf_id } = useParams();
+  console.log("process", process);
+  const { setPrfId, fetchPrintableContent, showModal, setProcessType } =
+    usePrfData();
 
   useEffect(() => {
     if (showModal) {
-      document.body.style.overflow = "hidden" // Disable scrolling
+      document.body.style.overflow = "hidden"; // Disable scrolling
     } else {
-      document.body.style.overflow = "" // Enable scrolling
+      document.body.style.overflow = ""; // Enable scrolling
     }
 
     // Cleanup on unmount
     return () => {
-      document.body.style.overflow = ""
-    }
-  }, [showModal])
+      document.body.style.overflow = "";
+    };
+  }, [showModal]);
 
-  console.log("show prf_id", prf_id)
+  console.log("show prf_id", prf_id);
   useEffect(() => {
     if (prf_id) {
-      console.log("useEffect prf_id", prf_id)
-      setPrfId(prf_id)
+      console.log("useEffect prf_id", prf_id);
+      setPrfId(prf_id);
       // fetchPrintableContent(prf_id);
     }
-  }, [prf_id])
+    if (process) {
+      setProcessType(process);
+    }
+  }, [prf_id]);
 
-  const printRef = useRef()
+  const printRef = useRef();
 
   const handlePrint = useReactToPrint({
     content: () => printRef.current,
     documentTitle: "Summary of Candidates",
-  })
+  });
   return (
     <div className="prf_printable">
       <div className="prf_printable_nav">
-        <TabComponent />
+        <TabComponent process={process} />
       </div>
       <div className="prf_printable_main">
         <div className="prf_printable_main_header">
@@ -56,10 +61,10 @@ export default function PrintablesPage() {
           </button>
         </div>
         <div className="prf_printable_container">
-          <PrintableContent ref={printRef} />
+          <PrintableContent ref={printRef} process={process} />
           <CustomModal showModal={showModal} />
         </div>
       </div>
     </div>
-  )
+  );
 }
