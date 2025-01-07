@@ -6,6 +6,7 @@ import CustomInput from "./CustomInput";
 import { usePrfData } from "../context/PrintableDataProvider";
 import CustomInput2 from "./CustomInput2";
 import CustomInput3 from "./CustomInput3";
+import CustomSelect from "./CustomSelect";
 
 const TabComponent = ({ process }) => {
   const [activeTab, setActiveTab] = useState("essentials");
@@ -89,7 +90,8 @@ const TabComponent = ({ process }) => {
               </>
             )}
 
-            <CustomInput title={"SALARY"} tab={"Essentials"} />
+            {/* <CustomInput title={"SALARY"} tab={"Essentials"} /> */}
+            <CustomSelect title={"SALARY"} />
           </div>
         )}
         {activeTab === "design" && (

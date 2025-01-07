@@ -1,11 +1,13 @@
-import React, { forwardRef, useEffect, useState } from "react"
-import PrintableHeader from "./PrintableHeader"
-import SummaryOfCandidBody1 from "./SummaryOfCandidBody1"
-import { capitalizeWords } from "../Utils"
-import { usePrfData } from "../context/PrintableDataProvider"
-import PrintableHeaderContainer from "./PrintableHeaderContainer"
-import { toWords } from "number-to-words"
-import { phpPesoIntFormater } from "../../components/export_components/ExportComp"
+import React, { forwardRef, useEffect, useState } from "react";
+import PrintableHeader from "./PrintableHeader";
+import SummaryOfCandidBody1 from "./SummaryOfCandidBody1";
+import { capitalizeWords } from "../Utils";
+import { usePrfData } from "../context/PrintableDataProvider";
+import PrintableHeaderContainer from "./PrintableHeaderContainer";
+import { toWords } from "number-to-words";
+import { phpPesoIntFormater } from "../../components/export_components/ExportComp";
+import moment from "moment";
+import { formatName } from "../../../customstring/CustomString";
 
 const PrintableContent = forwardRef((props, ref) => {
   const {
@@ -15,17 +17,17 @@ const PrintableContent = forwardRef((props, ref) => {
     forDesignHeader,
     forDesignFooter,
     designPreview,
-  } = usePrfData()
-  console.log("chunkState", chunkState)
-  console.log("designPreview", designPreview)
+  } = usePrfData();
+  console.log("chunkState", chunkState);
+  console.log("designPreview", designPreview);
   const arrayDisplay = (array) => {
     return array.map((item, index) => (
       <React.Fragment key={index}>
         {item}
         {array.length > 1 && !(array.length - 1 === index) && `, `}
       </React.Fragment>
-    ))
-  }
+    ));
+  };
   return (
     <>
       <div className="prf_printable_content" ref={ref}>
@@ -177,17 +179,34 @@ const PrintableContent = forwardRef((props, ref) => {
                   <div className="page-body">
                     <div className="prf_printable_content_page_title">
                       <p>EMPLOYMENT NOTICE</p>
-                      <p>Date</p>
+                      <p>{moment().format("MMMM DD YYYY")}</p>
                     </div>
-                    <p>To: Name</p>
+                    <p>
+                      To:{" "}
+                      {formatName(
+                        item.fname,
+                        item.mname,
+                        item.lname,
+                        item.extname,
+                        0
+                      ) || "APPLICANT NAME NOT FOUND"}
+                    </p>
                     <span>
-                      {toWords(prfData.SummaryOfCandidPrfDetails.sal_value)}{" "}
-                      {phpPesoIntFormater.format(
+                      {`We would like to inform you that you are hired as a  ${
+                        prfData.SummaryOfCandidPrfDetails.position_title
+                      } on a ${
+                        prfData.SummaryOfCandidPrfDetails.emp_stat
+                      } status to be assigned at the ${
+                        prfData.SummaryOfCandidPrfDetails.office_dept
+                      } with salary grade ${
+                        prfData.SummaryOfCandidPrfDetails.pay_sal
+                      } (SG ${
+                        prfData.SummaryOfCandidPrfDetails.pay_sal
+                      }) equivalent to a monthly basic pay of (${toWords(
                         prfData.SummaryOfCandidPrfDetails.sal_value
-                      )}{" "}
-                      {
-                        "We would like to inform you that you are hired as a ADMINISTRATIVE OFFICER II (BUDGET OFFICER I) on a Casual status to be assigned at the CITY BUDGET DEPARTMENT with salary grade 11 (SG 11) equivalent to a monthly basic pay of (Twenty-six Thousand, Twelve Pesos) (Php 26,012.00). Please submit the following requirements for the processing of your casual appointment:"
-                      }
+                      )}) (${phpPesoIntFormater.format(
+                        prfData.SummaryOfCandidPrfDetails.sal_value
+                      )}). Please submit the following requirements for the processing of your casual appointment:`}
                     </span>
                     <div>
                       <ol>
@@ -205,18 +224,41 @@ const PrintableContent = forwardRef((props, ref) => {
                     <span>
                       Kindly submit your complete requirements to the City Human
                       Resource Management Department (CHRMD). The effective date
-                      of your appointment is October 14, 2024 thus, you are
-                      advised to report to CHRMD on the said date.
+                      of your appointment is{" "}
+                      {moment(JSON.parse(item.appoint_date)).format(
+                        "MMMM DD, YYYY"
+                      )}{" "}
+                      thus, you are advised to report to CHRMD on the said date.
                     </span>
 
                     <div>
-                      <p>ENGR. RONNIE VICENTE C. LAGNADA</p>
-                      <p>City Mayor</p>
+                      <p>
+                        {prfData
+                          ? prfData.signatory &&
+                            prfData.signatory.mayor.auth_name
+                          : ""}
+                      </p>
+                      <p>
+                        {prfData
+                          ? prfData.signatory &&
+                            prfData.signatory.mayor.position
+                          : ""}
+                      </p>
                       <p>For the Mayor:</p>
                     </div>
                     <div>
-                      <p>ATTY. NOEL EPHRAIM R. ANTIGUA</p>
-                      <p>City Government Assistant Department Head II</p>
+                      <p>
+                        {prfData
+                          ? prfData.signatory &&
+                            prfData.signatory.admin.assigned_for
+                          : ""}
+                      </p>
+                      <p>
+                        {prfData
+                          ? prfData.signatory &&
+                            prfData.signatory.admin.position
+                          : ""}
+                      </p>
                     </div>
                   </div>
                   <PrintableHeaderContainer
@@ -230,7 +272,7 @@ const PrintableContent = forwardRef((props, ref) => {
         )}
       </div>
     </>
-  )
-})
+  );
+});
 
-export default PrintableContent
+export default PrintableContent;

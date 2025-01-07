@@ -17,7 +17,8 @@ function PrintableHeaderContainer({ designPreview, forDesign, type }) {
         />
       )}
 
-      {(designPreview.header === null || designPreview.footer === null) &&
+      {designPreview.header === null &&
+        designPreview.footer === null &&
         forDesign && <PrintableHeader headerURL={forDesign} type={type} />}
     </>
   );
