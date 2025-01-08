@@ -31,17 +31,17 @@ export const PrfContextProvider = ({ children }) => {
 
   const [modalTitle, setModalTitle] = useState();
 
-  const handleRowClick = (title) => {
-    // console.log("date", date);
-    // setSelectedDate(date);
-    // setModalData(groupedData[date]);
-    setShowModal(true);
-    setModalTitle(title);
-    // let data = fakeResponse;
-    // setModalData(data);
-    // modalDataSetter(date);
-    // console.log("modalData", modalData);
-  };
+  // const handleRowClick = (title) => {
+  //   // console.log("date", date);
+  //   // setSelectedDate(date);
+  //   // setModalData(groupedData[date]);
+  //   setShowModal(true);
+  //   setModalTitle(title);
+  //   // let data = fakeResponse;
+  //   // setModalData(data);
+  //   // modalDataSetter(date);
+  //   // console.log("modalData", modalData);
+  // };
 
   const closeModal = () => {
     setShowModal(false);
@@ -63,7 +63,7 @@ export const PrfContextProvider = ({ children }) => {
 
         // console.log("response2", response2);
         if (processType === "summaryofcandid") setPrfData(response1.data);
-        else if (processType === "en")
+        else if (processType !== "summaryofcandid")
           setPrfData({
             SummaryOfCandidApplicantDetails:
               response1.data.SummaryOfCandidApplicantDetails.filter(
@@ -196,7 +196,7 @@ export const PrfContextProvider = ({ children }) => {
       chunks && setChunkState(chunks);
       console.log("chunks", chunks);
     }
-    if (processType === "en") {
+    if (processType !== "summaryofcandid") {
       !prfData && prf_id && fetchPrintableContent(prf_id, isMounted);
       // prfData && filterSelectedApplicant();
       prfData &&
@@ -225,8 +225,12 @@ export const PrfContextProvider = ({ children }) => {
       return acc;
     }, []);
 
-  const forDesignHeader = prfData ? prfData.header.image_path : "";
-  const forDesignFooter = prfData ? prfData.footer.image_path : "";
+  const forDesignHeader = prfData
+    ? prfData.header && prfData.header.image_path
+    : "";
+  const forDesignFooter = prfData
+    ? prfData.footer && prfData.footer.image_path
+    : "";
 
   const recommendedByChange = (rater_emp_id) => {
     setPrfData((prev) => ({
@@ -344,7 +348,7 @@ export const PrfContextProvider = ({ children }) => {
         designPreview,
         handleApplyImg,
         showModal,
-        handleRowClick,
+        // handleRowClick,
         closeModal,
         modalTitle,
         fetchEmployeeByName,
