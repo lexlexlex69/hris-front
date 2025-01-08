@@ -1,14 +1,14 @@
-import React from "react";
-import { usePrfData } from "../context/PrintableDataProvider";
-import { toWords } from "number-to-words";
-import { phpPesoIntFormater } from "../../components/export_components/ExportComp";
-import moment from "moment";
-import { formatName } from "../../../customstring/CustomString";
-import PrintableTemplate from "./PrintableTemplate";
+import React from "react"
+import { usePrfData } from "../context/PrintableDataProvider"
+import { toWords } from "number-to-words"
+import { phpPesoIntFormater } from "../../components/export_components/ExportComp"
+import moment from "moment"
+import { formatName } from "../../../customstring/CustomString"
+import PrintableTemplate from "./PrintableTemplate"
 
 function PrintableJo() {
   const { prfData, forDesignHeader, forDesignFooter, designPreview } =
-    usePrfData();
+    usePrfData()
   return (
     <>
       {prfData &&
@@ -24,7 +24,163 @@ function PrintableJo() {
                 <p>JOB ORDER</p>
                 <p>{moment().format("MMMM DD YYYY")}</p>
               </div>
-              <p>
+              <table style={{ fontSize: "12px", width: "100%" }}>
+                <tbody>
+                  <tr>
+                    <td
+                      style={{
+                        fontWeight: "bold",
+                        backgroundColor: "rgb(189,214,238)",
+                        border: "1px solid black",
+                        textAlign: "center",
+                        width: "120px",
+                      }}
+                      colSpan={2}
+                      rowSpan={2}
+                    >
+                      {" "}
+                      NAME{" "}
+                    </td>
+                    <td
+                      style={{
+                        fontWeight: "bold",
+                        backgroundColor: "rgb(189,214,238)",
+                        border: "1px solid black",
+                        textAlign: "center",
+                      }}
+                      rowSpan={2}
+                    >
+                      {" "}
+                      POSITION{" "}
+                    </td>
+                    <td
+                      style={{
+                        fontWeight: "bold",
+                        backgroundColor: "rgb(189,214,238)",
+                        border: "1px solid black",
+                        textAlign: "center",
+                      }}
+                      rowSpan={2}
+                    >
+                      {" "}
+                      JOB DESCRIPTION{" "}
+                    </td>
+                    <td
+                      style={{
+                        fontWeight: "bold",
+                        backgroundColor: "rgb(189,214,238)",
+                        border: "1px solid black",
+                        textAlign: "center",
+                      }}
+                      rowSpan={2}
+                    >
+                      {" "}
+                      DAILY WAGE{" "}
+                    </td>
+                    <td
+                      style={{
+                        fontWeight: "bold",
+                        backgroundColor: "rgb(189,214,238)",
+                        border: "1px solid black",
+                        textAlign: "center",
+                      }}
+                      rowSpan={1}
+                      colSpan={2}
+                    >
+                      {" "}
+                      PERIOD OF EMPLOYMENT{" "}
+                    </td>
+                    <td
+                      style={{
+                        fontWeight: "bold",
+                        backgroundColor: "rgb(189,214,238)",
+                        border: "1px solid black",
+                        textAlign: "center",
+                      }}
+                      rowSpan={2}
+                    >
+                      {" "}
+                      ACKNOWLEDGEMENT
+                    </td>
+                  </tr>
+                  <tr>
+                    <td
+                      style={{
+                        fontWeight: "bold",
+                        backgroundColor: "rgb(189,214,238)",
+                        border: "1px solid black",
+                        textAlign: "center",
+                      }}
+                    >
+                      {" "}
+                      FROM{" "}
+                    </td>
+                    <td
+                      style={{
+                        fontWeight: "bold",
+                        backgroundColor: "rgb(189,214,238)",
+                        border: "1px solid black",
+                        textAlign: "center",
+                      }}
+                    >
+                      {" "}
+                      TO{" "}
+                    </td>
+                  </tr>
+                  {/* {result && result.map((item, ix) => ( */}
+                  <tr>
+                    <td
+                      style={{ border: "1px solid black", textAlign: "center" }}
+                    >
+                      1.
+                    </td>
+                    <td
+                      style={{
+                        textAlign: "left",
+                        fontWeight: "bold",
+                        border: "1px solid black",
+                        textAlign: "left",
+                      }}
+                    >
+                      {"NO NAME FOUND"}
+                    </td>
+                    <td
+                      style={{ border: "1px solid black", textAlign: "center" }}
+                    >
+                      {"NO POSITION TITLE FOUND"}
+                    </td>
+                    <td style={{ border: "1px solid black" }}>
+                      <ul style={{ margin: 0 }}>
+                        <li>test</li>
+                      </ul>
+                    </td>
+                    <td
+                      style={{
+                        fontWeight: "bold",
+                        border: "1px solid black",
+                        textAlign: "center",
+                      }}
+                    >
+                      {"0.00"}
+                    </td>
+                    <td
+                      style={{ border: "1px solid black", textAlign: "center" }}
+                    >
+                      {"NO DATE FOUND"}
+                    </td>
+                    <td
+                      style={{ border: "1px solid black", textAlign: "center" }}
+                    >
+                      {"NO DATE FOUND"}
+                    </td>
+                    <td
+                      style={{ border: "1px solid black", textAlign: "center" }}
+                    ></td>
+                  </tr>
+                  {/* ))} */}
+                </tbody>
+              </table>
+              {/* <p>
                 To:{" "}
                 {formatName(
                   item.fname,
@@ -96,12 +252,12 @@ function PrintableJo() {
                     ? prfData.signatory && prfData.signatory.admin.position
                     : ""}
                 </p>
-              </div>
+              </div> */}
             </PrintableTemplate>
           </React.Fragment>
         ))}
     </>
-  );
+  )
 }
 
-export default PrintableJo;
+export default PrintableJo
