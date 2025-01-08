@@ -5,6 +5,7 @@ import { phpPesoIntFormater } from "../../components/export_components/ExportCom
 import moment from "moment";
 import { formatName } from "../../../customstring/CustomString";
 import PrintableTemplate from "./PrintableTemplate";
+import { cosCheckList } from "../../documentpreparation/ProcessDocument";
 
 function PrintableNoe() {
   const { prfData, forDesignHeader, forDesignFooter, designPreview } =
@@ -25,7 +26,6 @@ function PrintableNoe() {
                 <p>{moment().format("MMMM DD YYYY")}</p>
               </div>
               <p>
-                To:{" "}
                 {formatName(
                   item.fname,
                   item.mname,
@@ -34,43 +34,115 @@ function PrintableNoe() {
                   0
                 ) || "APPLICANT NAME NOT FOUND"}
               </p>
+              <p>Greetings!</p>
               <span>
-                {`We would like to inform you that you are hired as a  ${
+                {`We are happy to inform that you have been selected for the position of  ${
                   prfData.SummaryOfCandidPrfDetails.position_title
-                } on a ${
-                  prfData.SummaryOfCandidPrfDetails.emp_stat
-                } status to be assigned at the ${
+                } under the ${
                   prfData.SummaryOfCandidPrfDetails.office_dept
-                } with salary grade ${
-                  prfData.SummaryOfCandidPrfDetails.pay_sal
-                } (SG ${
-                  prfData.SummaryOfCandidPrfDetails.pay_sal
-                }) equivalent to a monthly basic pay of (${toWords(
+                }. The said position shall be under a ${
+                  prfData.SummaryOfCandidPrfDetails.emp_stat
+                } status with a gross monthly compensation of ${phpPesoIntFormater.format(
                   prfData.SummaryOfCandidPrfDetails.sal_value
-                )}) (${phpPesoIntFormater.format(
-                  prfData.SummaryOfCandidPrfDetails.sal_value
-                )}). Please submit the following requirements for the processing of your casual appointment:`}
+                )} effective after compliance of the pre-employment requirements:`}
               </span>
-              <div>
-                <ol>
-                  <li>{`3 Copies – Duly Notarized Personal Data Sheet (CSC Form 212 Revised 2017)`}</li>
-                  <li>{`3 Copies – Duly Notarized Personal Data Sheet (CSC Form 212 Revised 2017)`}</li>
-                  <li>{`3 Copies – Duly Notarized Personal Data Sheet (CSC Form 212 Revised 2017)`}</li>
-                  <li>{`3 Copies – Duly Notarized Personal Data Sheet (CSC Form 212 Revised 2017)`}</li>
-                  <li>{`3 Copies – Duly Notarized Personal Data Sheet (CSC Form 212 Revised 2017)`}</li>
-                  <li>{`3 Copies – Duly Notarized Personal Data Sheet (CSC Form 212 Revised 2017)`}</li>
-                  <li>{`3 Copies – Duly Notarized Personal Data Sheet (CSC Form 212 Revised 2017)`}</li>
-                  <li>{`3 Copies – Duly Notarized Personal Data Sheet (CSC Form 212 Revised 2017)`}</li>
-                  <li>{`3 Copies – Duly Notarized Personal Data Sheet (CSC Form 212 Revised 2017)`}</li>
-                </ol>
-              </div>
-              <span>
-                Kindly submit your complete requirements to the City Human
-                Resource Management Department (CHRMD). The effective date of
-                your appointment is{" "}
-                {moment(JSON.parse(item.appoint_date)).format("MMMM DD, YYYY")}{" "}
-                thus, you are advised to report to CHRMD on the said date.
-              </span>
+              <table style={{ borderCollapse: "collapse" }}>
+                <thead>
+                  <tr>
+                    <th
+                      style={{
+                        textAlign: "center",
+                        fontWeight: "bold",
+                        verticalAlign: "top",
+                        border: "1px solid black",
+                        width: "50%",
+                      }}
+                    >
+                      {" "}
+                      ORIGINAL{" "}
+                    </th>
+                    <th
+                      style={{
+                        textAlign: "center",
+                        fontWeight: "bold",
+                        verticalAlign: "top",
+                        border: "1px solid black",
+                        width: "50%",
+                      }}
+                    >
+                      {" "}
+                      PHOTOCOPY{" "}
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td
+                      style={{
+                        border: "1px solid black",
+                        verticalAlign: "top",
+                        padding: "0.3rem",
+                      }}
+                    >
+                      <ol
+                        style={{
+                          textAlign: "left",
+                          paddingLeft: "20px",
+                          marginBottom: "0px",
+                        }}
+                      >
+                        {cosCheckList.map(
+                          (it, itx) =>
+                            it.type === "original" && <li>{it.label}</li>
+                        )}
+                      </ol>
+                    </td>
+                    <td
+                      style={{
+                        border: "1px solid black",
+                        verticalAlign: "top",
+                        padding: "0.3rem",
+                      }}
+                    >
+                      <ol
+                        style={{
+                          textAlign: "left",
+                          paddingLeft: "20px",
+                          marginBottom: "0px",
+                        }}
+                      >
+                        {cosCheckList.map(
+                          (it, itx) =>
+                            it.type === "photocopy" && <li>{it.label}</li>
+                        )}
+                      </ol>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <p sx={{ fontSize: "10px", fontStyle: "italic" }}>
+                *Professionals who are subject to the professional tax
+                imposition pursuant to Section 139 of the Local Government Code
+                are exempt from paying this fee
+              </p>
+              <p sx={{ fontSize: "10px", fontStyle: "italic" }}>
+                **Shall be complied upon receipt of approved Contract and
+                Indorsement signed by the City Treasurer’s Department
+              </p>
+
+              <p sx={{ margin: "1rem 0" }}>
+                Kindly{" "}
+                <strong>
+                  submit your complete requirements inside a white long folder
+                  with plastic cover
+                </strong>{" "}
+                to the Talent Acquisition Section - City Human Resource
+                Management Department (CHRMD).
+              </p>
+
+              <p sx={{ marginBottom: "1rem" }}>
+                We are looking forward to having you on our team.
+              </p>
 
               <div>
                 <p>
@@ -88,7 +160,7 @@ function PrintableNoe() {
               <div>
                 <p>
                   {prfData
-                    ? prfData.signatory && prfData.signatory.admin.assigned_for
+                    ? prfData.signatory && prfData.signatory.admin.assigned_by
                     : ""}
                 </p>
                 <p>

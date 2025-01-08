@@ -25,7 +25,6 @@ function PrintableAtr() {
                 <p>{moment().format("MMMM DD YYYY")}</p>
               </div>
               <p>
-                To:{" "}
                 {formatName(
                   item.fname,
                   item.mname,
@@ -34,66 +33,47 @@ function PrintableAtr() {
                   0
                 ) || "APPLICANT NAME NOT FOUND"}
               </p>
+
+              <p>Dear Mr./Ms. Cruz ,</p>
               <span>
                 {`We would like to inform you that you are hired as a  ${
                   prfData.SummaryOfCandidPrfDetails.position_title
                 } on a ${
                   prfData.SummaryOfCandidPrfDetails.emp_stat
-                } status to be assigned at the ${
+                } status at the ${
                   prfData.SummaryOfCandidPrfDetails.office_dept
-                } with salary grade ${
-                  prfData.SummaryOfCandidPrfDetails.pay_sal
-                } (SG ${
-                  prfData.SummaryOfCandidPrfDetails.pay_sal
-                }) equivalent to a monthly basic pay of (${toWords(
+                } with a compensation of(${toWords(
                   prfData.SummaryOfCandidPrfDetails.sal_value
-                )}) (${phpPesoIntFormater.format(
+                )} (${phpPesoIntFormater.format(
                   prfData.SummaryOfCandidPrfDetails.sal_value
-                )}). Please submit the following requirements for the processing of your casual appointment:`}
-              </span>
-              <div>
-                <ol>
-                  <li>{`3 Copies – Duly Notarized Personal Data Sheet (CSC Form 212 Revised 2017)`}</li>
-                  <li>{`3 Copies – Duly Notarized Personal Data Sheet (CSC Form 212 Revised 2017)`}</li>
-                  <li>{`3 Copies – Duly Notarized Personal Data Sheet (CSC Form 212 Revised 2017)`}</li>
-                  <li>{`3 Copies – Duly Notarized Personal Data Sheet (CSC Form 212 Revised 2017)`}</li>
-                  <li>{`3 Copies – Duly Notarized Personal Data Sheet (CSC Form 212 Revised 2017)`}</li>
-                  <li>{`3 Copies – Duly Notarized Personal Data Sheet (CSC Form 212 Revised 2017)`}</li>
-                  <li>{`3 Copies – Duly Notarized Personal Data Sheet (CSC Form 212 Revised 2017)`}</li>
-                  <li>{`3 Copies – Duly Notarized Personal Data Sheet (CSC Form 212 Revised 2017)`}</li>
-                  <li>{`3 Copies – Duly Notarized Personal Data Sheet (CSC Form 212 Revised 2017)`}</li>
-                </ol>
-              </div>
-              <span>
-                Kindly submit your complete requirements to the City Human
-                Resource Management Department (CHRMD). The effective date of
-                your appointment is{" "}
-                {moment(JSON.parse(item.appoint_date)).format("MMMM DD, YYYY")}{" "}
-                thus, you are advised to report to CHRMD on the said date.
+                )}) effective ${moment(JSON.parse(item.appoint_date)[0]).format(
+                  "MMMM DD, YYYY"
+                )} to ${moment(JSON.parse(item.appoint_date)[1]).format(
+                  "MMMM DD, YYYY"
+                )} unless sooner terminated.`}
               </span>
 
+              <p>
+                {`Further, you are directed to report to ${
+                  prfData
+                    ? prfData.signatory &&
+                      prfData.signatory.dept_head.assigned_by
+                    : ""
+                },${
+                  prfData
+                    ? prfData.signatory && prfData.signatory.dept_head.position
+                    : ""
+                }, for the specific details of your job assignment. You are expected to perform your duties with utmost degree of excellence and dedication.`}
+              </p>
               <div>
                 <p>
                   {prfData
-                    ? prfData.signatory && prfData.signatory.mayor.auth_name
+                    ? prfData.signatory && prfData.signatory.hr.assigned_by
                     : ""}
                 </p>
                 <p>
                   {prfData
-                    ? prfData.signatory && prfData.signatory.mayor.position
-                    : ""}
-                </p>
-                <p>For the Mayor:</p>
-              </div>
-              <div>
-                <p>
-                  {prfData
-                    ? prfData.signatory && prfData.signatory.admin.assigned_for
-                    : ""}
-                </p>
-                <p>
-                  {prfData
-                    ? prfData.signatory && prfData.signatory.admin.position
+                    ? prfData.signatory && prfData.signatory.hr.position_name
                     : ""}
                 </p>
               </div>
