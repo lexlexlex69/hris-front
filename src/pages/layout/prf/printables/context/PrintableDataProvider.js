@@ -7,6 +7,7 @@ import {
   getEquivalentSGValue,
   getPrfSignatories,
 } from "../../documentpreparation/DocRequest";
+import { fakeApplicant } from "./TestFakeData";
 
 const StateContext = createContext();
 
@@ -79,29 +80,68 @@ export const PrfContextProvider = ({ children }) => {
     }
   };
   const fetchEmpNoticeData = async (pay_sal) => {
-    try {
-      console.log(prf_id);
-      const response1 = await getEquivalentSGValue({ sg: pay_sal });
-      const response2 = await getPrfSignatories({
-        prfData: prfData.SummaryOfCandidPrfDetails,
-      });
+    if (processType !== "jo") {
+      try {
+        console.log(prf_id);
+        const response1 = await getEquivalentSGValue({ sg: pay_sal });
+        const response2 = await getPrfSignatories({
+          prfData: prfData.SummaryOfCandidPrfDetails,
+        });
 
-      console.log("pay_sal", response1);
-      console.log("signa", response2);
-      setPrfData((prev) => ({
-        ...prev,
-        sgData: response1.data,
-        signatory: response2.data,
-      }));
-      // Only update state if the component is still mounted
-      // setPrfData(response1.data);
+        console.log("pay_sal", response1);
+        console.log("signa", response2);
+        setPrfData((prev) => ({
+          ...prev,
+          sgData: response1.data,
+          signatory: response2.data,
+        }));
+        // Only update state if the component is still mounted
+        // setPrfData(response1.data);
 
-      console.log("response1", response1.data);
-    } catch (error) {
-      console.error("Error fetching data:", error);
+        console.log("response1", response1.data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
     }
   };
 
+  const fetchJoData = async () => {
+    console.log("jojojo");
+    if (processType === "jo") {
+      try {
+        console.log(prf_id);
+        const response2 = await getPrfSignatories({
+          prfData: prfData.SummaryOfCandidPrfDetails,
+        });
+
+        console.log("signa", response2);
+        setPrfData((prev) => ({
+          ...prev,
+          signatory: response2.data,
+        }));
+        // Only update state if the component is still mounted
+        // setPrfData(response1.data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    }
+  };
+
+  const chunkArray = (array, firstElementCount, otherElementCount) => {
+    const result = [];
+
+    // Add the first chunk with `firstElementCount`
+    if (firstElementCount > 0) {
+      result.push(array.slice(0, firstElementCount));
+    }
+
+    // Add the remaining chunks with `otherElementCount`
+    for (let i = firstElementCount; i < array.length; i += otherElementCount) {
+      result.push(array.slice(i, i + otherElementCount));
+    }
+
+    return result;
+  };
   // const filterSelectedApplicant = () => {
   //   setPrfData((prev) => ({
   //     ...prev,
@@ -125,6 +165,7 @@ export const PrfContextProvider = ({ children }) => {
     console.log("prfData", prfData);
 
     if (processType === "summaryofcandid") {
+      console.log("summ");
       !prfData && prf_id && fetchPrintableContent(prf_id, isMounted);
 
       // Cleanup function to set isMounted to false when the component is unmounted
@@ -173,30 +214,26 @@ export const PrfContextProvider = ({ children }) => {
 
       console.log("finalData", finalData);
 
-      const chunkArray = (array, firstElementCount, otherElementCount) => {
-        const result = [];
-
-        // Add the first chunk with `firstElementCount`
-        if (firstElementCount > 0) {
-          result.push(array.slice(0, firstElementCount));
-        }
-
-        // Add the remaining chunks with `otherElementCount`
-        for (
-          let i = firstElementCount;
-          i < array.length;
-          i += otherElementCount
-        ) {
-          result.push(array.slice(i, i + otherElementCount));
-        }
-
-        return result;
-      };
       const chunks = finalData && chunkArray(finalData, 1, 2);
       chunks && setChunkState(chunks);
       console.log("chunks", chunks);
-    }
-    if (processType !== "summaryofcandid") {
+    } else if (processType === "jo") {
+      console.log("jojo");
+      // console.log(prfData.signatory);
+      !prfData && prf_id && fetchPrintableContent(prf_id, isMounted);
+      console.log(prfData);
+      prfData && !prfData.signatory && fetchJoData();
+      // const chunks =
+      //   prfData && chunkArray(prfData.SummaryOfCandidApplicantDetails, 1, 2);
+      const chunks = prfData && chunkArray(fakeApplicant, 1, 2);
+      chunks && setChunkState(chunks);
+      console.log(chunks);
+    } else if (
+      processType === "noe" ||
+      processType === "en" ||
+      processType === "atr"
+    ) {
+      console.log("nojo");
       !prfData && prf_id && fetchPrintableContent(prf_id, isMounted);
       // prfData && filterSelectedApplicant();
       prfData &&

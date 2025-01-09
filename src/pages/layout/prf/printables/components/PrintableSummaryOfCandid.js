@@ -18,7 +18,7 @@ function PrintableSummaryOfCandid() {
     <>
       {chunkState &&
         chunkState.map((item, index) => (
-          <React.Fragment key={index}>
+          <React.Fragment key={index} className="page">
             <PrintableTemplate
               designPreview={designPreview}
               forDesignHeader={forDesignHeader}

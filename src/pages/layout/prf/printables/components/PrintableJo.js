@@ -1,18 +1,23 @@
-import React from "react"
-import { usePrfData } from "../context/PrintableDataProvider"
-import { toWords } from "number-to-words"
-import { phpPesoIntFormater } from "../../components/export_components/ExportComp"
-import moment from "moment"
-import { formatName } from "../../../customstring/CustomString"
-import PrintableTemplate from "./PrintableTemplate"
+import React from "react";
+import { usePrfData } from "../context/PrintableDataProvider";
+import { toWords } from "number-to-words";
+import { phpPesoIntFormater } from "../../components/export_components/ExportComp";
+import moment from "moment";
+import { formatName } from "../../../customstring/CustomString";
+import PrintableTemplate from "./PrintableTemplate";
 
 function PrintableJo() {
-  const { prfData, forDesignHeader, forDesignFooter, designPreview } =
-    usePrfData()
+  const {
+    chunkState,
+    prfData,
+    forDesignHeader,
+    forDesignFooter,
+    designPreview,
+  } = usePrfData();
   return (
     <>
-      {prfData &&
-        prfData.SummaryOfCandidApplicantDetails.map((item, index) => (
+      {chunkState &&
+        chunkState.map((item, index) => (
           <React.Fragment key={index}>
             <PrintableTemplate
               designPreview={designPreview}
@@ -177,6 +182,72 @@ function PrintableJo() {
                       style={{ border: "1px solid black", textAlign: "center" }}
                     ></td>
                   </tr>
+                  {item.map((item) => (
+                    <tr>
+                      <td
+                        style={{
+                          border: "1px solid black",
+                          textAlign: "center",
+                        }}
+                      >
+                        1.
+                      </td>
+                      <td
+                        style={{
+                          textAlign: "left",
+                          fontWeight: "bold",
+                          border: "1px solid black",
+                          textAlign: "left",
+                        }}
+                      >
+                        {"NO NAME FOUND"}
+                      </td>
+                      <td
+                        style={{
+                          border: "1px solid black",
+                          textAlign: "center",
+                        }}
+                      >
+                        {"NO POSITION TITLE FOUND"}
+                      </td>
+                      <td style={{ border: "1px solid black" }}>
+                        <ul style={{ margin: 0 }}>
+                          <li>test</li>
+                        </ul>
+                      </td>
+                      <td
+                        style={{
+                          fontWeight: "bold",
+                          border: "1px solid black",
+                          textAlign: "center",
+                        }}
+                      >
+                        {"0.00"}
+                      </td>
+                      <td
+                        style={{
+                          border: "1px solid black",
+                          textAlign: "center",
+                        }}
+                      >
+                        {"NO DATE FOUND"}
+                      </td>
+                      <td
+                        style={{
+                          border: "1px solid black",
+                          textAlign: "center",
+                        }}
+                      >
+                        {"NO DATE FOUND"}
+                      </td>
+                      <td
+                        style={{
+                          border: "1px solid black",
+                          textAlign: "center",
+                        }}
+                      ></td>
+                    </tr>
+                  ))}
                   {/* ))} */}
                 </tbody>
               </table>
@@ -257,7 +328,7 @@ function PrintableJo() {
           </React.Fragment>
         ))}
     </>
-  )
+  );
 }
 
-export default PrintableJo
+export default PrintableJo;
