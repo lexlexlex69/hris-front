@@ -54,7 +54,6 @@ function PrintableAtr() {
               </span>
 
               <p>
-                a
                 {`Further, you are directed to report to ${
                   prfData
                     ? prfData.signatory &&
