@@ -1,10 +1,10 @@
-import React from "react";
-import { usePrfData } from "../context/PrintableDataProvider";
-import { toWords } from "number-to-words";
-import { phpPesoIntFormater } from "../../components/export_components/ExportComp";
-import moment from "moment";
-import { formatName } from "../../../customstring/CustomString";
-import PrintableTemplate from "./PrintableTemplate";
+import React from "react"
+import { usePrfData } from "../context/PrintableDataProvider"
+import { toWords } from "number-to-words"
+import { phpPesoIntFormater } from "../../components/export_components/ExportComp"
+import moment from "moment"
+import { formatName } from "../../../customstring/CustomString"
+import PrintableTemplate from "./PrintableTemplate"
 
 function PrintableJo() {
   const {
@@ -13,322 +13,284 @@ function PrintableJo() {
     forDesignHeader,
     forDesignFooter,
     designPreview,
-  } = usePrfData();
+  } = usePrfData()
+
+  let dataLoaded = chunkState && prfData && prfData.signatory
   return (
     <>
-      {chunkState &&
-        chunkState.map((item, index) => (
-          <React.Fragment key={index}>
-            <PrintableTemplate
-              designPreview={designPreview}
-              forDesignHeader={forDesignHeader}
-              forDesignFooter={forDesignFooter}
-              index={index}
-            >
-              <div className="prf_printable_content_page_title">
-                <p>JOB ORDER</p>
-                <p>{moment().format("MMMM DD YYYY")}</p>
-              </div>
-              <table style={{ fontSize: "12px", width: "100%" }}>
-                <tbody>
-                  <tr>
-                    <td
-                      style={{
-                        fontWeight: "bold",
-                        backgroundColor: "rgb(189,214,238)",
-                        border: "1px solid black",
-                        textAlign: "center",
-                        width: "120px",
-                      }}
-                      colSpan={2}
-                      rowSpan={2}
-                    >
-                      {" "}
-                      NAME{" "}
-                    </td>
-                    <td
-                      style={{
-                        fontWeight: "bold",
-                        backgroundColor: "rgb(189,214,238)",
-                        border: "1px solid black",
-                        textAlign: "center",
-                      }}
-                      rowSpan={2}
-                    >
-                      {" "}
-                      POSITION{" "}
-                    </td>
-                    <td
-                      style={{
-                        fontWeight: "bold",
-                        backgroundColor: "rgb(189,214,238)",
-                        border: "1px solid black",
-                        textAlign: "center",
-                      }}
-                      rowSpan={2}
-                    >
-                      {" "}
-                      JOB DESCRIPTION{" "}
-                    </td>
-                    <td
-                      style={{
-                        fontWeight: "bold",
-                        backgroundColor: "rgb(189,214,238)",
-                        border: "1px solid black",
-                        textAlign: "center",
-                      }}
-                      rowSpan={2}
-                    >
-                      {" "}
-                      DAILY WAGE{" "}
-                    </td>
-                    <td
-                      style={{
-                        fontWeight: "bold",
-                        backgroundColor: "rgb(189,214,238)",
-                        border: "1px solid black",
-                        textAlign: "center",
-                      }}
-                      rowSpan={1}
-                      colSpan={2}
-                    >
-                      {" "}
-                      PERIOD OF EMPLOYMENT{" "}
-                    </td>
-                    <td
-                      style={{
-                        fontWeight: "bold",
-                        backgroundColor: "rgb(189,214,238)",
-                        border: "1px solid black",
-                        textAlign: "center",
-                      }}
-                      rowSpan={2}
-                    >
-                      {" "}
-                      ACKNOWLEDGEMENT
-                    </td>
-                  </tr>
-                  <tr>
-                    <td
-                      style={{
-                        fontWeight: "bold",
-                        backgroundColor: "rgb(189,214,238)",
-                        border: "1px solid black",
-                        textAlign: "center",
-                      }}
-                    >
-                      {" "}
-                      FROM{" "}
-                    </td>
-                    <td
-                      style={{
-                        fontWeight: "bold",
-                        backgroundColor: "rgb(189,214,238)",
-                        border: "1px solid black",
-                        textAlign: "center",
-                      }}
-                    >
-                      {" "}
-                      TO{" "}
-                    </td>
-                  </tr>
-                  {/* {result && result.map((item, ix) => ( */}
-                  <tr>
-                    <td
-                      style={{ border: "1px solid black", textAlign: "center" }}
-                    >
-                      1.
-                    </td>
-                    <td
-                      style={{
-                        textAlign: "left",
-                        fontWeight: "bold",
-                        border: "1px solid black",
-                        textAlign: "left",
-                      }}
-                    >
-                      {"NO NAME FOUND"}
-                    </td>
-                    <td
-                      style={{ border: "1px solid black", textAlign: "center" }}
-                    >
-                      {"NO POSITION TITLE FOUND"}
-                    </td>
-                    <td style={{ border: "1px solid black" }}>
-                      <ul style={{ margin: 0 }}>
-                        <li>test</li>
-                      </ul>
-                    </td>
-                    <td
-                      style={{
-                        fontWeight: "bold",
-                        border: "1px solid black",
-                        textAlign: "center",
-                      }}
-                    >
-                      {"0.00"}
-                    </td>
-                    <td
-                      style={{ border: "1px solid black", textAlign: "center" }}
-                    >
-                      {"NO DATE FOUND"}
-                    </td>
-                    <td
-                      style={{ border: "1px solid black", textAlign: "center" }}
-                    >
-                      {"NO DATE FOUND"}
-                    </td>
-                    <td
-                      style={{ border: "1px solid black", textAlign: "center" }}
-                    ></td>
-                  </tr>
-                  {item.map((item) => (
-                    <tr>
-                      <td
-                        style={{
-                          border: "1px solid black",
-                          textAlign: "center",
-                        }}
-                      >
-                        1.
-                      </td>
-                      <td
-                        style={{
-                          textAlign: "left",
-                          fontWeight: "bold",
-                          border: "1px solid black",
-                          textAlign: "left",
-                        }}
-                      >
-                        {"NO NAME FOUND"}
-                      </td>
-                      <td
-                        style={{
-                          border: "1px solid black",
-                          textAlign: "center",
-                        }}
-                      >
-                        {"NO POSITION TITLE FOUND"}
-                      </td>
-                      <td style={{ border: "1px solid black" }}>
-                        <ul style={{ margin: 0 }}>
-                          <li>test</li>
-                        </ul>
-                      </td>
-                      <td
-                        style={{
-                          fontWeight: "bold",
-                          border: "1px solid black",
-                          textAlign: "center",
-                        }}
-                      >
-                        {"0.00"}
-                      </td>
-                      <td
-                        style={{
-                          border: "1px solid black",
-                          textAlign: "center",
-                        }}
-                      >
-                        {"NO DATE FOUND"}
-                      </td>
-                      <td
-                        style={{
-                          border: "1px solid black",
-                          textAlign: "center",
-                        }}
-                      >
-                        {"NO DATE FOUND"}
-                      </td>
-                      <td
-                        style={{
-                          border: "1px solid black",
-                          textAlign: "center",
-                        }}
-                      ></td>
-                    </tr>
-                  ))}
-                  {/* ))} */}
-                </tbody>
-              </table>
-              {/* <p>
-                To:{" "}
-                {formatName(
-                  item.fname,
-                  item.mname,
-                  item.lname,
-                  item.extname,
-                  0
-                ) || "APPLICANT NAME NOT FOUND"}
-              </p>
-              <span>
-                {`We would like to inform you that you are hired as a  ${
-                  prfData.SummaryOfCandidPrfDetails.position_title
-                } on a ${
-                  prfData.SummaryOfCandidPrfDetails.emp_stat
-                } status to be assigned at the ${
-                  prfData.SummaryOfCandidPrfDetails.office_dept
-                } with salary grade ${
-                  prfData.SummaryOfCandidPrfDetails.pay_sal
-                } (SG ${
-                  prfData.SummaryOfCandidPrfDetails.pay_sal
-                }) equivalent to a monthly basic pay of (${toWords(
-                  prfData.SummaryOfCandidPrfDetails.sal_value
-                )}) (${phpPesoIntFormater.format(
-                  prfData.SummaryOfCandidPrfDetails.sal_value
-                )}). Please submit the following requirements for the processing of your casual appointment:`}
-              </span>
-              <div>
-                <ol>
-                  <li>{`3 Copies – Duly Notarized Personal Data Sheet (CSC Form 212 Revised 2017)`}</li>
-                  <li>{`3 Copies – Duly Notarized Personal Data Sheet (CSC Form 212 Revised 2017)`}</li>
-                  <li>{`3 Copies – Duly Notarized Personal Data Sheet (CSC Form 212 Revised 2017)`}</li>
-                  <li>{`3 Copies – Duly Notarized Personal Data Sheet (CSC Form 212 Revised 2017)`}</li>
-                  <li>{`3 Copies – Duly Notarized Personal Data Sheet (CSC Form 212 Revised 2017)`}</li>
-                  <li>{`3 Copies – Duly Notarized Personal Data Sheet (CSC Form 212 Revised 2017)`}</li>
-                  <li>{`3 Copies – Duly Notarized Personal Data Sheet (CSC Form 212 Revised 2017)`}</li>
-                  <li>{`3 Copies – Duly Notarized Personal Data Sheet (CSC Form 212 Revised 2017)`}</li>
-                  <li>{`3 Copies – Duly Notarized Personal Data Sheet (CSC Form 212 Revised 2017)`}</li>
-                </ol>
-              </div>
-              <span>
-                Kindly submit your complete requirements to the City Human
-                Resource Management Department (CHRMD). The effective date of
-                your appointment is{" "}
-                {moment(JSON.parse(item.appoint_date)).format("MMMM DD, YYYY")}{" "}
-                thus, you are advised to report to CHRMD on the said date.
-              </span>
+      {dataLoaded && (
+        <>
+          {chunkState &&
+            chunkState.map((item, index) => (
+              <React.Fragment key={index}>
+                <PrintableTemplate
+                  designPreview={designPreview}
+                  forDesignHeader={forDesignHeader}
+                  forDesignFooter={forDesignFooter}
+                  index={index}
+                >
+                  <div className="prf_printable_content_page_title">
+                    {index === 0 && (
+                      <>
+                        <p>Republic of the Philippines</p>
+                        <p>CITY GOVERNMENT OF BUTUAN</p>
+                        <p>Butuan City</p>
+                        <p>JOB ORDER</p>
+                        <span>
+                          <p>Office:</p> <p>CITY ACCOUNTING OFFICE</p>
+                        </span>
+                        <span>
+                          <p>Funding/Charges:</p> <p>CITY ACCOUNTING </p>
+                        </span>
+                      </>
+                    )}
+                  </div>
+                  <table style={{ fontSize: "12px", width: "100%" }}>
+                    <tbody>
+                      <tr>
+                        <td
+                          style={{
+                            fontWeight: "bold",
+                            backgroundColor: "rgb(189,214,238)",
+                            border: "1px solid black",
+                            textAlign: "center",
+                            width: "120px",
+                          }}
+                          colSpan={2}
+                          rowSpan={2}
+                        >
+                          {" "}
+                          NAME{" "}
+                        </td>
+                        <td
+                          style={{
+                            fontWeight: "bold",
+                            backgroundColor: "rgb(189,214,238)",
+                            border: "1px solid black",
+                            textAlign: "center",
+                          }}
+                          rowSpan={2}
+                        >
+                          {" "}
+                          POSITION{" "}
+                        </td>
+                        <td
+                          style={{
+                            fontWeight: "bold",
+                            backgroundColor: "rgb(189,214,238)",
+                            border: "1px solid black",
+                            textAlign: "center",
+                          }}
+                          rowSpan={2}
+                        >
+                          {" "}
+                          JOB DESCRIPTION{" "}
+                        </td>
+                        <td
+                          style={{
+                            fontWeight: "bold",
+                            backgroundColor: "rgb(189,214,238)",
+                            border: "1px solid black",
+                            textAlign: "center",
+                          }}
+                          rowSpan={2}
+                        >
+                          {" "}
+                          DAILY WAGE{" "}
+                        </td>
+                        <td
+                          style={{
+                            fontWeight: "bold",
+                            backgroundColor: "rgb(189,214,238)",
+                            border: "1px solid black",
+                            textAlign: "center",
+                          }}
+                          rowSpan={1}
+                          colSpan={2}
+                        >
+                          {" "}
+                          PERIOD OF EMPLOYMENT{" "}
+                        </td>
+                        <td
+                          style={{
+                            fontWeight: "bold",
+                            backgroundColor: "rgb(189,214,238)",
+                            border: "1px solid black",
+                            textAlign: "center",
+                          }}
+                          rowSpan={2}
+                        >
+                          {" "}
+                          ACKNOWLEDGEMENT
+                        </td>
+                      </tr>
+                      <tr>
+                        <td
+                          style={{
+                            fontWeight: "bold",
+                            backgroundColor: "rgb(189,214,238)",
+                            border: "1px solid black",
+                            textAlign: "center",
+                          }}
+                        >
+                          {" "}
+                          FROM{" "}
+                        </td>
+                        <td
+                          style={{
+                            fontWeight: "bold",
+                            backgroundColor: "rgb(189,214,238)",
+                            border: "1px solid black",
+                            textAlign: "center",
+                          }}
+                        >
+                          {" "}
+                          TO{" "}
+                        </td>
+                      </tr>
+                      {/* {result && result.map((item, ix) => ( */}
 
-              <div>
-                <p>
-                  {prfData
-                    ? prfData.signatory && prfData.signatory.mayor.auth_name
-                    : ""}
-                </p>
-                <p>
-                  {prfData
-                    ? prfData.signatory && prfData.signatory.mayor.position
-                    : ""}
-                </p>
-                <p>For the Mayor:</p>
-              </div>
-              <div>
-                <p>
-                  {prfData
-                    ? prfData.signatory && prfData.signatory.admin.assigned_for
-                    : ""}
-                </p>
-                <p>
-                  {prfData
-                    ? prfData.signatory && prfData.signatory.admin.position
-                    : ""}
-                </p>
-              </div> */}
-            </PrintableTemplate>
-          </React.Fragment>
-        ))}
+                      {item.map((item, index) => (
+                        <tr key={index}>
+                          <td
+                            style={{
+                              border: "1px solid black",
+                              textAlign: "center",
+                            }}
+                          >
+                            1.
+                          </td>
+                          <td
+                            style={{
+                              textAlign: "left",
+                              fontWeight: "bold",
+                              border: "1px solid black",
+                              textAlign: "left",
+                            }}
+                          >
+                            {formatName(
+                              item.fname,
+                              item.mname,
+                              item.lname,
+                              item.extname,
+                              2
+                            ) || "APPLICANT NAME NOT FOUND"}
+                          </td>
+                          <td
+                            style={{
+                              border: "1px solid black",
+                              textAlign: "center",
+                            }}
+                          >
+                            {item.position_title || "NO POSITION TITLE FOUND"}
+                          </td>
+                          <td style={{ border: "1px solid black" }}>
+                            <ul style={{ margin: 0 }}>
+                              {JSON.parse(
+                                prfData.SummaryOfCandidPrfDetails.job_desc
+                              ).map((item, index) => (
+                                <li key={index}>{item}</li>
+                              ))}
+                            </ul>
+                          </td>
+                          <td
+                            style={{
+                              fontWeight: "bold",
+                              border: "1px solid black",
+                              textAlign: "center",
+                            }}
+                          >
+                            {(prfData.SummaryOfCandidPrfDetails.pay_sal &&
+                              phpPesoIntFormater.format(
+                                prfData.SummaryOfCandidPrfDetails.pay_sal
+                              )) ||
+                              "0.00"}
+                          </td>
+                          <td
+                            style={{
+                              border: "1px solid black",
+                              textAlign: "center",
+                            }}
+                          >
+                            {item.appoint_date
+                              ? moment(JSON.parse(item.appoint_date)[0]).format(
+                                  "MMMM DD, YYYY"
+                                )
+                              : "NO DATE FOUND"}
+                          </td>
+                          <td
+                            style={{
+                              border: "1px solid black",
+                              textAlign: "center",
+                            }}
+                          >
+                            {item.appoint_date
+                              ? moment(JSON.parse(item.appoint_date)[1]).format(
+                                  "MMMM DD, YYYY"
+                                )
+                              : "NO DATE FOUND"}
+                          </td>
+                          <td
+                            style={{
+                              border: "1px solid black",
+                              textAlign: "center",
+                            }}
+                          ></td>
+                        </tr>
+                      ))}
+                      {/* ))} */}
+                    </tbody>
+                  </table>
+                  {index === chunkState.length - 1 && (
+                    <>
+                      <p>Republic of the Philippines</p>
+                      <ul>
+                        {JSON.parse(
+                          prfData.SummaryOfCandidPrfDetails.terms_condi
+                        ).map((item, index) => (
+                          <li key={index}>{item}</li>
+                        ))}
+                      </ul>
+
+                      <div>
+                        <p>Prepared by:</p>
+                        <p>{prfData.signatory.dept_head.assigned_by}</p>
+                        <p>{prfData.signatory.dept_head.position_name}</p>
+                        <p>{prfData.signatory.dept_head.position}</p>
+                      </div>
+                      <div>
+                        <p>Recommending Approval:</p>
+                        <p>{prfData.signatory.accounting.assigned_by}</p>
+                        <p>{prfData.signatory.accounting.position_name}</p>
+                        <p>{prfData.signatory.accounting.position}</p>
+                      </div>
+                      <div>
+                        <p>Approved:</p>
+                        <p>{prfData.signatory.mayor.auth_name}</p>
+                        <p>{prfData.signatory.mayor.position}</p>
+                      </div>
+                    </>
+                  )}
+                  <div
+                    style={{
+                      display: "flex",
+                      fontSize: "9px",
+                      marginTop: "1rem",
+                    }}
+                  >
+                    <div>CHRMO.02/AKP</div>
+                    <div style={{ flex: "1 1 auto" }}></div>
+                    <div>
+                      Page {index + 1} of {chunkState.length}
+                    </div>
+                  </div>
+                </PrintableTemplate>
+              </React.Fragment>
+            ))}
+        </>
+      )}
     </>
-  );
+  )
 }
 
-export default PrintableJo;
+export default PrintableJo

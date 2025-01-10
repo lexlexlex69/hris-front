@@ -7,6 +7,7 @@ import { usePrfData } from "../context/PrintableDataProvider"
 import CustomInput2 from "./CustomInput2"
 import CustomInput3 from "./CustomInput3"
 import CustomSelect from "./CustomSelect"
+import CustomJOinput from "./CustomJOinput"
 
 const TabComponent = ({ process }) => {
   const [activeTab, setActiveTab] = useState("essentials")
@@ -18,7 +19,7 @@ const TabComponent = ({ process }) => {
     forDesignFooter,
   } = usePrfData()
 
-  prfData && console.log(prfData.SummaryOfCandidFindings)
+  prfData && console.log(prfData.SummaryOfCandidPrfDetails)
 
   console.log("forRecommendedBy", forRecommendedBy)
   const handleTabClick = (tab) => {
@@ -93,6 +94,18 @@ const TabComponent = ({ process }) => {
             {/* <CustomInput title={"SALARY"} tab={"Essentials"} /> */}
             {process !== "summaryofcandid" && process !== "jo" && (
               <CustomSelect title={"SALARY"} />
+            )}
+            {process === "jo" && (
+              <>
+                <CustomJOinput
+                  title={"SALARY"}
+                  // dataList={"asdfasdf"}
+                  // dataList={JSON.parse(
+                  //   prfData.SummaryOfCandidPrfDetails.job_desc
+                  // )}
+                />
+                <p>sdfsdf</p>
+              </>
             )}
           </div>
         )}
