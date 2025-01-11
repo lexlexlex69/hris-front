@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import "./CustomInput.css"
 import { usePrfData } from "../context/PrintableDataProvider"
 import {
@@ -28,29 +28,43 @@ import {
 import { phpPesoIntFormater } from "../../components/export_components/ExportComp"
 import { toWords } from "number-to-words"
 
-function CustomJOinput({ title, dataList }) {
+function CustomJOinput({ title, objectName }) {
   const { setPrfData, handleRowClick, prfData } = usePrfData()
-  const [salaryToggler, setSalaryToggler] = useState(false)
-  const [testSelect, setTestSelect] = useState("blue")
-  const [jobDesc, setJobDesc] = useState(
-    prfData && prfData.SummaryOfCandidPrfDetails
-  )
+  const [inputState, setInputState] = useState("")
+  const [objectState, setObjectState] = useState()
+
+  useEffect(() => {
+    console.log("prfDatajo", prfData)
+    prfData &&
+      setObjectState(JSON.parse(prfData.SummaryOfCandidPrfDetails[objectName]))
+  }, [prfData])
+
   // const [tempSelect, setTempSelect] = useState(
   //   prfData ? prfData.SummaryOfCandidPrfDetails.sal_value : 0
   // )
-  jobDesc && console.log(jobDesc)
-  const handleEmployerChange = (index, value) => {
+  console.log("objectState", objectState)
+
+  const handleAddItem = () => {
+    if (inputState.trim() === "") return
+    setObjectState([...objectState, inputState])
+    setInputState("")
+  }
+  const handleJobDescChange = (index, value) => {
     // Create a copy of the current state
-    const updatedArr = [...jobDesc.job_desc]
+    const updatedArr = [...objectState]
     console.log("updatedArr", updatedArr)
     // Update the specific employer's value
     updatedArr[index] = value
+    console.log("updatedArr", updatedArr)
 
-    // // Set the new state with the updated employer list
-    setJobDesc((prevState) => ({
-      ...prevState,
-      job_desc: updatedArr,
-    }))
+    // // // Set the new state with the updated employer list
+    setObjectState(updatedArr)
+  }
+
+  const handleDeleteJobDesc = (index) => {
+    const updatedArr = [...objectState]
+    updatedArr.splice(index, 1)
+    setObjectState(updatedArr)
   }
 
   return (
@@ -58,28 +72,45 @@ function CustomJOinput({ title, dataList }) {
       <div className="PRF_CustomInput_Header">{title}</div>
       <div className="PRF_CustomInput_Body">
         <>
-          <input type="text" name="" id="" />
-          <button></button>
-          {/* after nako mefetch ang prfdata, dapat convert nako ang job_desc into array then replace ang data sulod sa job_desc into the new array,
-
-for changing data and save, dapat direct change ang array, for saving ky dapat ma convert ang katong array into string */}
+          <input
+            type="text"
+            name=""
+            id=""
+            value={inputState}
+            onChange={(e) => setInputState(e.target.value)}
+          />
+          <button onClick={handleAddItem}>Add</button>
           <ol>
-            {jobDesc &&
-              jobDesc.job_desc.map((item, index) => (
-                <li>
+            {objectState &&
+              objectState.map((item, index) => (
+                <li key={index}>
                   <input
                     type="text"
                     name=""
                     id=""
                     value={item}
-                    onChange={(e) =>
-                      handleEmployerChange(index, e.target.value)
-                    }
+                    onChange={(e) => handleJobDescChange(index, e.target.value)}
                   />{" "}
-                  <button>Remove</button>
+                  <button onClick={() => handleDeleteJobDesc(index)}>
+                    Remove
+                  </button>
                 </li>
               ))}
           </ol>
+
+          <button
+            onClick={() => {
+              setPrfData((prev) => ({
+                ...prev,
+                SummaryOfCandidPrfDetails: {
+                  ...prev.SummaryOfCandidPrfDetails,
+                  [objectName]: JSON.stringify(objectState),
+                },
+              }))
+            }}
+          >
+            apply changes
+          </button>
         </>
       </div>
     </div>

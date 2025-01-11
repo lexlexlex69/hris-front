@@ -63,25 +63,49 @@ export const PrfContextProvider = ({ children }) => {
         // let response2 = ;
 
         // console.log("response2", response2);
-        if (processType === "summaryofcandid") setPrfData(response1.data)
-        else if (processType !== "summaryofcandid")
+        if (processType === "summaryofcandid") {
+          console.log("summaryprf", response1.data)
+          setPrfData({
+            ...response1.data,
+            essentials: {
+              endorsed_by: response1.data.essentials
+                ? response1.data.essentials.endorsed_by
+                : "EDIT THIS",
+              endorsed_by_department: response1.data.essentials
+                ? response1.data.essentials.endorsed_by_department
+                : "EDIT THIS",
+              endorsed_by_position: response1.data.essentials
+                ? response1.data.essentials.endorsed_by_position
+                : "EDIT THIS",
+              prepared_by: response1.data.essentials
+                ? response1.data.essentials.prepared_by
+                : "EDIT THIS",
+              prepared_by_position: response1.data.essentials
+                ? response1.data.essentials.prepared_by_position
+                : "EDIT THIS",
+            },
+          })
+        } else if (processType !== "summaryofcandid") {
+          console.log("nonsummaryprf", response1.data)
           setPrfData({
             SummaryOfCandidApplicantDetails:
               response1.data.SummaryOfCandidApplicantDetails.filter(
                 (finding) => finding.remark === "SELECTED"
               ),
-            SummaryOfCandidPrfDetails: {
-              ...response1.data.SummaryOfCandidPrfDetails,
-              job_desc: JSON.parse(
-                response1.data.SummaryOfCandidPrfDetails.job_desc
-              ),
-              terms_condi: JSON.parse(
-                response1.data.SummaryOfCandidPrfDetails.terms_condi
-              ),
-            },
+            SummaryOfCandidPrfDetails: response1.data.SummaryOfCandidPrfDetails,
+            // SummaryOfCandidPrfDetails: {
+            //   ...response1.data.SummaryOfCandidPrfDetails,
+            //   job_desc: JSON.parse(
+            //     response1.data.SummaryOfCandidPrfDetails.job_desc
+            //   ),
+            //   terms_condi: JSON.parse(
+            //     response1.data.SummaryOfCandidPrfDetails.terms_condi
+            //   ),
+            // },
             footer: response1.data.footer,
             header: response1.data.header,
           })
+        }
       }
     } catch (error) {
       console.error("Error fetching data:", error)

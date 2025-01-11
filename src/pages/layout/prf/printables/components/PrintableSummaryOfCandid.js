@@ -1,9 +1,9 @@
-import React from "react";
-import { usePrfData } from "../context/PrintableDataProvider";
-import PrintableTemplate from "./PrintableTemplate";
-import { capitalizeWords } from "../Utils";
-import { arrayDisplay } from "./PrintableContent";
-import SummaryOfCandidBody1 from "./SummaryOfCandidBody1";
+import React from "react"
+import { usePrfData } from "../context/PrintableDataProvider"
+import PrintableTemplate from "./PrintableTemplate"
+import { capitalizeWords } from "../Utils"
+import { arrayDisplay } from "./PrintableContent"
+import SummaryOfCandidBody1 from "./SummaryOfCandidBody1"
 
 function PrintableSummaryOfCandid() {
   const {
@@ -13,7 +13,7 @@ function PrintableSummaryOfCandid() {
     forDesignHeader,
     forDesignFooter,
     designPreview,
-  } = usePrfData();
+  } = usePrfData()
   return (
     <>
       {chunkState &&
@@ -139,7 +139,7 @@ function PrintableSummaryOfCandid() {
           </React.Fragment>
         ))}
     </>
-  );
+  )
 }
 
-export default PrintableSummaryOfCandid;
+export default PrintableSummaryOfCandid

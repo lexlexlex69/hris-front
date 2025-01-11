@@ -1,4 +1,11 @@
+.printableHeader {
+  margin: 10px 0px;
+  background-color: red;
+  height: 150px;
+  width: 100%;
+  overflow: hidden;
+}
 .printableHeader img {
-  /* background-color: red; */
+  background-color: blue;
   width: 100%;
 }

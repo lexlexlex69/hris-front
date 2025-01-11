@@ -1,11 +1,12 @@
-import React from "react";
-import PrintableHeader from "./PrintableHeader";
+import React from "react"
+import PrintableHeader from "./PrintableHeader"
 
 function PrintableHeaderContainer({ designPreview, forDesign, type }) {
-  console.log("designPreview", designPreview);
+  console.log("designPreview", designPreview)
   return (
     <>
-      {(designPreview.header !== null || designPreview.footer !== null) && (
+      <PrintableHeader />
+      {/* {(designPreview.header !== null || designPreview.footer !== null) && (
         <PrintableHeader
           headerURL={
             type === "header"
@@ -15,13 +16,13 @@ function PrintableHeaderContainer({ designPreview, forDesign, type }) {
           type={type}
           changedPreview={true}
         />
-      )}
+      )} */}
 
-      {designPreview.header === null &&
+      {/* {designPreview.header === null &&
         designPreview.footer === null &&
-        forDesign && <PrintableHeader headerURL={forDesign} type={type} />}
+        forDesign && <PrintableHeader headerURL={forDesign} type={type} />} */}
     </>
-  );
+  )
 }
 
-export default PrintableHeaderContainer;
+export default PrintableHeaderContainer

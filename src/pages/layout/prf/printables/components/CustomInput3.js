@@ -1,27 +1,16 @@
-import React, { useRef, useState } from "react";
-import "./CustomInput2.css";
-import { usePrfData } from "../context/PrintableDataProvider";
-import nophoto from "../images/nophoto.png";
+import React, { useRef, useState } from "react"
+import "./CustomInput2.css"
+import { usePrfData } from "../context/PrintableDataProvider"
+import nophoto from "../images/nophoto.png"
 
-function CustomInput3({ title, img }) {
-  const { headerImg, footerImg, handleImgFile, handleApplyImg } = usePrfData();
-  const image_pathRef = useRef();
-  // const handleImageUpload = async () => {
-  //   const imagepath = image_pathRef.current.files[0]; // Get the selected file
-  //   try {
-  //     if (imagepath) {
-  //       const formData = new FormData();
-  //       formData.append("imagepath", imagepath); // Append the file to the form data
-  //       formData.append("_method", "PUT"); // Append the file to the form data
-  //       await updatePhoto(formData);
-  //     }
+function CustomInput3({ title, imgUrl, designPreview }) {
+  const { headerImg, footerImg, handleImgFile, handleApplyImg } = usePrfData()
+  const image_pathRef = useRef()
 
-  //     await currentUser();
-  //     window.location.reload(false);
-  //   } catch (e) {
-  //     console.log(e);
-  //   }
-  // };
+  const imageChanged = designPreview
+  const defaultImage = imgUrl
+    ? `http://127.0.0.1:8000/storage/${imgUrl}`
+    : nophoto
 
   return (
     <div className="PRF_CustomInput">
@@ -29,22 +18,26 @@ function CustomInput3({ title, img }) {
       <div className="PRF_CustomInput_Body2">
         <div className="PRF_CustomInput_Design_Container">
           <div className="PRF_CustomInput_Design_Image_Container printableHeader">
-            {title === "HEADER" && !headerImg && img && (
+            <img src={imageChanged ? imageChanged : defaultImage} />
+            {/* {title === "HEADER" && !headerImg && img && (
               <img
                 src={img ? `http://127.0.0.1:8000/storage/${img}` : nophoto}
               />
             )}
+
             {title === "HEADER" && headerImg && (
               <img src={headerImg ? headerImg.preview : nophoto} />
             )}
+
             {title === "FOOTER" && !footerImg && img && (
               <img
                 src={img ? `http://127.0.0.1:8000/storage/${img}` : nophoto}
               />
             )}
+
             {title === "FOOTER" && footerImg && (
               <img src={footerImg ? footerImg.preview : nophoto} />
-            )}
+            )} */}
           </div>
 
           {/* <div className="PRF_CustomInput_Design_Image_Container">
@@ -86,7 +79,7 @@ function CustomInput3({ title, img }) {
         </div>
       </div>
     </div>
-  );
+  )
 }
 
-export default CustomInput3;
+export default CustomInput3

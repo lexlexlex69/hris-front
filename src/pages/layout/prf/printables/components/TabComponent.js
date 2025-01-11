@@ -17,9 +17,11 @@ const TabComponent = ({ process }) => {
     forRecommendedBy,
     forDesignHeader,
     forDesignFooter,
+    headerImg,
+    footerImg,
   } = usePrfData()
 
-  prfData && console.log(prfData.SummaryOfCandidPrfDetails)
+  prfData && console.log("prfData", prfData)
 
   console.log("forRecommendedBy", forRecommendedBy)
   const handleTabClick = (tab) => {
@@ -97,31 +99,23 @@ const TabComponent = ({ process }) => {
             )}
             {process === "jo" && (
               <>
-                <CustomJOinput
-                  title={"SALARY"}
-                  // dataList={"asdfasdf"}
-                  // dataList={JSON.parse(
-                  //   prfData.SummaryOfCandidPrfDetails.job_desc
-                  // )}
-                />
-                <p>sdfsdf</p>
+                <CustomJOinput title={"SALARY"} objectName="job_desc" />
+                <CustomJOinput title={"SALARY"} objectName="terms_condi" />
               </>
             )}
           </div>
         )}
         {activeTab === "design" && (
           <div className="tab-content-body">
-            {/* <h2>Design</h2>
-            <p>This is the content for the Design tab.</p> */}
             <CustomInput3
               title={"HEADER"}
-              tab={"design"}
-              img={forDesignHeader}
+              imgUrl={forDesignHeader}
+              designPreview={headerImg ? headerImg.preview : ""}
             />
             <CustomInput3
               title={"FOOTER"}
-              tab={"design"}
-              img={forDesignFooter}
+              imgUrl={forDesignFooter}
+              designPreview={footerImg ? footerImg.preview : ""}
             />
           </div>
         )}

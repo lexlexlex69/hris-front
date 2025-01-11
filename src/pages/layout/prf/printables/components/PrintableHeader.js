@@ -1,36 +1,34 @@
 import React from "react"
 import "./PrintableHeader.css"
 import nophoto from "../images/nophoto.png"
+import letterfoot from "../images/letterfoot.png"
+import letterhead from "../images/letterhead.png"
+import { usePrfData } from "../context/PrintableDataProvider"
 
-function PrintableHeader({ headerURL, type, changedPreview }) {
-  console.log(headerURL)
+function PrintableHeader({ imgUrl, designPreview, type }) {
+  const imageChanged = designPreview
+  const defaultImage = imgUrl
+    ? `http://127.0.0.1:8000/storage/${imgUrl}`
+    : type === "header"
+    ? letterhead
+    : letterfoot
+  console.log(imgUrl)
   return (
     <>
-      {type === "header" ? (
-        <header className="printableHeader">
-          <img
-            src={
-              !changedPreview
-                ? headerURL
-                  ? `http://127.0.0.1:8000/storage/${headerURL}`
-                  : nophoto
-                : headerURL
-            }
-          />
-        </header>
-      ) : (
-        <footer className="printableHeader">
-          <img
-            src={
-              !changedPreview
-                ? headerURL
-                  ? `http://127.0.0.1:8000/storage/${headerURL}`
-                  : nophoto
-                : headerURL
-            }
-          />
-        </footer>
-      )}
+      <div className="printableHeader">
+        <img src={imageChanged ? imageChanged : defaultImage} />
+      </div>
+      {/* <div className="printableHeader">
+        <img
+          src={
+            !changedPreview
+              ? headerURL
+                ? `http://127.0.0.1:8000/storage/${headerURL}`
+                : nophoto
+              : headerURL
+          }
+        />
+      </div> */}
     </>
   )
 }

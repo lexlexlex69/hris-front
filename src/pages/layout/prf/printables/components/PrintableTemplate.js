@@ -1,5 +1,6 @@
-import React from "react";
-import PrintableHeaderContainer from "./PrintableHeaderContainer";
+import React from "react"
+import PrintableHeaderContainer from "./PrintableHeaderContainer"
+import PrintableHeader from "./PrintableHeader"
 
 function PrintableTemplate({
   children,
@@ -10,20 +11,30 @@ function PrintableTemplate({
 }) {
   return (
     <div className="page" key={index}>
-      <PrintableHeaderContainer
+      {/* <PrintableHeaderContainer
         designPreview={designPreview}
         forDesign={forDesignHeader}
         type="header"
+      /> */}
+      <PrintableHeader
+        imgUrl={forDesignHeader}
+        designPreview={designPreview.header}
+        type={"header"}
       />
 
       <div className="page-body">{children}</div>
-      <PrintableHeaderContainer
+      <PrintableHeader
+        imgUrl={forDesignFooter}
+        designPreview={designPreview.footer}
+        type={"footer"}
+      />
+      {/* <PrintableHeaderContainer
         designPreview={designPreview}
         forDesign={forDesignFooter}
         type="footer"
-      />
+      /> */}
     </div>
-  );
+  )
 }
 
-export default PrintableTemplate;
+export default PrintableTemplate
