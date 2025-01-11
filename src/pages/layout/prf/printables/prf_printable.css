@@ -1,24 +1,25 @@
 .prf_printable {
   margin-top: -10px;
   width: calc(100vw - 1px);
-  height: calc(100vh - 90px);
+  height: calc(100vh - 50px);
+  /* height: 100vh; */
   background-color: #f0f1f5;
-
+  overflow-y: hidden;
   display: flex;
 }
 
 .prf_printable_nav {
-  background-color: white;
-  width: 40%;
-  min-width: 570px;
-
-  z-index: 9999;
+  background-color: red;
+  /* width: 40%; */
+  width: 470px;
+  border-right: 1px solid black;
+  /* z-index: 9999; */
 }
 .prf_printable_main {
   /* background-color: red; */
   background-color: #f0f1f5;
   flex: 1;
-  z-index: 9999;
+  /* z-index: 9999; */
   /* display: flex;
   flex-direction: column;
   justify-content: center;

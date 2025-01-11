@@ -2,6 +2,8 @@ import React, { useRef, useState } from "react"
 import "./CustomInput2.css"
 import { usePrfData } from "../context/PrintableDataProvider"
 import nophoto from "../images/nophoto.png"
+import letterfoot from "../images/letterfoot.png"
+import letterhead from "../images/letterhead.png"
 
 function CustomInput3({ title, imgUrl, designPreview }) {
   const { headerImg, footerImg, handleImgFile, handleApplyImg } = usePrfData()
@@ -10,7 +12,9 @@ function CustomInput3({ title, imgUrl, designPreview }) {
   const imageChanged = designPreview
   const defaultImage = imgUrl
     ? `http://127.0.0.1:8000/storage/${imgUrl}`
-    : nophoto
+    : title === "HEADER"
+    ? letterhead
+    : letterfoot
 
   return (
     <div className="PRF_CustomInput">

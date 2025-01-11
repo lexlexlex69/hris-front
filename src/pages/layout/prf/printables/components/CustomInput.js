@@ -12,7 +12,7 @@ function CustomInput({
 }) {
   value && console.log(value)
   names && console.log(names.byName)
-  const { setPrfData, handleRowClick } = usePrfData()
+  const { setPrfData, handleViewClick } = usePrfData()
 
   const handleInputChange = (e) => {
     const { name, value } = e.target
@@ -77,7 +77,7 @@ function CustomInput({
                 <button
                   className="PRF_CustomInput_Button"
                   onClick={() => {
-                    handleRowClick(title)
+                    handleViewClick(title)
                   }}
                 >
                   View List

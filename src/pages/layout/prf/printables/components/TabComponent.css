@@ -1,5 +1,8 @@
 .tab-container {
   font-family: Arial, sans-serif;
+  background-color: white;
+  height: 100%;
+  width: 100%;
 }
 
 .tab-header {
@@ -29,12 +32,12 @@
 
 .tab-content {
   padding: 10px 30px;
+  overflow: scroll;
 }
 
 .tab-content-body {
   display: flex;
   flex-direction: column;
   gap: 25px;
-  overflow-y: auto;
   padding: 0px 10px;
 }

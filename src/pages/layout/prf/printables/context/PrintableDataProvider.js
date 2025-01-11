@@ -32,17 +32,17 @@ export const PrfContextProvider = ({ children }) => {
 
   const [modalTitle, setModalTitle] = useState()
 
-  // const handleRowClick = (title) => {
-  //   // console.log("date", date);
-  //   // setSelectedDate(date);
-  //   // setModalData(groupedData[date]);
-  //   setShowModal(true);
-  //   setModalTitle(title);
-  //   // let data = fakeResponse;
-  //   // setModalData(data);
-  //   // modalDataSetter(date);
-  //   // console.log("modalData", modalData);
-  // };
+  const handleViewClick = (title) => {
+    // console.log("date", date);
+    // setSelectedDate(date);
+    // setModalData(groupedData[date]);
+    setShowModal(true)
+    setModalTitle(title)
+    // let data = fakeResponse;
+    // setModalData(data);
+    // modalDataSetter(date);
+    // console.log("modalData", modalData);
+  }
 
   const closeModal = () => {
     setShowModal(false)
@@ -426,7 +426,7 @@ export const PrfContextProvider = ({ children }) => {
         designPreview,
         handleApplyImg,
         showModal,
-        // handleRowClick,
+        handleViewClick,
         closeModal,
         modalTitle,
         fetchEmployeeByName,
