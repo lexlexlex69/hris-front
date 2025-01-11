@@ -32,38 +32,27 @@ function CustomJOinput({ title, dataList }) {
   const { setPrfData, handleRowClick, prfData } = usePrfData()
   const [salaryToggler, setSalaryToggler] = useState(false)
   const [testSelect, setTestSelect] = useState("blue")
+  const [jobDesc, setJobDesc] = useState(
+    prfData && prfData.SummaryOfCandidPrfDetails
+  )
   // const [tempSelect, setTempSelect] = useState(
   //   prfData ? prfData.SummaryOfCandidPrfDetails.sal_value : 0
   // )
-  prfData && console.log(prfData.SummaryOfCandidPrfDetails.job_desc)
+  jobDesc && console.log(jobDesc)
+  const handleEmployerChange = (index, value) => {
+    // Create a copy of the current state
+    const updatedArr = [...jobDesc.job_desc]
+    console.log("updatedArr", updatedArr)
+    // Update the specific employer's value
+    updatedArr[index] = value
 
-  // console.log(dataList)
-  // const handleInputChange = (e) => {
-  //   const { name, value } = e.target;
-  //   setPrfData((prevDetails) => ({
-  //     ...prevDetails,
-  //     essentials: { ...prevDetails.essentials, [name]: value },
-  //   }));
-  // };
-  // const handleApplyChange = (e) => {
-  //   e.preventDefault();
-  //   setPrfData((prev) => ({
-  //     ...prev,
-  //     essentials: tempData,
-  //   }));
-  // };
+    // // Set the new state with the updated employer list
+    setJobDesc((prevState) => ({
+      ...prevState,
+      job_desc: updatedArr,
+    }))
+  }
 
-  // const handleSaveSalarySetting = (e) => {
-  //   setSalaryToggler((prev) => !prev)
-  //   e.preventDefault()
-  //   setPrfData((prevDetails) => ({
-  //     ...prevDetails,
-  //     SummaryOfCandidPrfDetails: {
-  //       ...prevDetails.SummaryOfCandidPrfDetails,
-  //       sal_value: tempSelect,
-  //     },
-  //   }))
-  // }
   return (
     <div className="PRF_CustomInput">
       <div className="PRF_CustomInput_Header">{title}</div>
@@ -75,27 +64,21 @@ function CustomJOinput({ title, dataList }) {
 
 for changing data and save, dapat direct change ang array, for saving ky dapat ma convert ang katong array into string */}
           <ol>
-            {prfData &&
-              JSON.parse(prfData.SummaryOfCandidPrfDetails.job_desc).map(
-                (item, index) => (
-                  <li>
-                    <input
-                      type="text"
-                      name=""
-                      id=""
-                      value={item}
-                      //                 onChange={() => setPrfData(prev =>({
-                      //   ...prev,
-                      //   SummaryOfCandidPrfDetails: {
-                      //     ...prev.SummaryOfCandidPrfDetails,
-                      //     job_desc:
-                      //   },
-                      // }))}
-                    />{" "}
-                    <button>Remove</button>
-                  </li>
-                )
-              )}
+            {jobDesc &&
+              jobDesc.job_desc.map((item, index) => (
+                <li>
+                  <input
+                    type="text"
+                    name=""
+                    id=""
+                    value={item}
+                    onChange={(e) =>
+                      handleEmployerChange(index, e.target.value)
+                    }
+                  />{" "}
+                  <button>Remove</button>
+                </li>
+              ))}
           </ol>
         </>
       </div>

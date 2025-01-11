@@ -186,11 +186,11 @@ function PrintableJo() {
                           </td>
                           <td style={{ border: "1px solid black" }}>
                             <ul style={{ margin: 0 }}>
-                              {JSON.parse(
-                                prfData.SummaryOfCandidPrfDetails.job_desc
-                              ).map((item, index) => (
-                                <li key={index}>{item}</li>
-                              ))}
+                              {prfData.SummaryOfCandidPrfDetails.job_desc.map(
+                                (item, index) => (
+                                  <li key={index}>{item}</li>
+                                )
+                              )}
                             </ul>
                           </td>
                           <td
@@ -245,11 +245,11 @@ function PrintableJo() {
                     <>
                       <p>Republic of the Philippines</p>
                       <ul>
-                        {JSON.parse(
-                          prfData.SummaryOfCandidPrfDetails.terms_condi
-                        ).map((item, index) => (
-                          <li key={index}>{item}</li>
-                        ))}
+                        {prfData.SummaryOfCandidPrfDetails.terms_condi.map(
+                          (item, index) => (
+                            <li key={index}>{item}</li>
+                          )
+                        )}
                       </ul>
 
                       <div>
