@@ -78,6 +78,9 @@
   align-items: center;
   justify-content: space-between;
 }
+.PRF_CustomInput_Design_Input input {
+  max-width: 40%;
+}
 .PRF_CustomInput_Design_Input_Department {
   margin: 0px;
   color: gray;
