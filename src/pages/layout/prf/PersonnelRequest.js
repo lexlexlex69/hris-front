@@ -1,5 +1,5 @@
-import { Fragment, useContext, useEffect, useState } from "react";
-import PrfProvider, { PrfStateContext } from "./PrfProvider";
+import { Fragment, useContext, useEffect, useState } from "react"
+import PrfProvider, { PrfStateContext } from "./PrfProvider"
 
 import {
   Accordion,
@@ -15,7 +15,7 @@ import {
   TableHead,
   TableRow,
   Tooltip,
-} from "@mui/material";
+} from "@mui/material"
 import {
   Preview as PreviewIcon,
   Assessment as AssessmentIcon,
@@ -25,39 +25,39 @@ import {
   ExpandMore as ExpandMoreIcon,
   ChevronRight as ChevronRightIcon,
   Feed as FeedIcon,
-} from "@mui/icons-material";
-import Grid2 from "@mui/material/Unstable_Grid2/Grid2";
+} from "@mui/icons-material"
+import Grid2 from "@mui/material/Unstable_Grid2/Grid2"
 
-import DashboardLoading from "../loader/DashboardLoading";
-import ModuleHeaderText from "../moduleheadertext/ModuleHeaderText";
-import RequestStatModal from "./components/export_components/RequestStatModal";
-import NoDataFound from "./components/NoDataFound";
+import DashboardLoading from "../loader/DashboardLoading"
+import ModuleHeaderText from "../moduleheadertext/ModuleHeaderText"
+import RequestStatModal from "./components/export_components/RequestStatModal"
+import NoDataFound from "./components/NoDataFound"
 import {
   CustomDialog,
   CustomPopover,
   SearchFilComponent,
   TableContainerComp,
-} from "./components/export_components/ExportComp";
+} from "./components/export_components/ExportComp"
 
-import axios from "axios";
-import { isEmptyObject } from "jquery";
-import moment from "moment";
-import { toast } from "react-toastify";
-import { Link } from "react-router-dom";
-import ProcessDocument from "./documentpreparation/ProcessDocument";
-import ApplicantSelection from "./components/pooling_indorsement/selection/ApplicantSelection";
-import TasRequestStatus from "./documentpreparation/TasRequestStatus";
-import Indorsement from "./documentpreparation/Indorsement";
+import axios from "axios"
+import { isEmptyObject } from "jquery"
+import moment from "moment"
+import { toast } from "react-toastify"
+import { Link } from "react-router-dom"
+import ProcessDocument from "./documentpreparation/ProcessDocument"
+import ApplicantSelection from "./components/pooling_indorsement/selection/ApplicantSelection"
+import TasRequestStatus from "./documentpreparation/TasRequestStatus"
+import Indorsement from "./documentpreparation/Indorsement"
 
 function PersonnelRequest() {
   return (
     <PrfProvider>
       <PersonnelRequestPage />
     </PrfProvider>
-  );
+  )
 }
 
-export default PersonnelRequest;
+export default PersonnelRequest
 
 const tableHeadColumns = [
   { field: "prf_no", headerName: "PRF NO.", width: "90px" },
@@ -70,7 +70,7 @@ const tableHeadColumns = [
   { field: "date_needed", headerName: "DATE NEEDED" },
   { field: "emp_status", headerName: "EMPLOYEE STATUS" },
   { field: "actions", headerName: "ACTIONS", width: "150px" },
-];
+]
 
 function PersonnelRequestPage() {
   const {
@@ -83,39 +83,39 @@ function PersonnelRequestPage() {
     deptData,
     natureReq,
     matches,
-  } = useContext(PrfStateContext);
-  const [loading, setLoading] = useState(true);
-  const [rowData, setRowData] = useState([]);
-  const [filteredData, setFilteredData] = useState([]);
-  const [refSelector, setRefSelector] = useState("");
-  const [refSearch, setRefSearch] = useState("");
-  const [requestLogs, setRequestLogs] = useState([]);
+  } = useContext(PrfStateContext)
+  const [loading, setLoading] = useState(true)
+  const [rowData, setRowData] = useState([])
+  const [filteredData, setFilteredData] = useState([])
+  const [refSelector, setRefSelector] = useState("")
+  const [refSearch, setRefSearch] = useState("")
+  const [requestLogs, setRequestLogs] = useState([])
 
-  const [open, setOpen] = useState(0);
+  const [open, setOpen] = useState(0)
 
-  let controller = new AbortController();
+  let controller = new AbortController()
 
   useEffect(() => {
-    fetchData();
-  }, []);
+    fetchData()
+  }, [])
 
   useEffect(() => {
     if (refSearch === "" || refSelector === "") {
-      setFilteredData(rowData.data);
+      setFilteredData(rowData.data)
     }
-  }, [refSearch, refSelector]);
+  }, [refSearch, refSelector])
 
   useEffect(() => {
     if (isEmptyObject(rowData.data)) {
-      setNoDataFound(true);
+      setNoDataFound(true)
     } else {
-      setNoDataFound(false);
-      setFilteredData(rowData.data);
+      setNoDataFound(false)
+      setFilteredData(rowData.data)
     }
-  }, [rowData]);
+  }, [rowData])
 
   const fetchData = async () => {
-    setLoading(true);
+    setLoading(true)
     try {
       const [res] = await Promise.all([
         axios.post(
@@ -123,78 +123,78 @@ function PersonnelRequestPage() {
           {},
           { signal: controller.signal }
         ),
-      ]);
+      ])
       if (res.data.status === 500) {
-        toast.error(res.data.message);
+        toast.error(res.data.message)
       }
       if (res.data.status === 200) {
-        setRowData(res.data.data);
+        setRowData(res.data.data)
       }
     } catch (error) {
-      console.error("Error fetching data:", error);
+      console.error("Error fetching data:", error)
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   const handleReloadData = () => {
-    fetchData();
-  };
+    fetchData()
+  }
 
   const handleCloseModal = () => {
-    setOpen(0);
-    fetchData();
-  };
+    setOpen(0)
+    fetchData()
+  }
 
   const handleSearchBtn = (e) => {
-    e.preventDefault();
+    e.preventDefault()
     if (refSelector !== "") {
       const filterRes = rowData.data.filter((it) => {
-        return it.office_dept === refSelector;
-      });
-      setFilteredData(filterRes);
+        return it.office_dept === refSelector
+      })
+      setFilteredData(filterRes)
     }
     if (refSearch !== "") {
       const filteredResult = rowData.data.filter((item) => {
         return Object.values(item)
           .join("")
           .toLowerCase()
-          .includes(refSearch.toLowerCase());
-      });
-      setFilteredData(filteredResult);
+          .includes(refSearch.toLowerCase())
+      })
+      setFilteredData(filteredResult)
     }
-  };
+  }
 
   const handleClick = (ev, it, action, emp_stat) => {
-    ev.preventDefault();
-    const f = rowData.signings.filter((m) => m.id_pr_form === it.id);
-    setRequestLogs(f);
-    setOpenedPR(emp_stat);
-    console.log("it", it);
+    ev.preventDefault()
+    const f = rowData.signings.filter((m) => m.id_pr_form === it.id)
+    setRequestLogs(f)
+    setOpenedPR(emp_stat)
+    console.log("it", it)
 
-    setTempReq(it);
+    setTempReq(it)
     switch (action) {
       case "view":
-        setOpen(1);
-        break;
+        setOpen(1)
+        break
       case "indorsement":
-        setOpen(2);
-        break;
+        setOpen(2)
+        break
       case "requirement":
-        setOpen(3);
-        break;
+        setOpen(3)
+        break
       case "assessment":
-        setOpen(4);
-        break;
+        setOpen(4)
+        break
       case "tas":
-        setOpen(5);
-        break;
+        setOpen(5)
+        break
 
       default:
-        toast.warning("Error, action not found!");
-        break;
+        toast.warning("Error, action not found!")
+        break
     }
-  };
+  }
 
   return (
     <Box sx={{ margin: "0 10px 10px 10px" }}>
@@ -291,7 +291,7 @@ function PersonnelRequestPage() {
                                         },
                                       }}
                                     />
-                                  );
+                                  )
                                 })}
                             </Stack>
                           </TableCell>
@@ -483,7 +483,7 @@ function PersonnelRequestPage() {
           matches={matches}
           openner={open > 0}
           handleCloseBTN={() => {
-            setOpen(0);
+            setOpen(0)
           }}
           comptitle=""
           compSize=""
@@ -518,5 +518,5 @@ function PersonnelRequestPage() {
         </CustomDialog>
       </Fragment>
     </Box>
-  );
+  )
 }

@@ -1,7 +1,6 @@
 .printableHeader {
-  margin: 10px 0px;
-  background-color: rgb(206, 206, 206);
-  height: 120px;
+  /* background-color: rgb(206, 206, 206); */
+  height: 140px;
   width: 100%;
   overflow: hidden;
 }

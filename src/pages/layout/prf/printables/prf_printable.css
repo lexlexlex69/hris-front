@@ -1,25 +1,24 @@
 .prf_printable {
+  /* 
+  overflow-y: hidden;*/
+  /* border: 1px solid black; */
   margin-top: -10px;
-  /* width: calc(100vw - 1px);
-  height: calc(100vh - 50px); */
-  height: 70vh;
-  width: 70vw;
+  width: calc(100vw - 10px);
+  height: calc(100vh - 75px);
   background-color: #f0f1f5;
-  /* overflow-y: hidden; */
   display: flex;
-  border: 1px solid black;
 }
 
 .prf_printable_nav {
   background-color: red;
   /* width: 40%; */
   width: 470px;
-  border-right: 1px solid black;
+  /* border-right: 1px solid black; */
   /* z-index: 9999; */
 }
 .prf_printable_main {
   /* background-color: red; */
-  background-color: #f0f1f5;
+  background-color: #cfd1d8;
   flex: 1;
   /* z-index: 9999; */
   /* display: flex;
@@ -37,6 +36,7 @@
   align-items: end;
   background-color: white;
   padding: 5px 20px;
+  border-bottom: 2px solid #d1d1d1;
 }
 .save_changes_bttn {
   background-color: rgb(35, 224, 98);
