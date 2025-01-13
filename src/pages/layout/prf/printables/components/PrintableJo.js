@@ -1,10 +1,10 @@
-import React from "react"
-import { usePrfData } from "../context/PrintableDataProvider"
-import { toWords } from "number-to-words"
-import { phpPesoIntFormater } from "../../components/export_components/ExportComp"
-import moment from "moment"
-import { formatName } from "../../../customstring/CustomString"
-import PrintableTemplate from "./PrintableTemplate"
+import React from "react";
+import { usePrfData } from "../context/PrintableDataProvider";
+import { toWords } from "number-to-words";
+import { phpPesoIntFormater } from "../../components/export_components/ExportComp";
+import moment from "moment";
+import { formatName } from "../../../customstring/CustomString";
+import PrintableTemplate from "./PrintableTemplate";
 
 function PrintableJo() {
   const {
@@ -13,9 +13,9 @@ function PrintableJo() {
     forDesignHeader,
     forDesignFooter,
     designPreview,
-  } = usePrfData()
+  } = usePrfData();
 
-  let dataLoaded = chunkState && prfData && prfData.signatory
+  let dataLoaded = chunkState && prfData && prfData.signatory;
   return (
     <>
       {dataLoaded && (
@@ -28,6 +28,7 @@ function PrintableJo() {
                   forDesignHeader={forDesignHeader}
                   forDesignFooter={forDesignFooter}
                   index={index}
+                  footerLabel={"en"}
                 >
                   <div className="prf_printable_content_page_title">
                     {index === 0 && (
@@ -290,7 +291,7 @@ function PrintableJo() {
         </>
       )}
     </>
-  )
+  );
 }
 
-export default PrintableJo
+export default PrintableJo;

@@ -3,8 +3,12 @@ import { usePrfData } from "../context/PrintableDataProvider";
 import { toWords } from "number-to-words";
 import { phpPesoIntFormater } from "../../components/export_components/ExportComp";
 import moment from "moment";
-import { formatName } from "../../../customstring/CustomString";
+import {
+  autoCapitalizeFirstLetter,
+  formatName,
+} from "../../../customstring/CustomString";
 import PrintableTemplate from "./PrintableTemplate";
+import { casualCheckList } from "../../documentpreparation/ProcessDocument";
 
 function PrintableEn() {
   const { prfData, forDesignHeader, forDesignFooter, designPreview } =
@@ -20,21 +24,55 @@ function PrintableEn() {
               forDesignFooter={forDesignFooter}
               index={index}
             >
-              <div className="prf_printable_content_page_title">
+              <div className="prf_printable_content_page_title customSpace">
                 <p>EMPLOYMENT NOTICE</p>
                 <p>{moment().format("MMMM DD YYYY")}</p>
               </div>
-              <p>
-                To:{" "}
+              <p style={{ fontWeight: "600", marginBottom: "20px" }}>
+                To:{"   "}
+                {"MR/MRS. "}
                 {formatName(
                   item.fname,
                   item.mname,
                   item.lname,
                   item.extname,
                   0
-                ) || "APPLICANT NAME NOT FOUND"}
+                ).toUpperCase() || "APPLICANT NAME NOT FOUND"}
               </p>
-              <span>
+              <span
+                className="customSpace"
+                style={{ textIndent: "2em", display: "block" }}
+              >
+                We would like to inform you that you are hired as a{" "}
+                <strong>
+                  {prfData.SummaryOfCandidPrfDetails.position_title}
+                </strong>{" "}
+                on a{" "}
+                <strong>{prfData.SummaryOfCandidPrfDetails.emp_stat}</strong>{" "}
+                status to be assigned at the{" "}
+                <strong>{prfData.SummaryOfCandidPrfDetails.office_dept}</strong>{" "}
+                with salary grade{" "}
+                <strong>{prfData.SummaryOfCandidPrfDetails.pay_sal}</strong>{" "}
+                <strong>
+                  (SG {prfData.SummaryOfCandidPrfDetails.pay_sal})
+                </strong>{" "}
+                equivalent to a monthly basic pay of{" "}
+                <strong>
+                  {autoCapitalizeFirstLetter(
+                    toWords(prfData.SummaryOfCandidPrfDetails.sal_value)
+                  )}
+                </strong>{" "}
+                <strong>
+                  (
+                  {phpPesoIntFormater.format(
+                    prfData.SummaryOfCandidPrfDetails.sal_value
+                  )}
+                  )
+                </strong>
+                . Please submit the following requirements for the processing of
+                your casual appointment:
+              </span>
+              {/* <span>
                 {`We would like to inform you that you are hired as a  ${
                   prfData.SummaryOfCandidPrfDetails.position_title
                 } on a ${
@@ -50,45 +88,50 @@ function PrintableEn() {
                 )}) (${phpPesoIntFormater.format(
                   prfData.SummaryOfCandidPrfDetails.sal_value
                 )}). Please submit the following requirements for the processing of your casual appointment:`}
-              </span>
+              </span> */}
               <div>
-                <ol>
-                  <li>{`3 Copies – Duly Notarized Personal Data Sheet (CSC Form 212 Revised 2017)`}</li>
-                  <li>{`3 Copies – Duly Notarized Personal Data Sheet (CSC Form 212 Revised 2017)`}</li>
-                  <li>{`3 Copies – Duly Notarized Personal Data Sheet (CSC Form 212 Revised 2017)`}</li>
-                  <li>{`3 Copies – Duly Notarized Personal Data Sheet (CSC Form 212 Revised 2017)`}</li>
-                  <li>{`3 Copies – Duly Notarized Personal Data Sheet (CSC Form 212 Revised 2017)`}</li>
-                  <li>{`3 Copies – Duly Notarized Personal Data Sheet (CSC Form 212 Revised 2017)`}</li>
-                  <li>{`3 Copies – Duly Notarized Personal Data Sheet (CSC Form 212 Revised 2017)`}</li>
-                  <li>{`3 Copies – Duly Notarized Personal Data Sheet (CSC Form 212 Revised 2017)`}</li>
-                  <li>{`3 Copies – Duly Notarized Personal Data Sheet (CSC Form 212 Revised 2017)`}</li>
+                <ol className="customOL">
+                  {casualCheckList.map((item) => (
+                    <li>{item.label}</li>
+                  ))}
                 </ol>
               </div>
-              <span>
-                Kindly submit your complete requirements to the City Human
-                Resource Management Department (CHRMD). The effective date of
-                your appointment is{" "}
-                {moment(JSON.parse(item.appoint_date)).format("MMMM DD, YYYY")}{" "}
+              <span
+                style={{
+                  marginBottom: "40px",
+                  textIndent: "2em",
+                  display: "block",
+                }}
+              >
+                Kindly <strong>submit your complete requirements</strong> to the
+                City Human Resource Management Department (CHRMD). The effective
+                date of your appointment is{" "}
+                <strong style={{ textDecoration: "underline" }}>
+                  {moment(JSON.parse(item.appoint_date)).format(
+                    "MMMM DD, YYYY"
+                  )}
+                </strong>{" "}
                 thus, you are advised to report to CHRMD on the said date.
               </span>
 
-              <div>
-                <p>
-                  {prfData
-                    ? prfData.signatory && prfData.signatory.mayor.auth_name
-                    : ""}
-                </p>
-                <p>
-                  {prfData
-                    ? prfData.signatory && prfData.signatory.mayor.position
-                    : ""}
-                </p>
-                <p>For the Mayor:</p>
+              <div className="printableSignContainer">
+                <div className="printableSignContent">
+                  <strong>
+                    {prfData
+                      ? prfData.signatory && prfData.signatory.mayor.auth_name
+                      : ""}
+                  </strong>
+                  <p>
+                    {prfData
+                      ? prfData.signatory && prfData.signatory.mayor.position
+                      : ""}
+                  </p>
+                </div>
               </div>
-              <div>
+              {/* <div>
                 <p>
                   {prfData
-                    ? prfData.signatory && prfData.signatory.admin.assigned_for
+                    ? prfData.signatory && prfData.signatory.admin.assigned_by
                     : ""}
                 </p>
                 <p>
@@ -96,7 +139,7 @@ function PrintableEn() {
                     ? prfData.signatory && prfData.signatory.admin.position
                     : ""}
                 </p>
-              </div>
+              </div> */}
             </PrintableTemplate>
           </React.Fragment>
         ))}

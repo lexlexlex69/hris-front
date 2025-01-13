@@ -77,7 +77,7 @@ function SummaryOfCandidBody1({ data }) {
                   </td>
                   <td>
                     <div style={{ height: "100%" }}>
-                      <p>Assessment:</p>
+                      <p style={{ fontWeight: "600" }}>Assessment:</p>
                       <ul>
                         {item.assessment.map((item, index) => {
                           return (
@@ -95,7 +95,7 @@ function SummaryOfCandidBody1({ data }) {
                     <div
                       style={{ height: "30%", borderTop: "1px solid black" }}
                     >
-                      <p>Recommended Action:</p>
+                      <p style={{ fontWeight: "600" }}>Recommended Action:</p>
                       <ul>
                         <li key={index}>
                           {item.recom.lname},{item.recom.fname} -{" "}
