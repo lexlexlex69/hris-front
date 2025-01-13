@@ -8,7 +8,7 @@ function SummaryOfCandidBody1({ data }) {
     <>
       <div className="PrintableSummaryOfCandidBody">
         {/* for table2 */}
-        <table>
+        <table className="customFont-10">
           <thead>
             <tr>
               <th>CANDIDATE DETAILS</th>

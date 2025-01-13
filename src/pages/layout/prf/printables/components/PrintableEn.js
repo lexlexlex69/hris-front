@@ -23,14 +23,20 @@ function PrintableEn() {
               forDesignHeader={forDesignHeader}
               forDesignFooter={forDesignFooter}
               index={index}
+              footerLabel={true}
             >
               <div className="prf_printable_content_page_title customSpace">
                 <p>EMPLOYMENT NOTICE</p>
-                <p>{moment().format("MMMM DD YYYY")}</p>
+                <p className="customFont-12">
+                  {moment().format("MMMM DD YYYY")}
+                </p>
               </div>
-              <p style={{ fontWeight: "600", marginBottom: "20px" }}>
+              <p
+                className="customFont-12"
+                style={{ fontWeight: "600", marginBottom: "20px" }}
+              >
                 To:{"   "}
-                {"MR/MRS. "}
+                {"MR/MS. "}
                 {formatName(
                   item.fname,
                   item.mname,
@@ -40,7 +46,7 @@ function PrintableEn() {
                 ).toUpperCase() || "APPLICANT NAME NOT FOUND"}
               </p>
               <span
-                className="customSpace"
+                className="customSpace customFont-11"
                 style={{ textIndent: "2em", display: "block" }}
               >
                 We would like to inform you that you are hired as a{" "}
@@ -90,13 +96,14 @@ function PrintableEn() {
                 )}). Please submit the following requirements for the processing of your casual appointment:`}
               </span> */}
               <div>
-                <ol className="customOL">
+                <ol className="customOL customFont-12">
                   {casualCheckList.map((item) => (
                     <li>{item.label}</li>
                   ))}
                 </ol>
               </div>
               <span
+                className="customFont-11"
                 style={{
                   marginBottom: "40px",
                   textIndent: "2em",
@@ -116,12 +123,12 @@ function PrintableEn() {
 
               <div className="printableSignContainer">
                 <div className="printableSignContent">
-                  <strong>
+                  <strong className="customFont-11">
                     {prfData
                       ? prfData.signatory && prfData.signatory.mayor.auth_name
                       : ""}
                   </strong>
-                  <p>
+                  <p className="customFont-11">
                     {prfData
                       ? prfData.signatory && prfData.signatory.mayor.position
                       : ""}

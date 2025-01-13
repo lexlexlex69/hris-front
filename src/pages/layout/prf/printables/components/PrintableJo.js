@@ -28,7 +28,6 @@ function PrintableJo() {
                   forDesignHeader={forDesignHeader}
                   forDesignFooter={forDesignFooter}
                   index={index}
-                  footerLabel={"en"}
                 >
                   <div className="prf_printable_content_page_title">
                     {index === 0 && (

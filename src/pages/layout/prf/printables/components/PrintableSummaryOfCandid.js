@@ -27,11 +27,11 @@ function PrintableSummaryOfCandid() {
             >
               {index === 0 && (
                 <>
-                  <div className="prf_printable_content_page_title">
+                  <div className="prf_printable_content_page_title customSpace">
                     <p>SUMMARY OF SHORTLISTED CANDIDATES</p>
                   </div>
                   <div className="PrintableSummaryOfCandidBody">
-                    <table className="">
+                    <table className="customFont-10">
                       <tbody>
                         <tr>
                           <td>Position/Job Title</td>

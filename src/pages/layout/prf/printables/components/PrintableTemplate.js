@@ -1,6 +1,7 @@
 import React from "react";
 import PrintableHeaderContainer from "./PrintableHeaderContainer";
 import PrintableHeader from "./PrintableHeader";
+import { usePrfData } from "../context/PrintableDataProvider";
 
 function PrintableTemplate({
   children,
@@ -10,7 +11,9 @@ function PrintableTemplate({
   index,
   footerLabel,
 }) {
+  const { prfData } = usePrfData();
   console.log("footerLabel", footerLabel);
+
   return (
     <div className="page" key={index}>
       {/* <PrintableHeaderContainer
@@ -26,10 +29,14 @@ function PrintableTemplate({
 
       <div className="page-body">{children}</div>
       <div>
-        {footerLabel === "en" && (
+        {footerLabel && (
           <>
-            <p>PRF# </p>
-            <p>CHRMO.02/KJDM </p>
+            <p style={{ fontSize: "8px", marginLeft: "80px" }}>
+              PRF# {prfData && prfData.SummaryOfCandidPrfDetails.prf_no}
+            </p>
+            <p style={{ fontSize: "8px", marginLeft: "80px" }}>
+              CHRMO.02/KJDM{" "}
+            </p>
           </>
         )}
 

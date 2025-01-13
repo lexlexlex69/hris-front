@@ -23,30 +23,47 @@ function PrintableNoe() {
             >
               <div className="prf_printable_content_page_title">
                 <p>NOTICE OF EMPLOYMENT</p>
-                <p>{moment().format("MMMM DD YYYY")}</p>
               </div>
-              <p>
-                {formatName(
-                  item.fname,
-                  item.mname,
-                  item.lname,
-                  item.extname,
-                  0
-                ) || "APPLICANT NAME NOT FOUND"}
+              <p className="customSpace customFont-12">
+                {moment().format("DD MMMM YYYY")}
               </p>
-              <p>Greetings!</p>
-              <span>
-                {`We are happy to inform that you have been selected for the position of  ${
-                  prfData.SummaryOfCandidPrfDetails.position_title
-                } under the ${
-                  prfData.SummaryOfCandidPrfDetails.office_dept
-                }. The said position shall be under a ${
-                  prfData.SummaryOfCandidPrfDetails.emp_stat
-                } status with a gross monthly compensation of ${phpPesoIntFormater.format(
-                  prfData.SummaryOfCandidPrfDetails.sal_value
-                )} effective after compliance of the pre-employment requirements:`}
+              <div className="customSpace">
+                <p className=" customFont-12">
+                  {formatName(
+                    item.fname,
+                    item.mname,
+                    item.lname,
+                    item.extname,
+                    0
+                  ) || "APPLICANT NAME NOT FOUND"}
+                </p>
+
+                <p className=" customFont-12">Address</p>
+              </div>
+              <p className="customSpace customFont-12">Dear Mr./Ms.:</p>
+              <p className="customSpace customFont-12">Greetings!</p>
+              <span className="customFont-12 customSpace">
+                We are happy to inform that you have been selected for the
+                position of{" "}
+                <strong>
+                  {prfData.SummaryOfCandidPrfDetails.position_title}
+                </strong>{" "}
+                under the{" "}
+                <strong>{prfData.SummaryOfCandidPrfDetails.office_dept}</strong>
+                . The said position shall be under a{" "}
+                <strong>{prfData.SummaryOfCandidPrfDetails.emp_stat}</strong>{" "}
+                status with a <strong>gross monthly compensation</strong> of{" "}
+                <strong>
+                  {phpPesoIntFormater.format(
+                    prfData.SummaryOfCandidPrfDetails.sal_value
+                  )}
+                </strong>{" "}
+                effective after compliance of the pre-employment requirements:
               </span>
-              <table style={{ borderCollapse: "collapse" }}>
+              <table
+                className="customFont-12 "
+                style={{ borderCollapse: "collapse" }}
+              >
                 <thead>
                   <tr>
                     <th
@@ -120,17 +137,26 @@ function PrintableNoe() {
                   </tr>
                 </tbody>
               </table>
-              <p sx={{ fontSize: "10px", fontStyle: "italic" }}>
+              <p
+                className="customFont-9"
+                sx={{ fontSize: "10px", fontStyle: "italic" }}
+              >
                 *Professionals who are subject to the professional tax
                 imposition pursuant to Section 139 of the Local Government Code
                 are exempt from paying this fee
               </p>
-              <p sx={{ fontSize: "10px", fontStyle: "italic" }}>
+              <p
+                className="customFont-9 customSpace"
+                sx={{ fontSize: "10px", fontStyle: "italic" }}
+              >
                 **Shall be complied upon receipt of approved Contract and
                 Indorsement signed by the City Treasurer’s Department
               </p>
 
-              <p sx={{ margin: "1rem 0" }}>
+              <p
+                className="customFont-12 customSpace"
+                sx={{ margin: "1rem 0" }}
+              >
                 Kindly{" "}
                 <strong>
                   submit your complete requirements inside a white long folder
@@ -140,32 +166,19 @@ function PrintableNoe() {
                 Management Department (CHRMD).
               </p>
 
-              <p sx={{ marginBottom: "1rem" }}>
+              <p className="customFont-12" style={{ marginBottom: "40px" }}>
                 We are looking forward to having you on our team.
               </p>
 
               <div>
-                <p>
+                <strong className="customFont-12">
                   {prfData
                     ? prfData.signatory && prfData.signatory.mayor.auth_name
                     : ""}
-                </p>
-                <p>
+                </strong>
+                <p className="customFont-12">
                   {prfData
                     ? prfData.signatory && prfData.signatory.mayor.position
-                    : ""}
-                </p>
-                <p>For the Mayor:</p>
-              </div>
-              <div>
-                <p>
-                  {prfData
-                    ? prfData.signatory && prfData.signatory.admin.assigned_by
-                    : ""}
-                </p>
-                <p>
-                  {prfData
-                    ? prfData.signatory && prfData.signatory.admin.position
                     : ""}
                 </p>
               </div>

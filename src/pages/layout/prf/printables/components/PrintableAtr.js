@@ -3,7 +3,10 @@ import { usePrfData } from "../context/PrintableDataProvider";
 import { toWords } from "number-to-words";
 import { phpPesoIntFormater } from "../../components/export_components/ExportComp";
 import moment from "moment";
-import { formatName } from "../../../customstring/CustomString";
+import {
+  formatName,
+  formatNameAbbreviation,
+} from "../../../customstring/CustomString";
 import PrintableTemplate from "./PrintableTemplate";
 
 function PrintableAtr() {
@@ -22,60 +25,97 @@ function PrintableAtr() {
             >
               <div className="prf_printable_content_page_title">
                 <p>ADVICE TO REPORT</p>
-                <p>{moment().format("MMMM DD YYYY")}</p>
+                <p>{moment().format("DD MMMM YYYY")}</p>
               </div>
-              <p>
-                {formatName(
-                  item.fname,
-                  item.mname,
-                  item.lname,
-                  item.extname,
-                  0
-                ) || "APPLICANT NAME NOT FOUND"}
+              <div className="customSpace">
+                <p className=" customFont-12">
+                  {formatName(
+                    item.fname,
+                    item.mname,
+                    item.lname,
+                    item.extname,
+                    0
+                  ) || "APPLICANT NAME NOT FOUND"}
+                </p>
+
+                <p className=" customFont-12">Address</p>
+              </div>
+              <p className="customSpace customFont-12">
+                Dear Mr./Ms. {item.lname},
               </p>
 
-              <p>Dear Mr./Ms. Cruz ,</p>
-              <span>
-                {`We would like to inform you that you are hired as a  ${
-                  prfData.SummaryOfCandidPrfDetails.position_title
-                } on a ${
-                  prfData.SummaryOfCandidPrfDetails.emp_stat
-                } status at the ${
+              <span
+                className="customSpace customFont-12"
+                style={{ marginBottom: "40px" }}
+              >
+                We would like to inform you that you are hired as a{" "}
+                {prfData.SummaryOfCandidPrfDetails.position_title} under a{" "}
+                {prfData.SummaryOfCandidPrfDetails.emp_stat} status at the{" "}
+                {prfData.SummaryOfCandidPrfDetails.office_dept}{" "}
+                {formatNameAbbreviation(
                   prfData.SummaryOfCandidPrfDetails.office_dept
-                } with a compensation of(${toWords(
+                )}{" "}
+                with a compensation of{" "}
+                {toWords(prfData.SummaryOfCandidPrfDetails.sal_value)} (
+                {phpPesoIntFormater.format(
                   prfData.SummaryOfCandidPrfDetails.sal_value
-                )} (${phpPesoIntFormater.format(
-                  prfData.SummaryOfCandidPrfDetails.sal_value
-                )}) effective ${moment(JSON.parse(item.appoint_date)[0]).format(
+                )}
+                ) effective
+                {moment(JSON.parse(item.appoint_date)[0]).format(
                   "MMMM DD, YYYY"
-                )} to ${moment(JSON.parse(item.appoint_date)[1]).format(
+                )}{" "}
+                to $
+                {moment(JSON.parse(item.appoint_date)[1]).format(
                   "MMMM DD, YYYY"
-                )} unless sooner terminated.`}
+                )}{" "}
+                unless sooner terminated.
               </span>
-
-              <p>
-                {`Further, you are directed to report to ${
-                  prfData
-                    ? prfData.signatory &&
-                      prfData.signatory.dept_head.assigned_by
-                    : ""
-                },${
-                  prfData
-                    ? prfData.signatory && prfData.signatory.dept_head.position
-                    : ""
-                }, for the specific details of your job assignment. You are expected to perform your duties with utmost degree of excellence and dedication.`}
+              <p className="customFont-12" style={{ marginBottom: "40px" }}>
+                Further, you are directed to report to{" "}
+                {prfData
+                  ? prfData.signatory && prfData.signatory.dept_head.assigned_by
+                  : ""}
+                ,
+                {prfData
+                  ? prfData.signatory && prfData.signatory.dept_head.position
+                  : ""}
+                , for the specific details of your job assignment. You are
+                expected to perform your duties with utmost degree of excellence
+                and dedication.
               </p>
-              <div>
-                <p>
+              <div className="customSpace customFont-12">
+                <strong>
                   {prfData
                     ? prfData.signatory && prfData.signatory.hr.assigned_by
                     : ""}
-                </p>
-                <p>
+                </strong>
+                <p className="customFont-12">
                   {prfData
-                    ? prfData.signatory && prfData.signatory.hr.position_name
+                    ? prfData.signatory &&
+                      prfData.signatory.hr.position_name
+                        .slice(
+                          0,
+                          prfData.signatory.hr.position_name.indexOf("(")
+                        )
+                        .trim()
                     : ""}
                 </p>
+                <p className="customFont-12">
+                  {prfData
+                    ? prfData.signatory &&
+                      prfData.signatory.hr.position_name
+                        .slice(prfData.signatory.hr.position_name.indexOf("("))
+                        .trim()
+                    : ""}
+                </p>
+                {/* <p>
+                  {prfData
+                    ? prfData.signatory &&
+                      prfData.signatory.hr.position_name
+                        .slice(parenthesisIndex)
+                        .trim()
+                    : ""}
+                </p> */}
               </div>
             </PrintableTemplate>
           </React.Fragment>
