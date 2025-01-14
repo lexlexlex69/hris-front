@@ -16,6 +16,7 @@ function PrintableJo() {
   } = usePrfData();
 
   let dataLoaded = chunkState && prfData && prfData.signatory;
+  let applicantCount = 0;
   return (
     <>
       {dataLoaded && (
@@ -23,29 +24,60 @@ function PrintableJo() {
           {chunkState &&
             chunkState.map((item, index) => (
               <React.Fragment key={index}>
+                <style type="text/css">
+                  {"@media print{@page {size: landscape}}"}
+                </style>
                 <PrintableTemplate
                   designPreview={designPreview}
                   forDesignHeader={forDesignHeader}
                   forDesignFooter={forDesignFooter}
                   index={index}
+                  noHeader={true}
+                  JOSettings={{ index, chunkState }}
                 >
-                  <div className="prf_printable_content_page_title">
+                  <div className="fontArial textCenter">
                     {index === 0 && (
                       <>
-                        <p>Republic of the Philippines</p>
-                        <p>CITY GOVERNMENT OF BUTUAN</p>
-                        <p>Butuan City</p>
-                        <p>JOB ORDER</p>
-                        <span>
-                          <p>Office:</p> <p>CITY ACCOUNTING OFFICE</p>
-                        </span>
-                        <span>
-                          <p>Funding/Charges:</p> <p>CITY ACCOUNTING </p>
-                        </span>
+                        <p className="customFont-12">
+                          Republic of the Philippines
+                        </p>
+                        <p className="customFont-13 boldText">
+                          CITY GOVERNMENT OF BUTUAN
+                        </p>
+                        <p className="customFont-12">Butuan City</p>
+                        <p
+                          style={{ fontSize: "21px" }}
+                          className="underlineText boldText"
+                        >
+                          JOB ORDER
+                        </p>
+                        <div className="Dflex textLeft ">
+                          <p
+                            className="customFont-13 "
+                            style={{ width: "14%" }}
+                          >
+                            Office
+                          </p>{" "}
+                          <p className="customFont-13 boldText">
+                            : CITY ACCOUNTING OFFICE
+                          </p>
+                        </div>
+                        <div className="Dflex textLeft">
+                          <p
+                            className="customFont-13 "
+                            style={{ width: "14%" }}
+                          >
+                            Funding/Charges
+                          </p>{" "}
+                          <p className="customFont-13 ">: CITY ACCOUNTING </p>
+                        </div>
                       </>
                     )}
                   </div>
-                  <table style={{ fontSize: "12px", width: "100%" }}>
+                  <table
+                    style={{ fontSize: "12px", width: "100%" }}
+                    className="fontArial"
+                  >
                     <tbody>
                       <tr>
                         <td
@@ -150,99 +182,112 @@ function PrintableJo() {
                       </tr>
                       {/* {result && result.map((item, ix) => ( */}
 
-                      {item.map((item, index) => (
-                        <tr key={index}>
-                          <td
-                            style={{
-                              border: "1px solid black",
-                              textAlign: "center",
-                            }}
-                          >
-                            1.
-                          </td>
-                          <td
-                            style={{
-                              textAlign: "left",
-                              fontWeight: "bold",
-                              border: "1px solid black",
-                              textAlign: "left",
-                            }}
-                          >
-                            {formatName(
-                              item.fname,
-                              item.mname,
-                              item.lname,
-                              item.extname,
-                              2
-                            ) || "APPLICANT NAME NOT FOUND"}
-                          </td>
-                          <td
-                            style={{
-                              border: "1px solid black",
-                              textAlign: "center",
-                            }}
-                          >
-                            {item.position_title || "NO POSITION TITLE FOUND"}
-                          </td>
-                          <td style={{ border: "1px solid black" }}>
-                            <ul style={{ margin: 0 }}>
-                              {JSON.parse(
-                                prfData.SummaryOfCandidPrfDetails.job_desc
-                              ).map((item, index) => (
-                                <li key={index}>{item}</li>
-                              ))}
-                            </ul>
-                          </td>
-                          <td
-                            style={{
-                              fontWeight: "bold",
-                              border: "1px solid black",
-                              textAlign: "center",
-                            }}
-                          >
-                            {(prfData.SummaryOfCandidPrfDetails.pay_sal &&
-                              phpPesoIntFormater.format(
-                                prfData.SummaryOfCandidPrfDetails.pay_sal
-                              )) ||
-                              "0.00"}
-                          </td>
-                          <td
-                            style={{
-                              border: "1px solid black",
-                              textAlign: "center",
-                            }}
-                          >
-                            {item.appoint_date
-                              ? moment(JSON.parse(item.appoint_date)[0]).format(
-                                  "MMMM DD, YYYY"
-                                )
-                              : "NO DATE FOUND"}
-                          </td>
-                          <td
-                            style={{
-                              border: "1px solid black",
-                              textAlign: "center",
-                            }}
-                          >
-                            {item.appoint_date
-                              ? moment(JSON.parse(item.appoint_date)[1]).format(
-                                  "MMMM DD, YYYY"
-                                )
-                              : "NO DATE FOUND"}
-                          </td>
-                          <td
-                            style={{
-                              border: "1px solid black",
-                              textAlign: "center",
-                            }}
-                          ></td>
-                        </tr>
-                      ))}
+                      {item.map((item, index) => {
+                        applicantCount += 1;
+                        return (
+                          <tr key={index}>
+                            <td
+                              style={{
+                                border: "1px solid black",
+                                textAlign: "center",
+                              }}
+                            >
+                              {applicantCount}.
+                            </td>
+                            <td
+                              style={{
+                                textAlign: "left",
+                                fontWeight: "bold",
+                                border: "1px solid black",
+                                textAlign: "left",
+                              }}
+                            >
+                              {formatName(
+                                item.fname,
+                                item.mname,
+                                item.lname,
+                                item.extname,
+                                2
+                              ) || "APPLICANT NAME NOT FOUND"}
+                            </td>
+                            <td
+                              style={{
+                                border: "1px solid black",
+                                textAlign: "center",
+                              }}
+                            >
+                              {item.position_title || "NO POSITION TITLE FOUND"}
+                            </td>
+                            <td style={{ border: "1px solid black" }}>
+                              <ul style={{ margin: 0 }}>
+                                {JSON.parse(
+                                  prfData.SummaryOfCandidPrfDetails.job_desc
+                                ).map((item, index) => (
+                                  <li
+                                    key={index}
+                                    className="customFont-9 fontArial"
+                                  >
+                                    {item}
+                                  </li>
+                                ))}
+                              </ul>
+                            </td>
+                            <td
+                              style={{
+                                fontWeight: "bold",
+                                border: "1px solid black",
+                                textAlign: "center",
+                              }}
+                            >
+                              {(prfData.SummaryOfCandidPrfDetails.pay_sal &&
+                                phpPesoIntFormater.format(
+                                  prfData.SummaryOfCandidPrfDetails.pay_sal
+                                )) ||
+                                "0.00"}
+                            </td>
+                            <td
+                              style={{
+                                fontWeight: "bold",
+                                border: "1px solid black",
+                                textAlign: "center",
+                              }}
+                            >
+                              {item.appoint_date
+                                ? moment(
+                                    JSON.parse(item.appoint_date)[0]
+                                  ).format("MMMM DD, YYYY")
+                                : "NO DATE FOUND"}
+                            </td>
+                            <td
+                              style={{
+                                border: "1px solid black",
+                                textAlign: "center",
+                                fontWeight: "bold",
+                              }}
+                            >
+                              {item.appoint_date
+                                ? moment(
+                                    JSON.parse(item.appoint_date)[1]
+                                  ).format("MMMM DD, YYYY")
+                                : "NO DATE FOUND"}
+                            </td>
+                            <td
+                              style={{
+                                border: "1px solid black",
+                                textAlign: "center",
+                              }}
+                            ></td>
+                          </tr>
+                        );
+                      })}
                       {/* ))} */}
                     </tbody>
                   </table>
                   {index === chunkState.length - 1 && (
-                    <>
+                    <div
+                      className="customFont-9 fontArial"
+                      style={{ marginTop: "20px" }}
+                    >
                       <p>Republic of the Philippines</p>
                       <ul>
                         {JSON.parse(
@@ -251,39 +296,29 @@ function PrintableJo() {
                           <li key={index}>{item}</li>
                         ))}
                       </ul>
-
-                      <div>
-                        <p>Prepared by:</p>
-                        <p>{prfData.signatory.dept_head.assigned_by}</p>
-                        <p>{prfData.signatory.dept_head.position_name}</p>
-                        <p>{prfData.signatory.dept_head.position}</p>
+                      <div className="Dflex space-between textCenter">
+                        <div>
+                          <p className="customSpace-50">Prepared by:</p>
+                          <p>{prfData.signatory.dept_head.assigned_by}</p>
+                          <p>{prfData.signatory.dept_head.position_name}</p>
+                          <p>{prfData.signatory.dept_head.position}</p>
+                        </div>
+                        <div>
+                          <p className="customSpace-50">
+                            Recommending Approval:
+                          </p>
+                          <p>{prfData.signatory.accounting.assigned_by}</p>
+                          <p>{prfData.signatory.accounting.position_name}</p>
+                          <p>{prfData.signatory.accounting.position}</p>
+                        </div>
+                        <div>
+                          <p className="customSpace-50">Approved:</p>
+                          <p>{prfData.signatory.mayor.auth_name}</p>
+                          <p>{prfData.signatory.mayor.position}</p>
+                        </div>
                       </div>
-                      <div>
-                        <p>Recommending Approval:</p>
-                        <p>{prfData.signatory.accounting.assigned_by}</p>
-                        <p>{prfData.signatory.accounting.position_name}</p>
-                        <p>{prfData.signatory.accounting.position}</p>
-                      </div>
-                      <div>
-                        <p>Approved:</p>
-                        <p>{prfData.signatory.mayor.auth_name}</p>
-                        <p>{prfData.signatory.mayor.position}</p>
-                      </div>
-                    </>
-                  )}
-                  <div
-                    style={{
-                      display: "flex",
-                      fontSize: "9px",
-                      marginTop: "1rem",
-                    }}
-                  >
-                    <div>CHRMO.02/AKP</div>
-                    <div style={{ flex: "1 1 auto" }}></div>
-                    <div>
-                      Page {index + 1} of {chunkState.length}
                     </div>
-                  </div>
+                  )}
                 </PrintableTemplate>
               </React.Fragment>
             ))}

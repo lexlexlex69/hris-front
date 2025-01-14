@@ -4,6 +4,7 @@ import { toWords } from "number-to-words";
 import { phpPesoIntFormater } from "../../components/export_components/ExportComp";
 import moment from "moment";
 import {
+  autoCapitalizeFirstLetter,
   formatName,
   formatNameAbbreviation,
 } from "../../../customstring/CustomString";
@@ -23,7 +24,7 @@ function PrintableAtr() {
               forDesignFooter={forDesignFooter}
               index={index}
             >
-              <div className="prf_printable_content_page_title">
+              <div className="prf_printable_content_page_title customSpace-50">
                 <p>ADVICE TO REPORT</p>
                 <p>{moment().format("DD MMMM YYYY")}</p>
               </div>
@@ -44,19 +45,17 @@ function PrintableAtr() {
                 Dear Mr./Ms. {item.lname},
               </p>
 
-              <span
-                className="customSpace customFont-12"
-                style={{ marginBottom: "40px" }}
-              >
+              <p className="customSpace customFont-12">
                 We would like to inform you that you are hired as a{" "}
                 {prfData.SummaryOfCandidPrfDetails.position_title} under a{" "}
                 {prfData.SummaryOfCandidPrfDetails.emp_stat} status at the{" "}
-                {prfData.SummaryOfCandidPrfDetails.office_dept}{" "}
-                {formatNameAbbreviation(
-                  prfData.SummaryOfCandidPrfDetails.office_dept
+                {prfData.SummaryOfCandidPrfDetails.office_dept} (
+                {prfData.SummaryOfCandidPrfDetails.short_name}) with a
+                compensation of{" "}
+                {autoCapitalizeFirstLetter(
+                  toWords(prfData.SummaryOfCandidPrfDetails.sal_value)
                 )}{" "}
-                with a compensation of{" "}
-                {toWords(prfData.SummaryOfCandidPrfDetails.sal_value)} (
+                (
                 {phpPesoIntFormater.format(
                   prfData.SummaryOfCandidPrfDetails.sal_value
                 )}
@@ -69,7 +68,7 @@ function PrintableAtr() {
                   "MMMM DD, YYYY"
                 )}{" "}
                 unless sooner terminated.
-              </span>
+              </p>
               <p className="customFont-12" style={{ marginBottom: "40px" }}>
                 Further, you are directed to report to{" "}
                 {prfData
@@ -100,7 +99,7 @@ function PrintableAtr() {
                         .trim()
                     : ""}
                 </p>
-                <p className="customFont-12">
+                <p className="customFont-12 customSpace-50">
                   {prfData
                     ? prfData.signatory &&
                       prfData.signatory.hr.position_name
@@ -108,6 +107,27 @@ function PrintableAtr() {
                         .trim()
                     : ""}
                 </p>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "end",
+                  }}
+                >
+                  <div style={{ width: "40%" }}>
+                    <p className="customFont-12">Acknowledged by:</p>
+                    <div className="customBlank"></div>
+                    <p className="customFont-12">
+                      Signature over Printed Name:
+                    </p>
+                    <div className="customFont-12 Dflex">
+                      <div style={{ width: "20%" }}>Date:</div>
+                      <div
+                        style={{ width: "80%" }}
+                        className="customBlank"
+                      ></div>
+                    </div>
+                  </div>
+                </div>
                 {/* <p>
                   {prfData
                     ? prfData.signatory &&

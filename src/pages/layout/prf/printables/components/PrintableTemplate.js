@@ -10,24 +10,47 @@ function PrintableTemplate({
   forDesignFooter,
   index,
   footerLabel,
+  noHeader,
+  JOSettings,
 }) {
   const { prfData } = usePrfData();
   console.log("footerLabel", footerLabel);
 
   return (
-    <div className="page" key={index}>
+    <div className={`page ${noHeader && "page-landscape"}`} key={index}>
       {/* <PrintableHeaderContainer
         designPreview={designPreview}
         forDesign={forDesignHeader}
         type="header"
       /> */}
-      <PrintableHeader
-        imgUrl={forDesignHeader}
-        designPreview={designPreview.header}
-        type={"header"}
-      />
+      {!noHeader && (
+        <PrintableHeader
+          imgUrl={forDesignHeader}
+          designPreview={designPreview.header}
+          type={"header"}
+        />
+      )}
 
-      <div className="page-body">{children}</div>
+      <div className={`page-body ${noHeader && "page-body-landscape"}`}>
+        {children}
+      </div>
+      {noHeader && (
+        <>
+          <div
+            style={{
+              display: "flex",
+              width: "100%",
+              padding: "0px 20px",
+            }}
+          >
+            <div className="customFont-10">CHRMO.02/AKP</div>
+            <div style={{ flex: "1 1 auto" }}></div>
+            <div className="customFont-10">
+              Page {JOSettings.index + 1} of {JOSettings.chunkState.length}
+            </div>
+          </div>
+        </>
+      )}
       <div>
         {footerLabel && (
           <>
@@ -40,11 +63,13 @@ function PrintableTemplate({
           </>
         )}
 
-        <PrintableHeader
-          imgUrl={forDesignFooter}
-          designPreview={designPreview.footer}
-          type={"footer"}
-        />
+        {!noHeader && (
+          <PrintableHeader
+            imgUrl={forDesignFooter}
+            designPreview={designPreview.footer}
+            type={"footer"}
+          />
+        )}
       </div>
       {/* <PrintableHeaderContainer
         designPreview={designPreview}
