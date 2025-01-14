@@ -1,10 +1,10 @@
-import React from "react";
-import { usePrfData } from "../context/PrintableDataProvider";
-import { toWords } from "number-to-words";
-import { phpPesoIntFormater } from "../../components/export_components/ExportComp";
-import moment from "moment";
-import { formatName } from "../../../customstring/CustomString";
-import PrintableTemplate from "./PrintableTemplate";
+import React from "react"
+import { usePrfData } from "../context/PrintableDataProvider"
+import { toWords } from "number-to-words"
+import { phpPesoIntFormater } from "../../components/export_components/ExportComp"
+import moment from "moment"
+import { formatName } from "../../../customstring/CustomString"
+import PrintableTemplate from "./PrintableTemplate"
 
 function PrintableJo() {
   const {
@@ -13,27 +13,45 @@ function PrintableJo() {
     forDesignHeader,
     forDesignFooter,
     designPreview,
-  } = usePrfData();
+  } = usePrfData()
 
-  let dataLoaded = chunkState && prfData && prfData.signatory;
-  let applicantCount = 0;
+  let dataLoaded = chunkState && prfData && prfData.signatory
+  let applicantCount = 0
+
+  const lastChunkReader = (arr, condi) => {
+    return arr[arr.length - 1].length === condi
+  }
+
+  // make this function para sa last page readerist ahahha,
+  // function (chunkstate, first page limit, other page limit){
+  //   if chunkstate.length is equal to 1
+  //     chunkstate[0].lenth === first page limit
+  //   else  chunkstate[chunkState.lenth - 1] === other page limit
+
+  // }
+
+  // console.log("lastChunkReader", lastChunkReader(chunkState, 2))
+
+  const JOLastChunk = chunkState && lastChunkReader(chunkState, 3)
+  const lastIndex = chunkState && chunkState.length + 1
   return (
     <>
       {dataLoaded && (
         <>
+          <style type="text/css">
+            {"@media print{@page {size: landscape}}"}
+          </style>
           {chunkState &&
             chunkState.map((item, index) => (
-              <React.Fragment key={index}>
-                <style type="text/css">
-                  {"@media print{@page {size: landscape}}"}
-                </style>
+              <React.Fragment key={index + 1}>
                 <PrintableTemplate
                   designPreview={designPreview}
                   forDesignHeader={forDesignHeader}
                   forDesignFooter={forDesignFooter}
-                  index={index}
+                  index={index + 1}
                   noHeader={true}
                   JOSettings={{ index, chunkState }}
+                  lastChunkReader={lastChunkReader}
                 >
                   <div className="fontArial textCenter">
                     {index === 0 && (
@@ -183,7 +201,7 @@ function PrintableJo() {
                       {/* {result && result.map((item, ix) => ( */}
 
                       {item.map((item, index) => {
-                        applicantCount += 1;
+                        applicantCount += 1
                         return (
                           <tr key={index}>
                             <td
@@ -278,12 +296,12 @@ function PrintableJo() {
                               }}
                             ></td>
                           </tr>
-                        );
+                        )
                       })}
                       {/* ))} */}
                     </tbody>
                   </table>
-                  {index === chunkState.length - 1 && (
+                  {index === chunkState.length - 1 && !JOLastChunk && (
                     <div
                       className="customFont-9 fontArial"
                       style={{ marginTop: "20px" }}
@@ -322,10 +340,60 @@ function PrintableJo() {
                 </PrintableTemplate>
               </React.Fragment>
             ))}
+          {JOLastChunk && (
+            <React.Fragment>
+              <style type="text/css">
+                {"@media print{@page {size: landscape}}"}
+              </style>
+              <PrintableTemplate
+                designPreview={designPreview}
+                forDesignHeader={forDesignHeader}
+                forDesignFooter={forDesignFooter}
+                index={lastIndex}
+                noHeader={true}
+                JOSettings={{ lastIndex, chunkState }}
+                lastPage={true}
+                lastChunkReader={lastChunkReader}
+              >
+                <div
+                  className="customFont-9 fontArial"
+                  style={{ marginTop: "20px" }}
+                >
+                  <p>Republic of the Philippines</p>
+                  <ul>
+                    {JSON.parse(
+                      prfData.SummaryOfCandidPrfDetails.terms_condi
+                    ).map((item, index) => (
+                      <li key={index}>{item}</li>
+                    ))}
+                  </ul>
+                  <div className="Dflex space-between textCenter">
+                    <div>
+                      <p className="customSpace-50">Prepared by:</p>
+                      <p>{prfData.signatory.dept_head.assigned_by}</p>
+                      <p>{prfData.signatory.dept_head.position_name}</p>
+                      <p>{prfData.signatory.dept_head.position}</p>
+                    </div>
+                    <div>
+                      <p className="customSpace-50">Recommending Approval:</p>
+                      <p>{prfData.signatory.accounting.assigned_by}</p>
+                      <p>{prfData.signatory.accounting.position_name}</p>
+                      <p>{prfData.signatory.accounting.position}</p>
+                    </div>
+                    <div>
+                      <p className="customSpace-50">Approved:</p>
+                      <p>{prfData.signatory.mayor.auth_name}</p>
+                      <p>{prfData.signatory.mayor.position}</p>
+                    </div>
+                  </div>
+                </div>
+              </PrintableTemplate>
+            </React.Fragment>
+          )}
         </>
       )}
     </>
-  );
+  )
 }
 
-export default PrintableJo;
+export default PrintableJo

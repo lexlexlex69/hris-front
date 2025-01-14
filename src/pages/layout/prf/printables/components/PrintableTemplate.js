@@ -1,7 +1,7 @@
-import React from "react";
-import PrintableHeaderContainer from "./PrintableHeaderContainer";
-import PrintableHeader from "./PrintableHeader";
-import { usePrfData } from "../context/PrintableDataProvider";
+import React from "react"
+import PrintableHeaderContainer from "./PrintableHeaderContainer"
+import PrintableHeader from "./PrintableHeader"
+import { usePrfData } from "../context/PrintableDataProvider"
 
 function PrintableTemplate({
   children,
@@ -12,9 +12,11 @@ function PrintableTemplate({
   footerLabel,
   noHeader,
   JOSettings,
+  lastPage,
+  lastChunkReader,
 }) {
-  const { prfData } = usePrfData();
-  console.log("footerLabel", footerLabel);
+  const { prfData } = usePrfData()
+  console.log("footerLabel", footerLabel)
 
   return (
     <div className={`page ${noHeader && "page-landscape"}`} key={index}>
@@ -46,7 +48,10 @@ function PrintableTemplate({
             <div className="customFont-10">CHRMO.02/AKP</div>
             <div style={{ flex: "1 1 auto" }}></div>
             <div className="customFont-10">
-              Page {JOSettings.index + 1} of {JOSettings.chunkState.length}
+              Page {index} of{" "}
+              {lastChunkReader
+                ? JOSettings.chunkState.length + 1
+                : JOSettings.chunkState.length}
             </div>
           </div>
         </>
@@ -77,7 +82,7 @@ function PrintableTemplate({
         type="footer"
       /> */}
     </div>
-  );
+  )
 }
 
-export default PrintableTemplate;
+export default PrintableTemplate
