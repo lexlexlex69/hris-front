@@ -21,7 +21,7 @@
   margin-bottom: 20px !important;
 }
 .customSpace-50 {
-  margin-bottom: 50px !important;
+  margin-bottom: 45px !important;
 }
 .customBlank {
   height: 20px;
@@ -34,7 +34,7 @@
   justify-content: space-between;
 }
 .fontArial {
-  font-family: Arial !important;
+  font-family: "Arial Narrow" !important;
 }
 .boldText {
   font-weight: 600;
@@ -52,7 +52,7 @@
   padding: 30px 0px;
   display: flex;
   justify-content: center;
-  overflow-y: auto;
+  overflow: auto;
   height: 90%;
 }
 
@@ -128,7 +128,7 @@
 }
 .page-landscape {
   width: 1100px; /* Full viewport height for each page */
-  height: 700px;
+  height: 850px;
   padding: 30px 15px;
 }
 .page-body {

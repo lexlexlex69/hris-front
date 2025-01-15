@@ -1,7 +1,7 @@
-import React from "react"
-import PrintableHeaderContainer from "./PrintableHeaderContainer"
-import PrintableHeader from "./PrintableHeader"
-import { usePrfData } from "../context/PrintableDataProvider"
+import React from "react";
+import PrintableHeaderContainer from "./PrintableHeaderContainer";
+import PrintableHeader from "./PrintableHeader";
+import { usePrfData } from "../context/PrintableDataProvider";
 
 function PrintableTemplate({
   children,
@@ -15,8 +15,8 @@ function PrintableTemplate({
   lastPage,
   lastChunkReader,
 }) {
-  const { prfData } = usePrfData()
-  console.log("footerLabel", footerLabel)
+  const { prfData } = usePrfData();
+  console.log("footerLabel", footerLabel);
 
   return (
     <div className={`page ${noHeader && "page-landscape"}`} key={index}>
@@ -43,7 +43,9 @@ function PrintableTemplate({
               display: "flex",
               width: "100%",
               padding: "0px 20px",
+              color: "#212529",
             }}
+            className="fontArial"
           >
             <div className="customFont-10">CHRMO.02/AKP</div>
             <div style={{ flex: "1 1 auto" }}></div>
@@ -82,7 +84,7 @@ function PrintableTemplate({
         type="footer"
       /> */}
     </div>
-  )
+  );
 }
 
-export default PrintableTemplate
+export default PrintableTemplate;

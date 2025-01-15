@@ -1,10 +1,10 @@
-import React from "react"
-import { usePrfData } from "../context/PrintableDataProvider"
-import { toWords } from "number-to-words"
-import { phpPesoIntFormater } from "../../components/export_components/ExportComp"
-import moment from "moment"
-import { formatName } from "../../../customstring/CustomString"
-import PrintableTemplate from "./PrintableTemplate"
+import React from "react";
+import { usePrfData } from "../context/PrintableDataProvider";
+import { toWords } from "number-to-words";
+import { phpPesoIntFormater } from "../../components/export_components/ExportComp";
+import moment from "moment";
+import { formatName } from "../../../customstring/CustomString";
+import PrintableTemplate from "./PrintableTemplate";
 
 function PrintableJo() {
   const {
@@ -13,14 +13,18 @@ function PrintableJo() {
     forDesignHeader,
     forDesignFooter,
     designPreview,
-  } = usePrfData()
+  } = usePrfData();
 
-  let dataLoaded = chunkState && prfData && prfData.signatory
-  let applicantCount = 0
+  let dataLoaded = chunkState && prfData && prfData.signatory;
+  let applicantCount = 0;
 
-  const lastChunkReader = (arr, condi) => {
-    return arr[arr.length - 1].length === condi
-  }
+  const lastChunkReader = (arr, firstPcondi, otherPcondi) => {
+    if (arr.length === 1) {
+      return arr[arr.length - 1].length >= firstPcondi;
+    } else {
+      return arr[arr.length - 1].length >= otherPcondi;
+    }
+  };
 
   // make this function para sa last page readerist ahahha,
   // function (chunkstate, first page limit, other page limit){
@@ -32,8 +36,8 @@ function PrintableJo() {
 
   // console.log("lastChunkReader", lastChunkReader(chunkState, 2))
 
-  const JOLastChunk = chunkState && lastChunkReader(chunkState, 3)
-  const lastIndex = chunkState && chunkState.length + 1
+  const JOLastChunk = chunkState && lastChunkReader(chunkState, 3, 4);
+  const lastIndex = chunkState && chunkState.length + 1;
   return (
     <>
       {dataLoaded && (
@@ -201,7 +205,7 @@ function PrintableJo() {
                       {/* {result && result.map((item, ix) => ( */}
 
                       {item.map((item, index) => {
-                        applicantCount += 1
+                        applicantCount += 1;
                         return (
                           <tr key={index}>
                             <td
@@ -296,47 +300,14 @@ function PrintableJo() {
                               }}
                             ></td>
                           </tr>
-                        )
+                        );
                       })}
                       {/* ))} */}
                     </tbody>
                   </table>
-                  {index === chunkState.length - 1 && !JOLastChunk && (
-                    <div
-                      className="customFont-9 fontArial"
-                      style={{ marginTop: "20px" }}
-                    >
-                      <p>Republic of the Philippines</p>
-                      <ul>
-                        {JSON.parse(
-                          prfData.SummaryOfCandidPrfDetails.terms_condi
-                        ).map((item, index) => (
-                          <li key={index}>{item}</li>
-                        ))}
-                      </ul>
-                      <div className="Dflex space-between textCenter">
-                        <div>
-                          <p className="customSpace-50">Prepared by:</p>
-                          <p>{prfData.signatory.dept_head.assigned_by}</p>
-                          <p>{prfData.signatory.dept_head.position_name}</p>
-                          <p>{prfData.signatory.dept_head.position}</p>
-                        </div>
-                        <div>
-                          <p className="customSpace-50">
-                            Recommending Approval:
-                          </p>
-                          <p>{prfData.signatory.accounting.assigned_by}</p>
-                          <p>{prfData.signatory.accounting.position_name}</p>
-                          <p>{prfData.signatory.accounting.position}</p>
-                        </div>
-                        <div>
-                          <p className="customSpace-50">Approved:</p>
-                          <p>{prfData.signatory.mayor.auth_name}</p>
-                          <p>{prfData.signatory.mayor.position}</p>
-                        </div>
-                      </div>
-                    </div>
-                  )}
+                  {index === chunkState.length - 1 &&
+                    !JOLastChunk &&
+                    prfData && <JOlower data={prfData} />}
                 </PrintableTemplate>
               </React.Fragment>
             ))}
@@ -355,45 +326,55 @@ function PrintableJo() {
                 lastPage={true}
                 lastChunkReader={lastChunkReader}
               >
-                <div
-                  className="customFont-9 fontArial"
-                  style={{ marginTop: "20px" }}
-                >
-                  <p>Republic of the Philippines</p>
-                  <ul>
-                    {JSON.parse(
-                      prfData.SummaryOfCandidPrfDetails.terms_condi
-                    ).map((item, index) => (
-                      <li key={index}>{item}</li>
-                    ))}
-                  </ul>
-                  <div className="Dflex space-between textCenter">
-                    <div>
-                      <p className="customSpace-50">Prepared by:</p>
-                      <p>{prfData.signatory.dept_head.assigned_by}</p>
-                      <p>{prfData.signatory.dept_head.position_name}</p>
-                      <p>{prfData.signatory.dept_head.position}</p>
-                    </div>
-                    <div>
-                      <p className="customSpace-50">Recommending Approval:</p>
-                      <p>{prfData.signatory.accounting.assigned_by}</p>
-                      <p>{prfData.signatory.accounting.position_name}</p>
-                      <p>{prfData.signatory.accounting.position}</p>
-                    </div>
-                    <div>
-                      <p className="customSpace-50">Approved:</p>
-                      <p>{prfData.signatory.mayor.auth_name}</p>
-                      <p>{prfData.signatory.mayor.position}</p>
-                    </div>
-                  </div>
-                </div>
+                <JOlower data={prfData} />
               </PrintableTemplate>
             </React.Fragment>
           )}
         </>
       )}
     </>
-  )
+  );
 }
 
-export default PrintableJo
+const JOlower = ({ data }) => {
+  console.log("jolowerdata", data);
+  return (
+    <div className="customFont-9 fontArial" style={{ marginTop: "20px" }}>
+      <p>Republic of the Philippines</p>
+      <ul>
+        {JSON.parse(data.SummaryOfCandidPrfDetails.terms_condi).map(
+          (item, index) => (
+            <li key={index}>{item}</li>
+          )
+        )}
+      </ul>
+      <div className="Dflex space-between textCenter">
+        <div>
+          <p className="customSpace-50">Prepared by:</p>
+          <p className="customFont-11 boldText">
+            {data.signatory.dept_head.assigned_by}
+          </p>
+          <p>{data.signatory.dept_head.position_name}</p>
+          <p>{data.signatory.dept_head.position}</p>
+        </div>
+        <div>
+          <p className="customSpace-50">Recommending Approval:</p>
+          <p className="customFont-11 boldText">
+            {data.signatory.accounting.assigned_by}
+          </p>
+          <p>{data.signatory.accounting.position_name}</p>
+          <p>{data.signatory.accounting.position}</p>
+        </div>
+        <div>
+          <p className="customSpace-50">Approved:</p>
+          <p className="customFont-11 boldText">
+            {data.signatory.mayor.auth_name}
+          </p>
+          <p>{data.signatory.mayor.position}</p>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default PrintableJo;
