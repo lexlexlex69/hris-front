@@ -31,6 +31,7 @@ import {
   phpPesoIntFormater,
 } from "../../components/export_components/ExportComp";
 import { toWords } from "number-to-words";
+import CustomInputTemplate from "./CustomInputTemplate";
 
 function CustomJOinput({ title, objectName }) {
   const { setPrfData, handleRowClick, prfData } = usePrfData();
@@ -74,74 +75,71 @@ function CustomJOinput({ title, objectName }) {
   };
 
   return (
-    <div className="PRF_CustomInput">
-      <div className="PRF_CustomInput_Header">{title}</div>
-      <div className="PRF_CustomInput_Body">
-        <>
-          <input
-            type="text"
-            name=""
-            id=""
-            value={inputState}
-            onChange={(e) => setInputState(e.target.value)}
+    <CustomInputTemplate title={title}>
+      <>
+        <input
+          type="text"
+          name=""
+          id=""
+          value={inputState}
+          onChange={(e) => setInputState(e.target.value)}
+        />
+        <button
+          onClick={() => {
+            setOpen(true);
+          }}
+        >
+          open modsal
+        </button>
+        <CustomCenterModal
+          key={"open1"}
+          matches={matches}
+          openner={open}
+          comptitle={"asdfsadf"}
+          compSize={"40%"}
+          handleCloseBTN={() => setOpen(false)}
+        >
+          <TextField
+            id="outlined-basic"
+            label="Outlined"
+            variant="outlined"
+            sx={{ width: "100%" }}
           />
-          <button
-            onClick={() => {
-              setOpen(true);
-            }}
-          >
-            open modsal
-          </button>
-          <CustomCenterModal
-            key={"open1"}
-            matches={matches}
-            openner={open}
-            comptitle={"asdfsadf"}
-            compSize={"40%"}
-            handleCloseBTN={() => setOpen(false)}
-          >
-            <TextField
-              id="outlined-basic"
-              label="Outlined"
-              variant="outlined"
-              sx={{ width: "100%" }}
-            />
-          </CustomCenterModal>
-          <button onClick={handleAddItem}>Add</button>
-          <ol>
-            {objectState &&
-              objectState.map((item, index) => (
-                <li key={index}>
-                  <input
-                    type="text"
-                    name=""
-                    id=""
-                    value={item}
-                    onChange={(e) => handleJobDescChange(index, e.target.value)}
-                  />{" "}
-                  <button onClick={() => handleDeleteJobDesc(index)}>
-                    Remove
-                  </button>
-                </li>
-              ))}
-          </ol>
+        </CustomCenterModal>
+        <button onClick={handleAddItem}>Add</button>
+        <ol>
+          {objectState &&
+            objectState.map((item, index) => (
+              <li key={index}>
+                <input
+                  type="text"
+                  name=""
+                  id=""
+                  value={item}
+                  onChange={(e) => handleJobDescChange(index, e.target.value)}
+                />{" "}
+                <button onClick={() => handleDeleteJobDesc(index)}>
+                  Remove
+                </button>
+              </li>
+            ))}
+        </ol>
 
-          <button
-            onClick={() => {
-              setPrfData((prev) => ({
-                ...prev,
-                SummaryOfCandidPrfDetails: {
-                  ...prev.SummaryOfCandidPrfDetails,
-                  [objectName]: JSON.stringify(objectState),
-                },
-              }));
-            }}
-          >
-            apply changes
-          </button>
-        </>
-      </div>
-    </div>
+        <button
+          onClick={() => {
+            setPrfData((prev) => ({
+              ...prev,
+              SummaryOfCandidPrfDetails: {
+                ...prev.SummaryOfCandidPrfDetails,
+                [objectName]: JSON.stringify(objectState),
+              },
+            }));
+          }}
+        >
+          apply changes
+        </button>
+      </>
+    </CustomInputTemplate>
   );
 }
 

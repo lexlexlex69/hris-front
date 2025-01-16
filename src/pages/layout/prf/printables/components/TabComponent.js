@@ -1,16 +1,17 @@
-import React, { useState } from "react"
-import "./TabComponent.css" // Import the CSS file
-import DiamondIcon from "@mui/icons-material/Diamond"
-import StyleIcon from "@mui/icons-material/Style"
-import CustomInput from "./CustomInput"
-import { usePrfData } from "../context/PrintableDataProvider"
-import CustomInput2 from "./CustomInput2"
-import CustomInput3 from "./CustomInput3"
-import CustomSelect from "./CustomSelect"
-import CustomJOinput from "./CustomJOinput"
+import React, { useState } from "react";
+import "./TabComponent.css"; // Import the CSS file
+import DiamondIcon from "@mui/icons-material/Diamond";
+import StyleIcon from "@mui/icons-material/Style";
+import CustomInput from "./CustomInput";
+import { usePrfData } from "../context/PrintableDataProvider";
+import CustomInput2 from "./CustomInput2";
+import CustomInput3 from "./CustomInput3";
+import CustomSelect from "./CustomSelect";
+import CustomJOinput from "./CustomJOinput";
+import CustomNoeInput from "./CustomNoeInput";
 
 const TabComponent = ({ process }) => {
-  const [activeTab, setActiveTab] = useState("essentials")
+  const [activeTab, setActiveTab] = useState("essentials");
   const {
     prfData,
     recommendedByChange,
@@ -19,14 +20,14 @@ const TabComponent = ({ process }) => {
     forDesignFooter,
     headerImg,
     footerImg,
-  } = usePrfData()
+  } = usePrfData();
 
-  prfData && console.log("prfData", prfData)
+  prfData && console.log("prfData", prfData);
 
-  console.log("forRecommendedBy", forRecommendedBy)
+  console.log("forRecommendedBy", forRecommendedBy);
   const handleTabClick = (tab) => {
-    setActiveTab(tab)
-  }
+    setActiveTab(tab);
+  };
 
   return (
     <div className="tab-container">
@@ -103,6 +104,11 @@ const TabComponent = ({ process }) => {
                 <CustomJOinput title={"SALARY"} objectName="terms_condi" />
               </>
             )}
+            {process === "noe" && (
+              <>
+                <CustomNoeInput title={"Applicants Details"} />
+              </>
+            )}
           </div>
         )}
         {activeTab === "design" && (
@@ -121,7 +127,7 @@ const TabComponent = ({ process }) => {
         )}
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default TabComponent
+export default TabComponent;

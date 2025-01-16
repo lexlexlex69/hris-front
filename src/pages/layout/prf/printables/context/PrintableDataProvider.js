@@ -104,6 +104,7 @@ export const PrfContextProvider = ({ children }) => {
             // },
             footer: response1.data.footer,
             header: response1.data.header,
+            address: [],
           });
         }
       }

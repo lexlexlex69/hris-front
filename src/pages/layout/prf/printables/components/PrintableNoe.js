@@ -10,6 +10,12 @@ import { cosCheckList } from "../../documentpreparation/ProcessDocument";
 function PrintableNoe() {
   const { prfData, forDesignHeader, forDesignFooter, designPreview } =
     usePrfData();
+
+  const getAddressById = (id, arr) => {
+    const data = arr.find((item) => item.id === id);
+    console.log("dataaddress1", data);
+    return data ? data : null; // Returns the address if found, otherwise null
+  };
   return (
     <>
       {prfData &&
@@ -37,8 +43,23 @@ function PrintableNoe() {
                     0
                   ) || "APPLICANT NAME NOT FOUND"}
                 </p>
-
-                <p className=" customFont-12">Address</p>
+                {getAddressById(item.id, prfData.address) && (
+                  <>
+                    {
+                      <>
+                        <p className=" customFont-12">
+                          {getAddressById(item.id, prfData.address).resiAddress}
+                        </p>
+                        <p className=" customFont-12">
+                          {
+                            getAddressById(item.id, prfData.address)
+                              .permaAddress
+                          }
+                        </p>
+                      </>
+                    }
+                  </>
+                )}
               </div>
               <p className="customSpace customFont-12">Dear Mr./Ms.:</p>
               <p className="customSpace customFont-12">Greetings!</p>
