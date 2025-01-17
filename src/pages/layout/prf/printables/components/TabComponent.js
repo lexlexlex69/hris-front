@@ -104,9 +104,12 @@ const TabComponent = ({ process }) => {
                 <CustomJOinput title={"SALARY"} objectName="terms_condi" />
               </>
             )}
-            {process === "noe" && (
+            {(process === "noe" || process === "atr") && (
               <>
-                <CustomNoeInput title={"Applicants Details"} />
+                <CustomNoeInput
+                  title={"Applicants Details"}
+                  process={process}
+                />
               </>
             )}
           </div>

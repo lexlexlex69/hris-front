@@ -13,6 +13,12 @@ import PrintableTemplate from "./PrintableTemplate";
 function PrintableAtr() {
   const { prfData, forDesignHeader, forDesignFooter, designPreview } =
     usePrfData();
+
+  const getAddressById = (id, arr) => {
+    const data = arr.find((item) => item?.id === id);
+    console.log("dataaddress1", data);
+    return data ? data : null; // Returns the address if found, otherwise null
+  };
   return (
     <>
       {prfData &&
@@ -35,11 +41,27 @@ function PrintableAtr() {
                     item.mname,
                     item.lname,
                     item.extname,
-                    0
+                    "noe"
                   ) || "APPLICANT NAME NOT FOUND"}
                 </p>
 
-                <p className=" customFont-12">Address</p>
+                {getAddressById(item.id, prfData.address) && (
+                  <>
+                    {
+                      <>
+                        <p className=" customFont-12">
+                          {getAddressById(item.id, prfData.address).resiAddress}
+                        </p>
+                        <p className=" customFont-12">
+                          {
+                            getAddressById(item.id, prfData.address)
+                              .permaAddress
+                          }
+                        </p>
+                      </>
+                    }
+                  </>
+                )}
               </div>
               <p className="customSpace customFont-12">
                 Dear Mr./Ms. {item.lname},

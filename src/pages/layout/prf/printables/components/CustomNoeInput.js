@@ -22,26 +22,44 @@ const Item = styled(Paper)(({ theme }) => ({
   color: theme.palette.text.secondary,
 }));
 
-function CustomNoeInput({ title }) {
+function CustomNoeInput({ title, process }) {
   const [data, setData] = useState();
   const [addressData, setaddressData] = useState([]);
+  const [signatory, setSignatory] = useState([]);
   const [open, setOpen] = useState(false);
   const [openId, setOpenId] = useState();
   const { prfData } = usePrfData();
 
-  const getAddressById = (id) => {
-    const data = addressData.find((item) => item.id === id);
-    console.log("dataaddress", data);
-    return data ? data : null; // Returns the address if found, otherwise null
+  const getAddressById = (ids) => {
+    console.log("addressid", ids);
+    if (!ids) {
+      console.log("cant proceed");
+    } else {
+      const data =
+        ids && addressData && addressData.find((item) => item.id === ids);
+      console.log("dataaddress", data);
+      return data ? data : null; // Returns the address if found, otherwise null
+    }
   };
 
-  const getNameById = (id) => {
-    const currentName = data.find((item) => item.id === id);
-    return currentName;
-  };
+  console.log("addressData.length", addressData.length > 0);
+
+  const mergedData =
+    data &&
+    data.map((user) => {
+      const userAddress = addressData.find((addr) => addr?.id === user?.id);
+      return {
+        ...user,
+        perma: userAddress?.permaAddress || "No address available",
+        resi: userAddress?.resiAddress || "No address available",
+      };
+    });
+
+  console.log("mergedData", mergedData);
   useEffect(() => {
     prfData && setData(prfData.SummaryOfCandidApplicantDetails);
     prfData && setaddressData(prfData.address);
+    process === "atr" && prfData && setSignatory(prfData.signatory?.dept_head);
   }, [prfData]);
   return (
     <>
@@ -55,6 +73,8 @@ function CustomNoeInput({ title }) {
         data={data}
         openId={openId}
         addressData={addressData}
+        signatory={signatory}
+        process={process}
       />
       <CustomInputTemplate title={title}>
         <Stack
@@ -63,8 +83,8 @@ function CustomNoeInput({ title }) {
           alignItems="center"
           spacing={1}
         >
-          {data &&
-            data.map((item, index) => (
+          {mergedData &&
+            mergedData.map((item, index) => (
               <Item
                 key={index}
                 sx={{
@@ -89,14 +109,34 @@ function CustomNoeInput({ title }) {
                     ) || "APPLICANT NAME NOT FOUND"}
                   </p>
                 </Box>
+                {process === "atr" && (
+                  <Box>
+                    <p>Report to:</p>
+                    <p
+                      style={{
+                        textWrap: "wrap",
+                        textAlign: "right",
+                        width: "80%",
+                      }}
+                    >
+                      {signatory?.assigned_by}
+                      {signatory?.position}
+                    </p>
+                  </Box>
+                )}
                 <Box>
                   <p>Address:</p>
-                  <p>
-                    {getAddressById(item.id)
-                      ? `${getAddressById(item.id).resiAddress || ""} ${
-                          getAddressById(item.id).permaAddress & ", "
-                        } ${getAddressById(item.id).permaAddress || ""}`
-                      : "No Data"}
+
+                  <p
+                    style={{
+                      textWrap: "wrap",
+                      textAlign: "right",
+                      width: "80%",
+                    }}
+                  >
+                    {`${item.perma} ${item.perma && item.resi && ","} ${
+                      item.resi
+                    }`}
                   </p>
                 </Box>
               </Item>
@@ -114,17 +154,21 @@ const CustomModalNoe = ({
   openId,
   data,
   addressData,
+  signatory,
+  process,
 }) => {
   const matches = useMediaQuery("(min-width: 565px)");
   const [currentName, setCurrentName] = useState();
   const [currentAddress, setCurrentAddress] = useState();
+  const [currentSignatory, setCurrentSignatory] = useState();
   const { setPrfData } = usePrfData();
   console.log("currentApplicantname", currentName);
   console.log("currentApplicant", currentAddress);
 
   const currentSetter = () => {
     setCurrentName(data.find((item) => item.id === openId));
-    setCurrentAddress(addressData.find((item) => item.id === openId));
+    setCurrentAddress(addressData.find((item) => item?.id === openId));
+    process === "atr" && setCurrentSignatory(signatory);
   };
 
   const fieldName = [
@@ -139,6 +183,10 @@ const CustomModalNoe = ({
     { key: "permaAddress", label: "Permanent Address" },
   ];
 
+  const fieldSignatory = [
+    { key: "assigned_by", label: "Report To" },
+    { key: "position", label: "Position" },
+  ];
   useEffect(() => {
     data && addressData && openId && currentSetter();
   }, [openId]);
@@ -183,6 +231,21 @@ const CustomModalNoe = ({
             }
           />
         ))}
+        {fieldSignatory.map((item) => (
+          <TextField
+            id="outlined-basic"
+            label={item.label}
+            variant="outlined"
+            sx={{ width: "100%" }}
+            value={currentSignatory ? currentSignatory[item.key] : ""}
+            onChange={(e) =>
+              setCurrentSignatory((prev) => ({
+                ...prev,
+                [item.key]: e.target.value,
+              }))
+            }
+          />
+        ))}
         <Box sx={{ display: "flex", justifyContent: "space-between" }}>
           <Button variant="text" onClick={handleCloseBTN}>
             Cancel
@@ -198,11 +261,17 @@ const CustomModalNoe = ({
                     item.id === openId ? currentName : item
                   ),
 
-                address: prev.address.find((item) => item.id === openId)
-                  ? prev.address.map((item) =>
-                      item.id === openId ? currentAddress : item
-                    )
-                  : [...prev.address, currentAddress],
+                address:
+                  currentAddress &&
+                  prev.address.find((item) => item?.id === openId)
+                    ? prev.address.map((item) =>
+                        item?.id === openId ? currentAddress : item
+                      )
+                    : [...prev.address, currentAddress],
+                signatory: {
+                  ...prev.signatory,
+                  dept_head: currentSignatory,
+                },
               }));
             }}
           >

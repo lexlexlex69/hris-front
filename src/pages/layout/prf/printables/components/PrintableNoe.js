@@ -12,7 +12,7 @@ function PrintableNoe() {
     usePrfData();
 
   const getAddressById = (id, arr) => {
-    const data = arr.find((item) => item.id === id);
+    const data = arr.find((item) => item?.id === id);
     console.log("dataaddress1", data);
     return data ? data : null; // Returns the address if found, otherwise null
   };
@@ -40,7 +40,7 @@ function PrintableNoe() {
                     item.mname,
                     item.lname,
                     item.extname,
-                    0
+                    "noe"
                   ) || "APPLICANT NAME NOT FOUND"}
                 </p>
                 {getAddressById(item.id, prfData.address) && (
