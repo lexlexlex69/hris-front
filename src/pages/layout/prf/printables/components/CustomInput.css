@@ -43,12 +43,7 @@
 .PRF_CustomInput_Body div label {
   width: 100px;
 }
-.PRF_CustomInput_Body input {
-  flex: 1;
-  padding: 10px;
-  border-radius: 10px;
-  border: 1px solid gray;
-}
+
 .PRF_Modal_CustomInput input {
   flex: 1;
   padding: 10px;

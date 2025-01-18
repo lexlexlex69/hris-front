@@ -1,6 +1,7 @@
 import React, { useState } from "react"
 import "./CustomInput.css"
 import { usePrfData } from "../context/PrintableDataProvider"
+import { Button, TextField } from "@mui/material"
 
 function CustomInput({
   title,
@@ -32,88 +33,60 @@ function CustomInput({
     <div className="PRF_CustomInput">
       <div className="PRF_CustomInput_Header">{title}</div>
       <div className="PRF_CustomInput_Body">
-        {tab === "Essentials" ? (
-          <>
-            <div>
-              <label htmlFor="">Name:</label>
+        <TextField
+          id="outlined-basic"
+          label={"Name"}
+          variant="outlined"
+          sx={{ width: "100%" }}
+          name={names ? names.byName : ""}
+          value={value ? value.byName : ""}
+          onChange={handleInputChange}
+        />
 
-              <input
-                type="text"
-                placeholder="Type Here..."
-                name={names ? names.byName : ""}
-                value={value ? value.byName : ""}
-                onChange={handleInputChange}
-              />
+        <TextField
+          id="outlined-basic"
+          label={"Position"}
+          variant="outlined"
+          sx={{ width: "100%" }}
+          name={names ? names.position : ""}
+          value={value ? value.position : ""}
+          onChange={handleInputChange}
+        />
 
-              {/* {title !== "SALARY" && (
-                <button className="PRF_CustomInput_Button">View List</button>
-              )} */}
-            </div>
-            <div>
-              <label htmlFor="">Position:</label>
-
-              <input
-                type="text"
-                placeholder="Type Here..."
-                name={names ? names.position : ""}
-                value={value ? value.position : ""}
-                onChange={handleInputChange}
-              />
-            </div>
-            {title === "ENDORSED BY" && (
-              <div>
-                <label htmlFor="">Department:</label>
-                <input
-                  type="text"
-                  placeholder="Type Here..."
-                  name={names ? names.department : ""}
-                  value={value ? value.department : ""}
-                  onChange={handleInputChange}
-                />
-              </div>
-            )}
-            <div>
-              {title !== "SALARY" && (
-                <button
-                  className="PRF_CustomInput_Button"
-                  onClick={() => {
-                    handleViewClick(title)
-                  }}
-                >
-                  View List
-                </button>
-              )}
-              {title !== "SALARY" && (
+        {title === "ENDORSED BY" && (
+          <TextField
+            id="outlined-basic"
+            label={"Department"}
+            variant="outlined"
+            sx={{ width: "100%" }}
+            name={names ? names.department : ""}
+            value={value ? value.department : ""}
+            onChange={handleInputChange}
+          />
+        )}
+        <div>
+          {title !== "SALARY" && (
+            <Button
+              variant="contained"
+              color="info"
+              size="small"
+              onClick={() => {
+                handleViewClick(title)
+              }}
+            >
+              {" "}
+              View List
+            </Button>
+          )}
+          {/* {title !== "SALARY" && (
                 <button
                   className="PRF_CustomInput_Button"
                   onClick={handleApplyChange}
                 >
                   Apply
                 </button>
-              )}
-            </div>
-          </>
-        ) : (
-          <>
-            <div className="PRF_CustomInput_Design_Container">
-              <div className="PRF_CustomInput_Design_Image_Container">
-                <h3>NO IMAGE</h3>
-              </div>
-              <div className="PRF_CustomInput_Design_Input">
-                <div>
-                  <h6 className="PRF_CustomInput_Design_Input_Department">
-                    {" "}
-                    Department:
-                  </h6>
-                  <h5>CICTD</h5>
-                </div>
-                <div>
-                  <button className="PRF_CustomInput_Button">UPLOAD</button>
-                </div>
-              </div>
-            </div>
-          </>
-        )}
+              )} */}
+        </div>
       </div>
     </div>
   )

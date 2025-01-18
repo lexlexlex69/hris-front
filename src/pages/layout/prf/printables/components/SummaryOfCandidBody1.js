@@ -1,9 +1,9 @@
-import React from "react";
-import "./PrintableSummaryOfCandidBody.css";
-import { capitalizeWords } from "../Utils";
+import React from "react"
+import "./PrintableSummaryOfCandidBody.css"
+import { capitalizeWords } from "../Utils"
 
 function SummaryOfCandidBody1({ data }) {
-  console.log(data);
+  console.log("SummaryOfCandidBody1", data)
   return (
     <>
       <div className="PrintableSummaryOfCandidBody">
@@ -88,7 +88,7 @@ function SummaryOfCandidBody1({ data }) {
                                 : "None"}
                               , {item.red_flags ? item.red_flags : "None"}{" "}
                             </li>
-                          );
+                          )
                         })}
                       </ul>
                     </div>
@@ -118,7 +118,7 @@ function SummaryOfCandidBody1({ data }) {
         {/* for prepared by */}
       </div>
     </>
-  );
+  )
 }
 
-export default SummaryOfCandidBody1;
+export default SummaryOfCandidBody1

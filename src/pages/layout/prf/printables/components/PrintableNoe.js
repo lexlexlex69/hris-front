@@ -1,21 +1,21 @@
-import React from "react";
-import { usePrfData } from "../context/PrintableDataProvider";
-import { toWords } from "number-to-words";
-import { phpPesoIntFormater } from "../../components/export_components/ExportComp";
-import moment from "moment";
-import { formatName } from "../../../customstring/CustomString";
-import PrintableTemplate from "./PrintableTemplate";
-import { cosCheckList } from "../../documentpreparation/ProcessDocument";
+import React from "react"
+import { usePrfData } from "../context/PrintableDataProvider"
+import { toWords } from "number-to-words"
+import { phpPesoIntFormater } from "../../components/export_components/ExportComp"
+import moment from "moment"
+import { formatName } from "../../../customstring/CustomString"
+import PrintableTemplate from "./PrintableTemplate"
+import { cosCheckList } from "../../documentpreparation/ProcessDocument"
 
 function PrintableNoe() {
   const { prfData, forDesignHeader, forDesignFooter, designPreview } =
-    usePrfData();
+    usePrfData()
 
   const getAddressById = (id, arr) => {
-    const data = arr.find((item) => item?.id === id);
-    console.log("dataaddress1", data);
-    return data ? data : null; // Returns the address if found, otherwise null
-  };
+    const data = arr.find((item) => item?.id === id)
+    console.log("dataaddress1", data)
+    return data ? data : null // Returns the address if found, otherwise null
+  }
   return (
     <>
       {prfData &&
@@ -207,7 +207,7 @@ function PrintableNoe() {
           </React.Fragment>
         ))}
     </>
-  );
+  )
 }
 
-export default PrintableNoe;
+export default PrintableNoe

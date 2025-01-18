@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import CustomInputTemplate from "./CustomInputTemplate";
+import React, { useEffect, useState } from "react"
+import CustomInputTemplate from "./CustomInputTemplate"
 import {
   Box,
   Button,
@@ -9,10 +9,10 @@ import {
   TextField,
   Typography,
   useMediaQuery,
-} from "@mui/material";
-import { usePrfData } from "../context/PrintableDataProvider";
-import { formatName } from "../../../customstring/CustomString";
-import { CustomCenterModal } from "../../components/export_components/ExportComp";
+} from "@mui/material"
+import { usePrfData } from "../context/PrintableDataProvider"
+import { formatName } from "../../../customstring/CustomString"
+import { CustomCenterModal } from "../../components/export_components/ExportComp"
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -20,55 +20,55 @@ const Item = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(1),
   textAlign: "center",
   color: theme.palette.text.secondary,
-}));
+}))
 
 function CustomNoeInput({ title, process }) {
-  const [data, setData] = useState();
-  const [addressData, setaddressData] = useState([]);
-  const [signatory, setSignatory] = useState([]);
-  const [open, setOpen] = useState(false);
-  const [openId, setOpenId] = useState();
-  const { prfData } = usePrfData();
+  const [data, setData] = useState()
+  const [addressData, setaddressData] = useState([])
+  const [signatory, setSignatory] = useState([])
+  const [open, setOpen] = useState(false)
+  const [openId, setOpenId] = useState()
+  const { prfData } = usePrfData()
 
   const getAddressById = (ids) => {
-    console.log("addressid", ids);
+    console.log("addressid", ids)
     if (!ids) {
-      console.log("cant proceed");
+      console.log("cant proceed")
     } else {
       const data =
-        ids && addressData && addressData.find((item) => item.id === ids);
-      console.log("dataaddress", data);
-      return data ? data : null; // Returns the address if found, otherwise null
+        ids && addressData && addressData.find((item) => item.id === ids)
+      console.log("dataaddress", data)
+      return data ? data : null // Returns the address if found, otherwise null
     }
-  };
+  }
 
-  console.log("addressData.length", addressData.length > 0);
+  console.log("addressData.length", addressData.length > 0)
 
   const mergedData =
     data &&
     data.map((user) => {
-      const userAddress = addressData.find((addr) => addr?.id === user?.id);
+      const userAddress = addressData.find((addr) => addr?.id === user?.id)
       return {
         ...user,
         perma: userAddress?.permaAddress || "No address available",
         resi: userAddress?.resiAddress || "No address available",
-      };
-    });
+      }
+    })
 
-  console.log("mergedData", mergedData);
+  console.log("mergedData", mergedData)
   useEffect(() => {
-    prfData && setData(prfData.SummaryOfCandidApplicantDetails);
-    prfData && setaddressData(prfData.address);
-    process === "atr" && prfData && setSignatory(prfData.signatory?.dept_head);
-  }, [prfData]);
+    prfData && setData(prfData.SummaryOfCandidApplicantDetails)
+    prfData && setaddressData(prfData.address)
+    process === "atr" && prfData && setSignatory(prfData.signatory?.dept_head)
+  }, [prfData])
   return (
     <>
       <CustomModalNoe
         openner={open}
         comptitle={"Edit Address"}
         handleCloseBTN={() => {
-          setOpen(false);
-          setOpenId();
+          setOpen(false)
+          setOpenId()
         }}
         data={data}
         openId={openId}
@@ -93,8 +93,8 @@ function CustomNoeInput({ title, process }) {
                   cursor: "pointer",
                 }}
                 onClick={() => {
-                  setOpen(true);
-                  setOpenId(item.id);
+                  setOpen(true)
+                  setOpenId(item.id)
                 }}
               >
                 <Box>
@@ -144,7 +144,7 @@ function CustomNoeInput({ title, process }) {
         </Stack>
       </CustomInputTemplate>
     </>
-  );
+  )
 }
 
 const CustomModalNoe = ({
@@ -157,39 +157,39 @@ const CustomModalNoe = ({
   signatory,
   process,
 }) => {
-  const matches = useMediaQuery("(min-width: 565px)");
-  const [currentName, setCurrentName] = useState();
-  const [currentAddress, setCurrentAddress] = useState();
-  const [currentSignatory, setCurrentSignatory] = useState();
-  const { setPrfData } = usePrfData();
-  console.log("currentApplicantname", currentName);
-  console.log("currentApplicant", currentAddress);
+  const matches = useMediaQuery("(min-width: 565px)")
+  const [currentName, setCurrentName] = useState()
+  const [currentAddress, setCurrentAddress] = useState()
+  const [currentSignatory, setCurrentSignatory] = useState()
+  const { setPrfData } = usePrfData()
+  console.log("currentApplicantname", currentName)
+  console.log("currentApplicant", currentAddress)
 
   const currentSetter = () => {
-    setCurrentName(data.find((item) => item.id === openId));
-    setCurrentAddress(addressData.find((item) => item?.id === openId));
-    process === "atr" && setCurrentSignatory(signatory);
-  };
+    setCurrentName(data.find((item) => item.id === openId))
+    setCurrentAddress(addressData.find((item) => item?.id === openId))
+    process === "atr" && setCurrentSignatory(signatory)
+  }
 
   const fieldName = [
     { key: "fname", label: "First Name" },
     { key: "lname", label: "Last Name" },
     { key: "mname", label: "Middle Name" },
     { key: "extname", label: "Extension" },
-  ];
+  ]
 
   const fieldAddress = [
     { key: "resiAddress", label: "Residential Address" },
     { key: "permaAddress", label: "Permanent Address" },
-  ];
+  ]
 
   const fieldSignatory = [
     { key: "assigned_by", label: "Report To" },
     { key: "position", label: "Position" },
-  ];
+  ]
   useEffect(() => {
-    data && addressData && openId && currentSetter();
-  }, [openId]);
+    data && addressData && openId && currentSetter()
+  }, [openId])
   return (
     <CustomCenterModal
       key={"open1"}
@@ -231,21 +231,22 @@ const CustomModalNoe = ({
             }
           />
         ))}
-        {fieldSignatory.map((item) => (
-          <TextField
-            id="outlined-basic"
-            label={item.label}
-            variant="outlined"
-            sx={{ width: "100%" }}
-            value={currentSignatory ? currentSignatory[item.key] : ""}
-            onChange={(e) =>
-              setCurrentSignatory((prev) => ({
-                ...prev,
-                [item.key]: e.target.value,
-              }))
-            }
-          />
-        ))}
+        {process === "atr" &&
+          fieldSignatory.map((item) => (
+            <TextField
+              id="outlined-basic"
+              label={item.label}
+              variant="outlined"
+              sx={{ width: "100%" }}
+              value={currentSignatory ? currentSignatory[item.key] : ""}
+              onChange={(e) =>
+                setCurrentSignatory((prev) => ({
+                  ...prev,
+                  [item.key]: e.target.value,
+                }))
+              }
+            />
+          ))}
         <Box sx={{ display: "flex", justifyContent: "space-between" }}>
           <Button variant="text" onClick={handleCloseBTN}>
             Cancel
@@ -253,7 +254,7 @@ const CustomModalNoe = ({
           <Button
             variant="contained"
             onClick={(e) => {
-              e.preventDefault();
+              e.preventDefault()
               setPrfData((prev) => ({
                 ...prev,
                 SummaryOfCandidApplicantDetails:
@@ -272,7 +273,7 @@ const CustomModalNoe = ({
                   ...prev.signatory,
                   dept_head: currentSignatory,
                 },
-              }));
+              }))
             }}
           >
             Save
@@ -280,6 +281,6 @@ const CustomModalNoe = ({
         </Box>
       </Box>
     </CustomCenterModal>
-  );
-};
-export default CustomNoeInput;
+  )
+}
+export default CustomNoeInput

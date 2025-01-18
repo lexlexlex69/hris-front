@@ -4,6 +4,7 @@ import { usePrfData } from "../context/PrintableDataProvider"
 import nophoto from "../images/nophoto.png"
 import letterfoot from "../images/letterfoot.png"
 import letterhead from "../images/letterhead.png"
+import { Button } from "@mui/material"
 
 function CustomInput3({ title, imgUrl, designPreview }) {
   const { headerImg, footerImg, handleImgFile, handleApplyImg } = usePrfData()
@@ -23,30 +24,7 @@ function CustomInput3({ title, imgUrl, designPreview }) {
         <div className="PRF_CustomInput_Design_Container">
           <div className="PRF_CustomInput_Design_Image_Container printableHeader">
             <img src={imageChanged ? imageChanged : defaultImage} />
-            {/* {title === "HEADER" && !headerImg && img && (
-              <img
-                src={img ? `http://127.0.0.1:8000/storage/${img}` : nophoto}
-              />
-            )}
-
-            {title === "HEADER" && headerImg && (
-              <img src={headerImg ? headerImg.preview : nophoto} />
-            )}
-
-            {title === "FOOTER" && !footerImg && img && (
-              <img
-                src={img ? `http://127.0.0.1:8000/storage/${img}` : nophoto}
-              />
-            )}
-
-            {title === "FOOTER" && footerImg && (
-              <img src={footerImg ? footerImg.preview : nophoto} />
-            )} */}
           </div>
-
-          {/* <div className="PRF_CustomInput_Design_Image_Container">
-              <h3>NO IMAGE</h3>
-            </div> */}
 
           <div className="PRF_CustomInput_Design_Input">
             <div
@@ -64,8 +42,11 @@ function CustomInput3({ title, imgUrl, designPreview }) {
                 type="file"
                 onChange={(e) => handleImgFile(e)}
               />
-              <button
-                className="PRF_CustomInput_Button"
+
+              <Button
+                variant="contained"
+                color="success"
+                size="small"
                 name={title}
                 onClick={handleApplyImg}
                 disabled={
@@ -74,10 +55,9 @@ function CustomInput3({ title, imgUrl, designPreview }) {
                     : title === "FOOTER" && !footerImg
                 }
               >
+                {" "}
                 Apply
-              </button>
-
-              {/* <button onClick={handleImageUpload}>Edit</button> */}
+              </Button>
             </div>
           </div>
         </div>
