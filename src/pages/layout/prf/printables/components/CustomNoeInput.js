@@ -65,7 +65,7 @@ function CustomNoeInput({ title, process }) {
     <>
       <CustomModalNoe
         openner={open}
-        comptitle={"Edit Address"}
+        comptitle={"Edit Details"}
         handleCloseBTN={() => {
           setOpen(false)
           setOpenId()

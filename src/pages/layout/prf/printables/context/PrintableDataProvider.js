@@ -390,9 +390,9 @@ export const PrfContextProvider = ({ children }) => {
     }
   }
 
-  const handleModalRowClick = (data) => {
+  const handleModalRowClick = (data, title) => {
     console.log("modalRowClick", data)
-    if (modalTitle && modalTitle === "ENDORSED BY") {
+    if (title && title === "ENDORSED BY") {
       setPrfData((prevDetails) => ({
         ...prevDetails,
         essentials: {
@@ -402,7 +402,7 @@ export const PrfContextProvider = ({ children }) => {
           endorsed_by_department: data.endorsed_by_department,
         },
       }))
-    } else if (modalTitle && modalTitle === "PREPARED BY") {
+    } else if (title && title === "PREPARED BY") {
       setPrfData((prevDetails) => ({
         ...prevDetails,
         essentials: {
