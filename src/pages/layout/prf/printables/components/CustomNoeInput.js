@@ -14,7 +14,7 @@ import { usePrfData } from "../context/PrintableDataProvider"
 import { formatName } from "../../../customstring/CustomString"
 import { CustomCenterModal } from "../../components/export_components/ExportComp"
 
-const Item = styled(Paper)(({ theme }) => ({
+export const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
   ...theme.typography.body2,
   padding: theme.spacing(1),
@@ -91,6 +91,8 @@ function CustomNoeInput({ title, process }) {
                   display: "flex",
                   flexDirection: "column",
                   cursor: "pointer",
+                  gap: "5px !important",
+                  fontSize: "2rem !important",
                 }}
                 onClick={() => {
                   setOpen(true)

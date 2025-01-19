@@ -1,8 +1,16 @@
 import React, { useState } from "react"
 import "./CustomInput.css"
 import { usePrfData } from "../context/PrintableDataProvider"
-import { Box, Button, TextField, useMediaQuery } from "@mui/material"
+import {
+  Box,
+  Button,
+  Stack,
+  TextField,
+  Typography,
+  useMediaQuery,
+} from "@mui/material"
 import { CustomCenterModal } from "../../components/export_components/ExportComp"
+import { Item } from "./CustomNoeInput"
 
 function CustomInput({
   title,
@@ -153,7 +161,9 @@ const CustomModalSummary = ({ openner, comptitle, handleCloseBTN }) => {
       handleCloseBTN={handleCloseBTN}
     >
       <Box sx={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-        <Box>
+        <Box
+          sx={{ display: "flex", justifyContent: "space-between", gap: "15px" }}
+        >
           <TextField
             id="outlined-basic"
             label={"Employee Name (first name / last name)"}
@@ -168,21 +178,53 @@ const CustomModalSummary = ({ openner, comptitle, handleCloseBTN }) => {
           </Button>
         </Box>
         <Box>
-          {employeeList &&
-            employeeList.map((item, index) => (
-              <p
-                key={index}
-                onClick={() => setTempData(item)}
-                style={{
-                  backgroundColor:
-                    tempData & (tempData.id == item.id) ? "red" : "blue",
-                }}
-              >
-                {item.fname} {!item.mname && !item.mname} {item.lname}{" "}
-                {!item.extname && item.extname} {item.position_name}{" "}
-                {item.dept_title}
-              </p>
-            ))}
+          <Stack
+            direction="column"
+            // justifyContent="center"
+            alignItems="center"
+            spacing={1}
+            overflow={"auto"}
+            sx={{ maxHeight: "50vh", marginTop: "10px" }}
+          >
+            {employeeList &&
+              employeeList.map((item, index) => (
+                <Item
+                  key={index}
+                  sx={{
+                    // display: "flex",
+                    // flexDirection: "column",
+                    cursor: "pointer",
+                    backgroundColor:
+                      tempData.id == item.id ? "#f2f2f2" : "none",
+                    width: "100%",
+                    textAlign: "left",
+                    fontSize: "1rem",
+                  }}
+                  onClick={() => setTempData(item)}
+                >
+                  <Typography sx={{ fontWeight: "600" }}>
+                    {item.fname} {!item.mname && !item.mname} {item.lname}{" "}
+                    {!item.extname && item.extname}
+                  </Typography>
+
+                  <Typography>{item.position_name}</Typography>
+
+                  <Typography>{item.dept_title}</Typography>
+                </Item>
+              ))}
+          </Stack>
+          {/* <p
+            key={index}
+            onClick={() => setTempData(item)}
+            style={{
+              backgroundColor:
+                tempData & (tempData.id == item.id) ? "red" : "blue",
+            }}
+          >
+            {item.fname} {!item.mname && !item.mname} {item.lname}{" "}
+            {!item.extname && item.extname} {item.position_name}{" "}
+            {item.dept_title}
+          </p> */}
         </Box>
         <Box sx={{ display: "flex", justifyContent: "space-between" }}>
           <Button variant="text" onClick={handleCloseBTN}>
