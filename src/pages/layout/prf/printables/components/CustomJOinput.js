@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
-import "./CustomInput.css";
-import { usePrfData } from "../context/PrintableDataProvider";
+import React, { useEffect, useState } from "react"
+import "./CustomInput.css"
+import { usePrfData } from "../context/PrintableDataProvider"
 import {
   Alert,
   Box,
@@ -11,6 +11,7 @@ import {
   Divider,
   FormControl,
   Grid,
+  IconButton,
   InputLabel,
   Menu,
   MenuItem,
@@ -25,111 +26,90 @@ import {
   Tooltip,
   Typography,
   useMediaQuery,
-} from "@mui/material";
+} from "@mui/material"
+import DeleteIcon from "@mui/icons-material/Delete"
 import {
   CustomCenterModal,
   phpPesoIntFormater,
-} from "../../components/export_components/ExportComp";
-import { toWords } from "number-to-words";
-import CustomInputTemplate from "./CustomInputTemplate";
+} from "../../components/export_components/ExportComp"
+import { toWords } from "number-to-words"
+import CustomInputTemplate from "./CustomInputTemplate"
+import { Item } from "./CustomNoeInput"
 
 function CustomJOinput({ title, objectName }) {
-  const { setPrfData, handleRowClick, prfData } = usePrfData();
-  const [inputState, setInputState] = useState("");
-  const [objectState, setObjectState] = useState();
-  const [open, setOpen] = useState();
+  const { setPrfData, handleRowClick, prfData } = usePrfData()
+  const [inputState, setInputState] = useState("")
+  const [objectState, setObjectState] = useState()
+  const [open, setOpen] = useState()
 
   useEffect(() => {
-    console.log("prfDatajo", prfData);
+    console.log("prfDatajo", prfData)
     prfData &&
-      setObjectState(JSON.parse(prfData.SummaryOfCandidPrfDetails[objectName]));
-  }, [prfData]);
+      setObjectState(JSON.parse(prfData.SummaryOfCandidPrfDetails[objectName]))
+  }, [prfData])
 
-  // const [tempSelect, setTempSelect] = useState(
-  //   prfData ? prfData.SummaryOfCandidPrfDetails.sal_value : 0
-  // )
-  console.log("objectState", objectState);
+  console.log("objectState", objectState)
 
   const handleAddItem = () => {
-    if (inputState.trim() === "") return;
-    setObjectState([...objectState, inputState]);
-    setInputState("");
-  };
+    if (inputState.trim() === "") return
+    setObjectState([...objectState, inputState])
+    setInputState("")
+  }
   const handleJobDescChange = (index, value) => {
     // Create a copy of the current state
-    const updatedArr = [...objectState];
-    console.log("updatedArr", updatedArr);
+    const updatedArr = [...objectState]
+    console.log("updatedArr", updatedArr)
     // Update the specific employer's value
-    updatedArr[index] = value;
-    console.log("updatedArr", updatedArr);
+    updatedArr[index] = value
+    console.log("updatedArr", updatedArr)
 
     // // // Set the new state with the updated employer list
-    setObjectState(updatedArr);
-  };
+    setObjectState(updatedArr)
+  }
 
   const handleDeleteJobDesc = (index) => {
-    const updatedArr = [...objectState];
-    updatedArr.splice(index, 1);
-    setObjectState(updatedArr);
-  };
+    const updatedArr = [...objectState]
+    updatedArr.splice(index, 1)
+    setObjectState(updatedArr)
+  }
 
   return (
     <CustomInputTemplate title={title}>
       <>
-        <input
-          type="text"
-          name=""
-          id=""
-          value={inputState}
-          onChange={(e) => setInputState(e.target.value)}
+        <CustomModalJo
+          openner={open}
+          comptitle={`Edit ${title}`}
+          handleCloseBTN={() => {
+            setOpen(false)
+          }}
+          objectName={objectName}
+          objectState={objectState}
+          setObjectState={setObjectState}
+          handleDeleteJobDesc={handleDeleteJobDesc}
         />
-        <button
+        <Button
+          variant="contained"
           onClick={() => {
-            setOpen(true);
+            setOpen(true)
           }}
         >
-          open modsal
-        </button>
-
-        <button onClick={handleAddItem}>Add</button>
-        <ol>
-          {objectState &&
-            objectState.map((item, index) => (
-              <li key={index}>
-                <input
-                  type="text"
-                  name=""
-                  id=""
-                  value={item}
-                  onChange={(e) => handleJobDescChange(index, e.target.value)}
-                />{" "}
-                <button onClick={() => handleDeleteJobDesc(index)}>
-                  Remove
-                </button>
-              </li>
-            ))}
-        </ol>
-
-        <button
-          onClick={() => {
-            setPrfData((prev) => ({
-              ...prev,
-              SummaryOfCandidPrfDetails: {
-                ...prev.SummaryOfCandidPrfDetails,
-                [objectName]: JSON.stringify(objectState),
-              },
-            }));
-          }}
-        >
-          apply changes
-        </button>
+          Edit {title}
+        </Button>
       </>
     </CustomInputTemplate>
-  );
+  )
 }
 
-const CustomModalJo = ({ openner, comptitle, handleCloseBTN }) => {
-  const matches = useMediaQuery("(min-width: 565px)");
+const CustomModalJo = ({
+  openner,
+  comptitle,
+  handleCloseBTN,
+  objectState,
+  setObjectState,
+  handleDeleteJobDesc,
+  objectName,
+}) => {
+  const matches = useMediaQuery("(min-width: 565px)")
 
   const {
     closeModal,
@@ -138,11 +118,20 @@ const CustomModalJo = ({ openner, comptitle, handleCloseBTN }) => {
     employeeList,
     handleModalRowClick,
     modalTitle,
-  } = usePrfData();
+    setPrfData,
+  } = usePrfData()
 
-  const [name, setName] = useState();
-  const [tempData, setTempData] = useState({});
-  tempData && console.log("viewlist tempdata", tempData);
+  const [name, setName] = useState()
+  const [tempData, setTempData] = useState({})
+  const [inputState, setInputState] = useState("")
+
+  tempData && console.log("viewlist tempdata", tempData)
+
+  const handleAddItem = () => {
+    if (inputState.trim() === "") return
+    setObjectState([...objectState, inputState])
+    setInputState("")
+  }
 
   return (
     <CustomCenterModal
@@ -154,22 +143,21 @@ const CustomModalJo = ({ openner, comptitle, handleCloseBTN }) => {
       handleCloseBTN={handleCloseBTN}
     >
       <Box sx={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+        <TextField
+          id="outlined-basic"
+          label={`Add item`}
+          variant="outlined"
+          sx={{ width: "100%" }}
+          value={inputState}
+          onChange={(e) => setInputState(e.target.value)}
+        />
+        <Button variant="contained" onClick={handleAddItem}>
+          Add
+        </Button>
+        <Divider orientation="vertical" flexItem />
         <Box
           sx={{ display: "flex", justifyContent: "space-between", gap: "15px" }}
-        >
-          <TextField
-            id="outlined-basic"
-            label={"Employee Name (first name / last name)"}
-            variant="outlined"
-            sx={{ width: "100%" }}
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          />
-
-          <Button variant="contained" onClick={() => fetchEmployeeByName(name)}>
-            Search
-          </Button>
-        </Box>
+        ></Box>
         <Box>
           <Stack
             direction="column"
@@ -179,45 +167,37 @@ const CustomModalJo = ({ openner, comptitle, handleCloseBTN }) => {
             overflow={"auto"}
             sx={{ maxHeight: "50vh", marginTop: "10px" }}
           >
-            {employeeList &&
-              employeeList.map((item, index) => (
+            {objectState &&
+              objectState.map((item, index) => (
                 <Item
-                  key={index}
                   sx={{
-                    // display: "flex",
-                    // flexDirection: "column",
-                    cursor: "pointer",
-                    backgroundColor:
-                      tempData.id == item.id ? "#f2f2f2" : "none",
+                    display: "flex",
+                    margin: "10px 0px",
+                    alignItems: "center",
+                    gap: "15px",
                     width: "100%",
-                    textAlign: "left",
-                    fontSize: "1rem",
                   }}
-                  onClick={() => setTempData(item)}
                 >
-                  <Typography sx={{ fontWeight: "600" }}>
-                    {item.fname} {!item.mname && !item.mname} {item.lname}{" "}
-                    {!item.extname && item.extname}
-                  </Typography>
-
-                  <Typography>{item.position_name}</Typography>
-
-                  <Typography>{item.dept_title}</Typography>
+                  <h5 style={{ margin: "0px", width: "30px" }}>{index + 1}</h5>
+                  <TextField
+                    id="outlined-basic"
+                    variant="outlined"
+                    sx={{ flex: 1 }}
+                    multiline
+                    maxRows={4}
+                    value={item}
+                    onChange={(e) => handleJobDescChange(index, e.target.value)}
+                  />
+                  <IconButton
+                    aria-label="delete"
+                    size="large"
+                    onClick={() => handleDeleteJobDesc(index)}
+                  >
+                    <DeleteIcon sx={{ color: "#ff7272" }} />
+                  </IconButton>
                 </Item>
               ))}
           </Stack>
-          {/* <p
-            key={index}
-            onClick={() => setTempData(item)}
-            style={{
-              backgroundColor:
-                tempData & (tempData.id == item.id) ? "red" : "blue",
-            }}
-          >
-            {item.fname} {!item.mname && !item.mname} {item.lname}{" "}
-            {!item.extname && item.extname} {item.position_name}{" "}
-            {item.dept_title}
-          </p> */}
         </Box>
         <Box sx={{ display: "flex", justifyContent: "space-between" }}>
           <Button variant="text" onClick={handleCloseBTN}>
@@ -225,26 +205,14 @@ const CustomModalJo = ({ openner, comptitle, handleCloseBTN }) => {
           </Button>
           <Button
             variant="contained"
-            onClick={(e) => {
-              e.preventDefault();
-              if (comptitle && comptitle === "PREPARED BY") {
-                handleModalRowClick(
-                  {
-                    prepared_by: `${tempData.fname} ${tempData.mname} ${tempData.lname} ${tempData.extname}`,
-                    prepared_by_position: tempData.position_name,
-                  },
-                  comptitle
-                );
-              } else if (comptitle && comptitle === "ENDORSED BY") {
-                handleModalRowClick(
-                  {
-                    endorsed_by: `${tempData.fname} ${tempData.mname} ${tempData.lname} ${tempData.extname}`,
-                    endorsed_by_position: tempData.position_name,
-                    endorsed_by_department: tempData.dept_title,
-                  },
-                  comptitle
-                );
-              }
+            onClick={() => {
+              setPrfData((prev) => ({
+                ...prev,
+                SummaryOfCandidPrfDetails: {
+                  ...prev.SummaryOfCandidPrfDetails,
+                  [objectName]: JSON.stringify(objectState),
+                },
+              }))
             }}
           >
             Save
@@ -252,7 +220,7 @@ const CustomModalJo = ({ openner, comptitle, handleCloseBTN }) => {
         </Box>
       </Box>
     </CustomCenterModal>
-  );
-};
+  )
+}
 
-export default CustomJOinput;
+export default CustomJOinput

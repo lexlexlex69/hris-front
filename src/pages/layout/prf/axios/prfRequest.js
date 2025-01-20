@@ -188,7 +188,7 @@ export function requestOrgDSU(data) {
 }
 // }
 
-//printable
+//printable lex
 export function get_all_prf_summaryOfCandidContent(data) {
   return axios.request({
     method: "POST",
@@ -201,5 +201,12 @@ export function searchEmployee(data) {
     method: "POST",
     data: data,
     url: "api/employee/searchEmployee",
+  })
+}
+export function saveDesign(data) {
+  return axios.request({
+    method: "POST",
+    data: data,
+    url: "api/prf-pritables/store_prf_printable_design",
   })
 }

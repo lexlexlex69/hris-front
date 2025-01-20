@@ -12,8 +12,13 @@ import CustomModal from "./components/CustomModal"
 export default function PrintablesPage() {
   const { process, prf_id } = useParams()
   console.log("process", process)
-  const { setPrfId, fetchPrintableContent, showModal, setProcessType } =
-    usePrfData()
+  const {
+    setPrfId,
+    fetchPrintableContent,
+    showModal,
+    setProcessType,
+    saveAllchanges,
+  } = usePrfData()
 
   useEffect(() => {
     if (showModal) {
@@ -53,7 +58,15 @@ export default function PrintablesPage() {
       </div>
       <div className="prf_printable_main">
         <div className="prf_printable_main_header">
-          <button className="PRF_CustomInput_Button save_changes_bttn">
+          <button
+            className="PRF_CustomInput_Button save_changes_bttn"
+            onClick={() =>
+              saveAllchanges({
+                prf_id,
+                file_name: process,
+              })
+            }
+          >
             Save Changes
           </button>
           <button className="PRF_CustomInput_Button" onClick={handlePrint}>

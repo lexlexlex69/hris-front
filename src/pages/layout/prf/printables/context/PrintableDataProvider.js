@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react"
 import {
   get_all_prf_summaryOfCandidContent,
+  saveDesign,
   searchEmployee,
 } from "../../axios/prfRequest"
 import {
@@ -332,15 +333,11 @@ export const PrfContextProvider = ({ children }) => {
   const handleImgFile = (e) => {
     const selectedFile = e.target.files[0]
     if (e.target.name === "HEADER") {
-      // setHeaderImg(selectedFile);
-      // setPrevImage('')
       setHeaderImg({
         data: selectedFile,
         preview: URL.createObjectURL(selectedFile),
       })
     } else if (e.target.name === "FOOTER") {
-      // setHeaderImg(selectedFile);
-      // setPrevImage('')
       setFooterImg({
         data: selectedFile,
         preview: URL.createObjectURL(selectedFile),
@@ -350,26 +347,34 @@ export const PrfContextProvider = ({ children }) => {
 
   const handleApplyImg = (e) => {
     e.preventDefault()
-    // console.log(headerImg.preview);
-    // console.log("handle", designPreview);
     if (!headerImg && !footerImg) {
       console.log("empty")
       return
     }
     if (e.target.name === "HEADER") {
-      // setHeaderImg(selectedFile);
-      // setPrevImage('')
       setDesignPreview((prevDetails) => ({
         ...prevDetails,
         header: headerImg.preview,
       }))
     } else if (e.target.name === "FOOTER") {
-      // setHeaderImg(selectedFile);
-      // setPrevImage('')
       setDesignPreview((prevDetails) => ({
         ...prevDetails,
         footer: footerImg.preview,
       }))
+    }
+  }
+  //try wala async hahahah
+  const saveAllchanges = async (payload) => {
+    console.log("saveallchange", payload.prf_id, payload.file_name)
+    try {
+      const formData = new FormData()
+      formData.append("prf_id", payload.prf_id)
+      formData.append("file_name", payload.file_name)
+      formData.append("position", "header")
+      formData.append("image_path", headerImg.data)
+      await saveDesign(formData)
+    } catch (error) {
+      console.log("error for save changes", error)
     }
   }
 
@@ -438,6 +443,7 @@ export const PrfContextProvider = ({ children }) => {
         fetchEmployeeByName,
         employeeList,
         handleModalRowClick,
+        saveAllchanges,
       }}
     >
       {children}
