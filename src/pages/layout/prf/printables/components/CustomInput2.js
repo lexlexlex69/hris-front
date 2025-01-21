@@ -1,10 +1,10 @@
-import React, { useState } from "react"
-import "./CustomInput2.css"
-import { usePrfData } from "../context/PrintableDataProvider"
-import { FormControlLabel, Radio, RadioGroup } from "@mui/material"
+import React, { useState } from "react";
+import "./CustomInput2.css";
+import { usePrfData } from "../context/PrintableDataProvider";
+import { FormControlLabel, Radio, RadioGroup } from "@mui/material";
 
 function CustomInput2({ title, forRecommendedBy, recommendedByChange }) {
-  forRecommendedBy && console.log("forRecommendedBy", forRecommendedBy)
+  forRecommendedBy && console.log("forRecommendedBy", forRecommendedBy);
   return (
     <div className="PRF_CustomInput">
       <div className="PRF_CustomInput_Header">{title}</div>
@@ -31,31 +31,9 @@ function CustomInput2({ title, forRecommendedBy, recommendedByChange }) {
               />
             ))}
         </RadioGroup>
-        {/* {forRecommendedBy &&
-          forRecommendedBy.map((item, index) => (
-            <div key={index}>
-              <input
-                id={item.rater_emp_id}
-                type="radio"
-                value=""
-                name="default-radio"
-                // className="custom-radio-group-input"
-                checked={item.rater_remark === "selected"}
-                onChange={() => recommendedByChange(item.rater_emp_id)}
-              />
-              <label
-                htmlFor={item.rater_emp_id}
-                className="custom-radio-group-label"
-              >
-                {item.lname}
-                {", "}
-                {item.fname}
-              </label>
-            </div>
-          ))} */}
       </div>
     </div>
-  )
+  );
 }
 
-export default CustomInput2
+export default CustomInput2;
