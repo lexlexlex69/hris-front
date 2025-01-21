@@ -63,6 +63,7 @@ export const PrfContextProvider = ({ children }) => {
       console.log(prf_id);
       let response1 = await get_all_prf_summaryOfCandidContent({
         prf_id: prf_id_payload,
+        processType,
       });
       if (mount) {
         // Only update state if the component is still mounted
@@ -444,18 +445,20 @@ export const PrfContextProvider = ({ children }) => {
     }
 
     //jo terms & desc save
-    console.log({
-      prfData: { id: prf_id },
-      description: prfData.SummaryOfCandidPrfDetails.terms_condi,
-    });
-    descRequest = addJobDescription({
-      prfData: { id: prf_id },
-      description: prfData.SummaryOfCandidPrfDetails.terms_condi,
-    });
-    termRequest = addJobTerms({
-      prfData: { id: prf_id },
-      terms: prfData.SummaryOfCandidPrfDetails.job_desc,
-    });
+    if (processType === "jo") {
+      console.log({
+        prfData: { id: prf_id },
+        description: prfData.SummaryOfCandidPrfDetails.terms_condi,
+      });
+      descRequest = addJobDescription({
+        prfData: { id: prf_id },
+        description: JSON.parse(prfData.SummaryOfCandidPrfDetails.job_desc),
+      });
+      termRequest = addJobTerms({
+        prfData: { id: prf_id },
+        terms: JSON.parse(prfData.SummaryOfCandidPrfDetails.terms_condi),
+      });
+    }
 
     try {
       const [r1, r2, r3, r4, r5, r6, r7] = await Promise.all([
@@ -465,7 +468,7 @@ export const PrfContextProvider = ({ children }) => {
         recomByRequest && recomByRequest,
         salaryRequest && salaryRequest,
         descRequest && descRequest,
-        // termRequest && termRequest,
+        termRequest && termRequest,
       ]);
       console.log(r1, r2, r3, r4, r5, r6, r7);
     } catch (error) {

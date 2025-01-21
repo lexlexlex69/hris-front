@@ -1,17 +1,19 @@
-import React, { useState } from "react"
-import "./TabComponent.css" // Import the CSS file
-import DiamondIcon from "@mui/icons-material/Diamond"
-import StyleIcon from "@mui/icons-material/Style"
-import CustomInput from "./CustomInput"
-import { usePrfData } from "../context/PrintableDataProvider"
-import CustomInput2 from "./CustomInput2"
-import CustomInput3 from "./CustomInput3"
-import CustomSelect from "./CustomSelect"
-import CustomJOinput from "./CustomJOinput"
-import CustomNoeInput from "./CustomNoeInput"
+import React, { useState } from "react";
+import "./TabComponent.css"; // Import the CSS file
+import DiamondIcon from "@mui/icons-material/Diamond";
+import StyleIcon from "@mui/icons-material/Style";
+import CustomInput from "./CustomInput";
+import { usePrfData } from "../context/PrintableDataProvider";
+import CustomInput2 from "./CustomInput2";
+import CustomInput3 from "./CustomInput3";
+import CustomSelect from "./CustomSelect";
+import CustomJOinput from "./CustomJOinput";
+import CustomNoeInput from "./CustomNoeInput";
+import { TabContext, TabList, TabPanel } from "@mui/lab";
+import { Box, Tab, Tabs } from "@mui/material";
 
 const TabComponent = ({ process }) => {
-  const [activeTab, setActiveTab] = useState("essentials")
+  const [activeTab, setActiveTab] = useState("essentials");
   const {
     prfData,
     recommendedByChange,
@@ -20,124 +22,143 @@ const TabComponent = ({ process }) => {
     forDesignFooter,
     headerImg,
     footerImg,
-  } = usePrfData()
+  } = usePrfData();
 
-  prfData && console.log("prfData", prfData)
+  prfData && console.log("prfData", prfData);
 
-  console.log("forRecommendedBy", forRecommendedBy)
+  console.log("forRecommendedBy", forRecommendedBy);
   const handleTabClick = (tab) => {
-    setActiveTab(tab)
-  }
+    setActiveTab(tab);
+  };
+
+  const [value, setValue] = React.useState("1");
+
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
 
   return (
-    <div className="tab-container">
-      <div className="tab-header">
-        <button
-          onClick={() => handleTabClick("essentials")}
-          className={`tab-button ${activeTab === "essentials" ? "active" : ""}`}
+    <>
+      <TabContext value={value}>
+        <Tabs
+          value={value}
+          onChange={handleChange}
+          variant="fullWidth"
+          aria-label="full width tabs example"
+          height="500px"
         >
-          <DiamondIcon />
-          Essentials
-        </button>
-        <button
-          onClick={() => handleTabClick("design")}
-          className={`tab-button ${activeTab === "design" ? "active" : ""}`}
+          <Tab
+            icon={<DiamondIcon />}
+            iconPosition="start"
+            label="Essentials"
+            value="1"
+          />
+          <Tab
+            icon={<StyleIcon />}
+            iconPosition="start"
+            label="Essentials"
+            value="2"
+          />
+        </Tabs>
+        <Box
+          sx={{
+            backgroundColor: "white",
+            height: "84vh",
+            overflow: "auto",
+            borderRight: "2px solid #d1d1d1",
+          }}
         >
-          <StyleIcon />
-          Design
-        </button>
-      </div>
-      <div className="tab-content">
-        {activeTab === "essentials" && (
-          <div className="tab-content-body">
-            {process === "summaryofcandid" && (
-              <>
-                <CustomInput
-                  title={"PREPARED BY"}
-                  tab={"Essentials"}
-                  names={{
-                    byName: "prepared_by",
-                    position: "prepared_by_position",
-                  }}
-                  value={
-                    prfData
-                      ? {
-                          byName: prfData.essentials.prepared_by,
-                          position: prfData.essentials.prepared_by_position,
-                        }
-                      : ""
-                  }
-                />
-                <CustomInput
-                  title={"ENDORSED BY"}
-                  tab={"Essentials"}
-                  names={{
-                    byName: "endorsed_by",
-                    position: "endorsed_by_position",
-                    department: "endorsed_by_department",
-                  }}
-                  value={
-                    prfData
-                      ? {
-                          byName: prfData.essentials.endorsed_by,
-                          position: prfData.essentials.endorsed_by_position,
-                          department: prfData.essentials.endorsed_by_department,
-                        }
-                      : ""
-                  }
-                />
-                <CustomInput2
-                  title={"Recommended By:"}
-                  forRecommendedBy={forRecommendedBy ? forRecommendedBy : ""}
-                  recommendedByChange={recommendedByChange}
-                />
-              </>
-            )}
+          <TabPanel value="1">
+            <div className="tab-content-body">
+              {process === "summaryofcandid" && (
+                <>
+                  <CustomInput
+                    title={"PREPARED BY"}
+                    tab={"Essentials"}
+                    names={{
+                      byName: "prepared_by",
+                      position: "prepared_by_position",
+                    }}
+                    value={
+                      prfData
+                        ? {
+                            byName: prfData.essentials.prepared_by,
+                            position: prfData.essentials.prepared_by_position,
+                          }
+                        : ""
+                    }
+                  />
+                  <CustomInput
+                    title={"ENDORSED BY"}
+                    tab={"Essentials"}
+                    names={{
+                      byName: "endorsed_by",
+                      position: "endorsed_by_position",
+                      department: "endorsed_by_department",
+                    }}
+                    value={
+                      prfData
+                        ? {
+                            byName: prfData.essentials.endorsed_by,
+                            position: prfData.essentials.endorsed_by_position,
+                            department:
+                              prfData.essentials.endorsed_by_department,
+                          }
+                        : ""
+                    }
+                  />
+                  <CustomInput2
+                    title={"Recommended By:"}
+                    forRecommendedBy={forRecommendedBy ? forRecommendedBy : ""}
+                    recommendedByChange={recommendedByChange}
+                  />
+                </>
+              )}
 
-            {/* <CustomInput title={"SALARY"} tab={"Essentials"} /> */}
-            {process !== "summaryofcandid" && process !== "jo" && (
-              <CustomSelect title={"SALARY"} />
-            )}
-            {process === "jo" && (
-              <>
-                <CustomJOinput
-                  title={"Job Description"}
-                  objectName="job_desc"
-                  buttonTitle="Edit Job Description"
-                />
-                <CustomJOinput
-                  title={"Terms and Conditions"}
-                  objectName="terms_condi"
-                />
-              </>
-            )}
-            {(process === "noe" || process === "atr") && (
-              <>
-                <CustomNoeInput
-                  title={"Applicants Details"}
-                  process={process}
-                />
-              </>
-            )}
-          </div>
-        )}
-        {activeTab === "design" && (
-          <div className="tab-content-body">
-            <CustomInput3
-              title={"HEADER"}
-              imgUrl={forDesignHeader}
-              designPreview={headerImg ? headerImg.preview : ""}
-            />
-            <CustomInput3
-              title={"FOOTER"}
-              imgUrl={forDesignFooter}
-              designPreview={footerImg ? footerImg.preview : ""}
-            />
-          </div>
-        )}
-      </div>
-    </div>
-  )
-}
+              {/* <CustomInput title={"SALARY"} tab={"Essentials"} /> */}
+              {process !== "summaryofcandid" && process !== "jo" && (
+                <CustomSelect title={"SALARY"} />
+              )}
+              {process === "jo" && (
+                <>
+                  <CustomJOinput
+                    title={"Job Description"}
+                    objectName="job_desc"
+                  />
+                  <CustomJOinput
+                    title={"Terms and Conditions"}
+                    objectName="terms_condi"
+                  />
+                </>
+              )}
+              {(process === "noe" || process === "atr") && (
+                <>
+                  <CustomNoeInput
+                    title={"Applicants Details"}
+                    process={process}
+                  />
+                </>
+              )}
+            </div>
+          </TabPanel>
+          <TabPanel value="2">
+            <div className="tab-content-body">
+              <CustomInput3
+                title={"HEADER"}
+                imgUrl={forDesignHeader}
+                designPreview={headerImg ? headerImg.preview : ""}
+              />
+              <CustomInput3
+                title={"FOOTER"}
+                imgUrl={forDesignFooter}
+                designPreview={footerImg ? footerImg.preview : ""}
+              />
+            </div>
+          </TabPanel>
+        </Box>
+      </TabContext>
+    </>
+  );
+};
 
-export default TabComponent
+export default TabComponent;

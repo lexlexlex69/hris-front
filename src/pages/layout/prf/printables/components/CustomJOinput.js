@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react"
-import "./CustomInput.css"
-import { usePrfData } from "../context/PrintableDataProvider"
+import React, { useEffect, useState } from "react";
+import "./CustomInput.css";
+import { usePrfData } from "../context/PrintableDataProvider";
 import {
   Alert,
   Box,
@@ -26,52 +26,52 @@ import {
   Tooltip,
   Typography,
   useMediaQuery,
-} from "@mui/material"
-import DeleteIcon from "@mui/icons-material/Delete"
+} from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
 import {
   CustomCenterModal,
   phpPesoIntFormater,
-} from "../../components/export_components/ExportComp"
-import { toWords } from "number-to-words"
-import CustomInputTemplate from "./CustomInputTemplate"
-import { Item } from "./CustomNoeInput"
+} from "../../components/export_components/ExportComp";
+import { toWords } from "number-to-words";
+import CustomInputTemplate from "./CustomInputTemplate";
+import { Item } from "./CustomNoeInput";
 
 function CustomJOinput({ title, objectName }) {
-  const { setPrfData, handleRowClick, prfData } = usePrfData()
-  const [inputState, setInputState] = useState("")
-  const [objectState, setObjectState] = useState()
-  const [open, setOpen] = useState()
+  const { setPrfData, handleRowClick, prfData } = usePrfData();
+  const [inputState, setInputState] = useState("");
+  const [objectState, setObjectState] = useState();
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    console.log("prfDatajo", prfData)
+    console.log("prfDatajo", prfData);
     prfData &&
-      setObjectState(JSON.parse(prfData.SummaryOfCandidPrfDetails[objectName]))
-  }, [prfData])
+      setObjectState(JSON.parse(prfData.SummaryOfCandidPrfDetails[objectName]));
+  }, [prfData]);
 
-  console.log("objectState", objectState)
+  console.log("objectState", objectState);
 
   const handleAddItem = () => {
-    if (inputState.trim() === "") return
-    setObjectState([...objectState, inputState])
-    setInputState("")
-  }
+    if (inputState.trim() === "") return;
+    setObjectState([...objectState, inputState]);
+    setInputState("");
+  };
   const handleJobDescChange = (index, value) => {
     // Create a copy of the current state
-    const updatedArr = [...objectState]
-    console.log("updatedArr", updatedArr)
+    const updatedArr = [...objectState];
+    console.log("updatedArr", updatedArr);
     // Update the specific employer's value
-    updatedArr[index] = value
-    console.log("updatedArr", updatedArr)
+    updatedArr[index] = value;
+    console.log("updatedArr", updatedArr);
 
     // // // Set the new state with the updated employer list
-    setObjectState(updatedArr)
-  }
+    setObjectState(updatedArr);
+  };
 
   const handleDeleteJobDesc = (index) => {
-    const updatedArr = [...objectState]
-    updatedArr.splice(index, 1)
-    setObjectState(updatedArr)
-  }
+    const updatedArr = [...objectState];
+    updatedArr.splice(index, 1);
+    setObjectState(updatedArr);
+  };
 
   return (
     <CustomInputTemplate title={title}>
@@ -80,7 +80,7 @@ function CustomJOinput({ title, objectName }) {
           openner={open}
           comptitle={`Edit ${title}`}
           handleCloseBTN={() => {
-            setOpen(false)
+            setOpen(false);
           }}
           objectName={objectName}
           objectState={objectState}
@@ -90,14 +90,14 @@ function CustomJOinput({ title, objectName }) {
         <Button
           variant="contained"
           onClick={() => {
-            setOpen(true)
+            setOpen(true);
           }}
         >
           Edit {title}
         </Button>
       </>
     </CustomInputTemplate>
-  )
+  );
 }
 
 const CustomModalJo = ({
@@ -109,7 +109,7 @@ const CustomModalJo = ({
   handleDeleteJobDesc,
   objectName,
 }) => {
-  const matches = useMediaQuery("(min-width: 565px)")
+  const matches = useMediaQuery("(min-width: 565px)");
 
   const {
     closeModal,
@@ -119,19 +119,19 @@ const CustomModalJo = ({
     handleModalRowClick,
     modalTitle,
     setPrfData,
-  } = usePrfData()
+  } = usePrfData();
 
-  const [name, setName] = useState()
-  const [tempData, setTempData] = useState({})
-  const [inputState, setInputState] = useState("")
+  const [name, setName] = useState();
+  const [tempData, setTempData] = useState({});
+  const [inputState, setInputState] = useState("");
 
-  tempData && console.log("viewlist tempdata", tempData)
+  tempData && console.log("viewlist tempdata", tempData);
 
   const handleAddItem = () => {
-    if (inputState.trim() === "") return
-    setObjectState([...objectState, inputState])
-    setInputState("")
-  }
+    if (inputState.trim() === "") return;
+    setObjectState([...objectState, inputState]);
+    setInputState("");
+  };
 
   return (
     <CustomCenterModal
@@ -212,7 +212,7 @@ const CustomModalJo = ({
                   ...prev.SummaryOfCandidPrfDetails,
                   [objectName]: JSON.stringify(objectState),
                 },
-              }))
+              }));
             }}
           >
             Save
@@ -220,7 +220,7 @@ const CustomModalJo = ({
         </Box>
       </Box>
     </CustomCenterModal>
-  )
-}
+  );
+};
 
-export default CustomJOinput
+export default CustomJOinput;
