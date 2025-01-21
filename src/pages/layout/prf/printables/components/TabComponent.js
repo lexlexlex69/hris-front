@@ -1,19 +1,18 @@
-import React, { useState } from "react";
-import "./TabComponent.css"; // Import the CSS file
-import DiamondIcon from "@mui/icons-material/Diamond";
-import StyleIcon from "@mui/icons-material/Style";
-import CustomInput from "./CustomInput";
-import { usePrfData } from "../context/PrintableDataProvider";
-import CustomInput2 from "./CustomInput2";
-import CustomInput3 from "./CustomInput3";
-import CustomSelect from "./CustomSelect";
-import CustomJOinput from "./CustomJOinput";
-import CustomNoeInput from "./CustomNoeInput";
-import { TabContext, TabList, TabPanel } from "@mui/lab";
-import { Box, Tab, Tabs } from "@mui/material";
+import React, { useState } from "react"
+import "./TabComponent.css" // Import the CSS file
+import DiamondIcon from "@mui/icons-material/Diamond"
+import StyleIcon from "@mui/icons-material/Style"
+import CustomInput from "./CustomInput"
+import { usePrfData } from "../context/PrintableDataProvider"
+import CustomInput2 from "./CustomInput2"
+import CustomInput3 from "./CustomInput3"
+import CustomSelect from "./CustomSelect"
+import CustomJOinput from "./CustomJOinput"
+import CustomNoeInput from "./CustomNoeInput"
+import { TabContext, TabList, TabPanel } from "@mui/lab"
+import { Box, Tab, Tabs } from "@mui/material"
 
 const TabComponent = ({ process }) => {
-  const [activeTab, setActiveTab] = useState("essentials");
   const {
     prfData,
     recommendedByChange,
@@ -22,20 +21,17 @@ const TabComponent = ({ process }) => {
     forDesignFooter,
     headerImg,
     footerImg,
-  } = usePrfData();
+  } = usePrfData()
 
-  prfData && console.log("prfData", prfData);
+  prfData && console.log("prfData", prfData)
 
-  console.log("forRecommendedBy", forRecommendedBy);
-  const handleTabClick = (tab) => {
-    setActiveTab(tab);
-  };
+  console.log("forRecommendedBy", forRecommendedBy)
 
-  const [value, setValue] = React.useState("1");
+  const [value, setValue] = React.useState("1")
 
   const handleChange = (event, newValue) => {
-    setValue(newValue);
-  };
+    setValue(newValue)
+  }
 
   return (
     <>
@@ -55,8 +51,9 @@ const TabComponent = ({ process }) => {
           />
           <Tab
             icon={<StyleIcon />}
+            disabled={process === "jo"}
             iconPosition="start"
-            label="Essentials"
+            label="Design"
             value="2"
           />
         </Tabs>
@@ -158,7 +155,7 @@ const TabComponent = ({ process }) => {
         </Box>
       </TabContext>
     </>
-  );
-};
+  )
+}
 
-export default TabComponent;
+export default TabComponent

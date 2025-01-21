@@ -12,14 +12,7 @@ import {
 import { CustomCenterModal } from "../../components/export_components/ExportComp"
 import { Item } from "./CustomNoeInput"
 
-function CustomInput({
-  title,
-  tab,
-  names,
-  value,
-  forRecommendedBy,
-  recommendedByChange,
-}) {
+function CustomInput({ title, names, value }) {
   value && console.log(value)
   names && console.log(names.byName)
   const { setPrfData, handleViewClick } = usePrfData()
@@ -32,13 +25,7 @@ function CustomInput({
       essentials: { ...prevDetails.essentials, [name]: value },
     }))
   }
-  const handleApplyChange = (e) => {
-    e.preventDefault()
-    setPrfData((prev) => ({
-      ...prev,
-      essentials: tempData,
-    }))
-  }
+
   return (
     <>
       <CustomModalSummary
@@ -89,7 +76,6 @@ function CustomInput({
                 color="info"
                 size="small"
                 onClick={() => {
-                  // handleViewClick(title)
                   setOpen(true)
                 }}
               >
@@ -97,14 +83,6 @@ function CustomInput({
                 View List
               </Button>
             )}
-            {/* {title !== "SALARY" && (
-                <button
-                className="PRF_CustomInput_Button"
-                onClick={handleApplyChange}
-                >
-                Apply
-                </button>
-                )} */}
           </div>
         </div>
       </div>
@@ -127,30 +105,7 @@ const CustomModalSummary = ({ openner, comptitle, handleCloseBTN }) => {
   const [name, setName] = useState()
   const [tempData, setTempData] = useState({})
   tempData && console.log("viewlist tempdata", tempData)
-  // const forHandleClickRow = (data) => {
-  //   if (modalTitle && modalTitle === "PREPARED BY") {
-  //     handleModalRowClick({
-  //       prepared_by: `${data.fname} ${data.mname} ${data.lname} ${data.extname}`,
-  //       prepared_by_position: data.position_name,
-  //     })
-  //   } else if (modalTitle && modalTitle === "ENDORSED BY") {
-  //     handleModalRowClick({
-  //       endorsed_by: `${data.fname} ${data.mname} ${data.lname} ${data.extname}`,
-  //       endorsed_by_position: data.position_name,
-  //       endorsed_by_department: data.dept_title,
-  //     })
-  //   }
-  // }
 
-  const currentSetter = () => {
-    // setCurrentName(data.find((item) => item.id === openId))
-    // setCurrentAddress(addressData.find((item) => item?.id === openId))
-    // process === "atr" && setCurrentSignatory(signatory)
-  }
-
-  // useEffect(() => {
-  //   data && addressData && openId && currentSetter()
-  // }, [openId])
   return (
     <CustomCenterModal
       key={"open1"}
@@ -232,6 +187,7 @@ const CustomModalSummary = ({ openner, comptitle, handleCloseBTN }) => {
           </Button>
           <Button
             variant="contained"
+            color="success"
             onClick={(e) => {
               e.preventDefault()
               if (comptitle && comptitle === "PREPARED BY") {
