@@ -347,6 +347,7 @@ function JobOrder({ applicantList, setApplicantList, loader }) {
       confirmButtonText: "Submit",
     }).then((result) => {
       if (result.isConfirmed) {
+        console.log(t_data);
         addJobDescription(t_data)
           .then((r) => {
             if (r.data.status === 500) toast.error(r.data.message);

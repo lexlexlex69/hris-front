@@ -7,6 +7,8 @@ import {
   updateSalaryValue,
 } from "../../axios/prfRequest";
 import {
+  addJobDescription,
+  addJobTerms,
   getEquivalentSGValue,
   getPrfSignatories,
   setSelectedRaterAssessment,
@@ -379,11 +381,14 @@ export const PrfContextProvider = ({ children }) => {
     const sgValue = prfData.SummaryOfCandidPrfDetails.sal_value;
     const prf_id = payload.prf_id;
     const file_name = payload.file_name;
+
     let headerRequest = null;
     let footerRequest = null;
     let essentialsRequest = null;
     let recomByRequest = null;
     let salaryRequest = null;
+    let descRequest = null;
+    let termRequest = null;
 
     //header save
     if (headerImg?.data) {
@@ -438,15 +443,31 @@ export const PrfContextProvider = ({ children }) => {
       salaryRequest = updateSalaryValue({ prf_id, sgValue });
     }
 
+    //jo terms & desc save
+    console.log({
+      prfData: { id: prf_id },
+      description: prfData.SummaryOfCandidPrfDetails.terms_condi,
+    });
+    descRequest = addJobDescription({
+      prfData: { id: prf_id },
+      description: prfData.SummaryOfCandidPrfDetails.terms_condi,
+    });
+    termRequest = addJobTerms({
+      prfData: { id: prf_id },
+      terms: prfData.SummaryOfCandidPrfDetails.job_desc,
+    });
+
     try {
-      const [r1, r2, r3, r4, r5] = await Promise.all([
+      const [r1, r2, r3, r4, r5, r6, r7] = await Promise.all([
         headerRequest && headerRequest,
         footerRequest && footerRequest,
         essentialsRequest && essentialsRequest,
         recomByRequest && recomByRequest,
         salaryRequest && salaryRequest,
+        descRequest && descRequest,
+        // termRequest && termRequest,
       ]);
-      console.log(r1, r2, r3, r4, r5);
+      console.log(r1, r2, r3, r4, r5, r6, r7);
     } catch (error) {
       console.log("error for save changes: header", error);
     }
