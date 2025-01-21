@@ -1,14 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
-import PrfProvider from "../PrfProvider";
-import "./prf_printable.css";
-import TabComponent from "./components/TabComponent";
-import { useParams } from "react-router-dom";
-import { get_all_prf_summaryOfCandidContent } from "../axios/prfRequest";
-import PrintableContent from "./components/PrintableContent";
-import { useReactToPrint } from "react-to-print";
-import { usePrfData } from "./context/PrintableDataProvider";
-import CustomModal from "./components/CustomModal";
-
+import * as React from "react";
 import { styled, useTheme } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
@@ -76,17 +66,7 @@ const DrawerHeader = styled("div")(({ theme }) => ({
   justifyContent: "flex-end",
 }));
 
-export default function PrintablesPage() {
-  const { process, prf_id } = useParams();
-  console.log("process", process);
-  const {
-    setPrfId,
-    fetchPrintableContent,
-    showModal,
-    setProcessType,
-    saveAllchanges,
-  } = usePrfData();
-
+export default function PersistentDrawerLeft() {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
 
@@ -98,27 +78,10 @@ export default function PrintablesPage() {
     setOpen(false);
   };
 
-  useEffect(() => {
-    if (prf_id) {
-      console.log("useEffect prf_id", prf_id);
-      setPrfId(prf_id);
-      // fetchPrintableContent(prf_id);
-    }
-    if (process) {
-      setProcessType(process);
-    }
-  }, [prf_id]);
-
-  const printRef = useRef();
-
-  const handlePrint = useReactToPrint({
-    content: () => printRef.current,
-    documentTitle: "Summary of Candidates",
-  });
   return (
-    <Box sx={{ display: "flex", marginTop: "50px" }}>
+    <Box sx={{ display: "flex" }}>
       <CssBaseline />
-      <AppBar position="fixed" open={open} sx={{ marginTop: "50px" }}>
+      <AppBar position="fixed" open={open}>
         <Toolbar>
           <IconButton
             color="inherit"
@@ -137,7 +100,6 @@ export default function PrintablesPage() {
       <Drawer
         sx={{
           width: drawerWidth,
-          marginTop: "100px",
           flexShrink: 0,
           "& .MuiDrawer-paper": {
             width: drawerWidth,
