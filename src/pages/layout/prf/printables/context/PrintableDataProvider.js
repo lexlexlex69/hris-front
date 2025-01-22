@@ -491,6 +491,7 @@ export const PrfContextProvider = ({ children }) => {
 
   const [employeeList, setEmployeeList] = useState();
   const fetchEmployeeByName = async (name) => {
+    if (name.trim() === "") return;
     try {
       // console.log(prf_id)
       const response1 = await searchEmployee({
@@ -525,6 +526,18 @@ export const PrfContextProvider = ({ children }) => {
           ...prevDetails.essentials,
           prepared_by: data.prepared_by,
           prepared_by_position: data.prepared_by_position,
+        },
+      }));
+    } else if (title && title === "Report To") {
+      setPrfData((prevDetails) => ({
+        ...prevDetails,
+        signatory: {
+          ...prevDetails.signatory,
+          dept_head: {
+            ...prevDetails.signatory.dept_head,
+            assigned_by: data.assigned_by,
+            position: data.position,
+          },
         },
       }));
     }

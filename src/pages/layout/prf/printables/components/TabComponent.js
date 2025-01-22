@@ -117,13 +117,13 @@ const TabComponent = ({ process }) => {
               {/* <CustomInput title={"SALARY"} tab={"Essentials"} /> */}
               {process !== "summaryofcandid" && process !== "jo" && (
                 <>
+                  <CustomSelect title={"SALARY"} />
                   {process === "en" && (
                     <CustomFooterInput
                       title={"Footer Title"}
                       defaultValue={"CHRMO.02/KJDM"}
                     />
                   )}
-                  <CustomSelect title={"SALARY"} />
                 </>
               )}
               {process === "jo" && (
@@ -136,6 +136,10 @@ const TabComponent = ({ process }) => {
                     title={"Terms and Conditions"}
                     objectName="terms_condi"
                   />
+                  <CustomFooterInput
+                    title={"Footer Title"}
+                    defaultValue={"CHRMO.02/AKP"}
+                  />
                 </>
               )}
               {(process === "noe" || process === "atr") && (
@@ -143,6 +147,26 @@ const TabComponent = ({ process }) => {
                   <CustomNoeInput
                     title={"Applicants Details"}
                     process={process}
+                  />
+                </>
+              )}
+              {process === "atr" && (
+                <>
+                  <CustomInput
+                    title={"Report To"}
+                    tab={"Essentials"}
+                    names={{
+                      byName: "assigned_by",
+                      position: "position",
+                    }}
+                    value={
+                      prfData
+                        ? {
+                            byName: prfData.signatory?.dept_head.assigned_by,
+                            position: prfData.signatory?.dept_head.position,
+                          }
+                        : ""
+                    }
                   />
                 </>
               )}

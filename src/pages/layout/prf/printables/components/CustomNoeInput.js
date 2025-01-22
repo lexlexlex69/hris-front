@@ -30,18 +30,6 @@ function CustomNoeInput({ title, process }) {
   const [openId, setOpenId] = useState();
   const { prfData } = usePrfData();
 
-  const getAddressById = (ids) => {
-    console.log("addressid", ids);
-    if (!ids) {
-      console.log("cant proceed");
-    } else {
-      const data =
-        ids && addressData && addressData.find((item) => item.id === ids);
-      console.log("dataaddress", data);
-      return data ? data : null; // Returns the address if found, otherwise null
-    }
-  };
-
   console.log("addressData.length", addressData.length > 0);
 
   const mergedData =
@@ -112,7 +100,7 @@ function CustomNoeInput({ title, process }) {
                     ) || "APPLICANT NAME NOT FOUND"}
                   </p>
                 </Box>
-                {process === "atr" && (
+                {/* {process === "atr" && (
                   <Box>
                     <p>Report to:</p>
                     <p
@@ -126,7 +114,7 @@ function CustomNoeInput({ title, process }) {
                       {signatory?.position}
                     </p>
                   </Box>
-                )}
+                )} */}
                 <Box>
                   <p>Address:</p>
 
@@ -186,10 +174,10 @@ const CustomModalNoe = ({
     { key: "permaAddress", label: "Permanent Address" },
   ];
 
-  const fieldSignatory = [
-    { key: "assigned_by", label: "Report To" },
-    { key: "position", label: "Position" },
-  ];
+  // const fieldSignatory = [
+  //   { key: "assigned_by", label: "Report To" },
+  //   { key: "position", label: "Position" },
+  // ];
   useEffect(() => {
     data && addressData && openId && currentSetter();
   }, [openId]);
@@ -234,7 +222,7 @@ const CustomModalNoe = ({
             }
           />
         ))}
-        {process === "atr" &&
+        {/* {process === "atr" &&
           fieldSignatory.map((item) => (
             <TextField
               id="outlined-basic"
@@ -249,7 +237,7 @@ const CustomModalNoe = ({
                 }))
               }
             />
-          ))}
+          ))} */}
         <Box sx={{ display: "flex", justifyContent: "space-between" }}>
           <Button variant="text" onClick={handleCloseBTN}>
             Cancel

@@ -1,6 +1,6 @@
-import React, { useState } from "react"
-import "./CustomInput.css"
-import { usePrfData } from "../context/PrintableDataProvider"
+import React, { useState } from "react";
+import "./CustomInput.css";
+import { usePrfData } from "../context/PrintableDataProvider";
 import {
   Box,
   Button,
@@ -8,23 +8,36 @@ import {
   TextField,
   Typography,
   useMediaQuery,
-} from "@mui/material"
-import { CustomCenterModal } from "../../components/export_components/ExportComp"
-import { Item } from "./CustomNoeInput"
+} from "@mui/material";
+import { CustomCenterModal } from "../../components/export_components/ExportComp";
+import { Item } from "./CustomNoeInput";
 
 function CustomInput({ title, names, value }) {
-  value && console.log(value)
-  names && console.log(names.byName)
-  const { setPrfData, handleViewClick } = usePrfData()
-  const [open, setOpen] = useState(false)
+  value && console.log(value);
+  names && console.log(names.byName);
+  const { setPrfData, handleViewClick } = usePrfData();
+  const [open, setOpen] = useState(false);
 
   const handleInputChange = (e) => {
-    const { name, value } = e.target
-    setPrfData((prevDetails) => ({
-      ...prevDetails,
-      essentials: { ...prevDetails.essentials, [name]: value },
-    }))
-  }
+    const { name, value } = e.target;
+    if (title === "Report To") {
+      setPrfData((prevDetails) => ({
+        ...prevDetails,
+        signatory: {
+          ...prevDetails.signatory,
+          dept_head: {
+            ...prevDetails.signatory.dept_head,
+            [name]: value,
+          },
+        },
+      }));
+    } else {
+      setPrfData((prevDetails) => ({
+        ...prevDetails,
+        essentials: { ...prevDetails.essentials, [name]: value },
+      }));
+    }
+  };
 
   return (
     <>
@@ -32,43 +45,70 @@ function CustomInput({ title, names, value }) {
         openner={open}
         comptitle={title}
         handleCloseBTN={() => {
-          setOpen(false)
+          setOpen(false);
         }}
       />
       <div className="PRF_CustomInput">
         <div className="PRF_CustomInput_Header">{title}</div>
         <div className="PRF_CustomInput_Body">
-          <TextField
-            id="outlined-basic"
-            label={"Name"}
-            variant="outlined"
-            sx={{ width: "100%" }}
-            name={names ? names.byName : ""}
-            value={value ? value.byName : ""}
-            onChange={handleInputChange}
-          />
+          {title === "Report To" ? (
+            <>
+              <TextField
+                id="outlined-basic"
+                label={"Name"}
+                variant="outlined"
+                sx={{ width: "100%" }}
+                name={names ? names.byName : ""}
+                value={value ? value.byName : ""}
+                onChange={handleInputChange}
+              />
 
-          <TextField
-            id="outlined-basic"
-            label={"Position"}
-            variant="outlined"
-            sx={{ width: "100%" }}
-            name={names ? names.position : ""}
-            value={value ? value.position : ""}
-            onChange={handleInputChange}
-          />
+              <TextField
+                id="outlined-basic"
+                label={"Position"}
+                variant="outlined"
+                sx={{ width: "100%" }}
+                name={names ? names.position : ""}
+                value={value ? value.position : ""}
+                onChange={handleInputChange}
+              />
+            </>
+          ) : (
+            <>
+              <TextField
+                id="outlined-basic"
+                label={"Name"}
+                variant="outlined"
+                sx={{ width: "100%" }}
+                name={names ? names.byName : ""}
+                value={value ? value.byName : ""}
+                onChange={handleInputChange}
+              />
 
-          {title === "ENDORSED BY" && (
-            <TextField
-              id="outlined-basic"
-              label={"Department"}
-              variant="outlined"
-              sx={{ width: "100%" }}
-              name={names ? names.department : ""}
-              value={value ? value.department : ""}
-              onChange={handleInputChange}
-            />
+              <TextField
+                id="outlined-basic"
+                label={"Position"}
+                variant="outlined"
+                sx={{ width: "100%" }}
+                name={names ? names.position : ""}
+                value={value ? value.position : ""}
+                onChange={handleInputChange}
+              />
+
+              {title === "ENDORSED BY" && (
+                <TextField
+                  id="outlined-basic"
+                  label={"Department"}
+                  variant="outlined"
+                  sx={{ width: "100%" }}
+                  name={names ? names.department : ""}
+                  value={value ? value.department : ""}
+                  onChange={handleInputChange}
+                />
+              )}
+            </>
           )}
+
           <div>
             {title !== "SALARY" && (
               <Button
@@ -76,7 +116,7 @@ function CustomInput({ title, names, value }) {
                 color="info"
                 size="small"
                 onClick={() => {
-                  setOpen(true)
+                  setOpen(true);
                 }}
               >
                 {" "}
@@ -87,11 +127,11 @@ function CustomInput({ title, names, value }) {
         </div>
       </div>
     </>
-  )
+  );
 }
 
 const CustomModalSummary = ({ openner, comptitle, handleCloseBTN }) => {
-  const matches = useMediaQuery("(min-width: 565px)")
+  const matches = useMediaQuery("(min-width: 565px)");
 
   const {
     closeModal,
@@ -100,11 +140,11 @@ const CustomModalSummary = ({ openner, comptitle, handleCloseBTN }) => {
     employeeList,
     handleModalRowClick,
     modalTitle,
-  } = usePrfData()
+  } = usePrfData();
 
-  const [name, setName] = useState()
-  const [tempData, setTempData] = useState({})
-  tempData && console.log("viewlist tempdata", tempData)
+  const [name, setName] = useState();
+  const [tempData, setTempData] = useState({});
+  tempData && console.log("viewlist tempdata", tempData);
 
   return (
     <CustomCenterModal
@@ -168,18 +208,6 @@ const CustomModalSummary = ({ openner, comptitle, handleCloseBTN }) => {
                 </Item>
               ))}
           </Stack>
-          {/* <p
-            key={index}
-            onClick={() => setTempData(item)}
-            style={{
-              backgroundColor:
-                tempData & (tempData.id == item.id) ? "red" : "blue",
-            }}
-          >
-            {item.fname} {!item.mname && !item.mname} {item.lname}{" "}
-            {!item.extname && item.extname} {item.position_name}{" "}
-            {item.dept_title}
-          </p> */}
         </Box>
         <Box sx={{ display: "flex", justifyContent: "space-between" }}>
           <Button variant="text" onClick={handleCloseBTN}>
@@ -189,7 +217,7 @@ const CustomModalSummary = ({ openner, comptitle, handleCloseBTN }) => {
             variant="contained"
             color="success"
             onClick={(e) => {
-              e.preventDefault()
+              e.preventDefault();
               if (comptitle && comptitle === "PREPARED BY") {
                 handleModalRowClick(
                   {
@@ -197,7 +225,7 @@ const CustomModalSummary = ({ openner, comptitle, handleCloseBTN }) => {
                     prepared_by_position: tempData.position_name,
                   },
                   comptitle
-                )
+                );
               } else if (comptitle && comptitle === "ENDORSED BY") {
                 handleModalRowClick(
                   {
@@ -206,7 +234,15 @@ const CustomModalSummary = ({ openner, comptitle, handleCloseBTN }) => {
                     endorsed_by_department: tempData.dept_title,
                   },
                   comptitle
-                )
+                );
+              } else if (comptitle && comptitle === "Report To") {
+                handleModalRowClick(
+                  {
+                    assigned_by: `${tempData.fname} ${tempData.mname} ${tempData.lname} ${tempData.extname}`,
+                    position: tempData.position_name,
+                  },
+                  comptitle
+                );
               }
             }}
           >
@@ -215,7 +251,7 @@ const CustomModalSummary = ({ openner, comptitle, handleCloseBTN }) => {
         </Box>
       </Box>
     </CustomCenterModal>
-  )
-}
+  );
+};
 
-export default CustomInput
+export default CustomInput;

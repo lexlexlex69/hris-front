@@ -47,7 +47,9 @@ function PrintableTemplate({
             }}
             className="fontArial"
           >
-            <div className="customFont-10">CHRMO.02/AKP</div>
+            <div className="customFont-10">
+              {footerTitle ? footerTitle : ""}
+            </div>
             <div style={{ flex: "1 1 auto" }}></div>
             <div className="customFont-10">
               Page {index} of{" "}
