@@ -1,4 +1,4 @@
-import { Box, IconButton, Tooltip } from "@mui/material";
+import { Box, Fab, IconButton, Tooltip } from "@mui/material";
 import {
   Preview as PreviewIcon,
   Assessment as AssessmentIcon,
@@ -12,6 +12,7 @@ import {
 import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 import { PrfStateContext } from "../../pages/layout/prf/PrfProvider";
+import LocalPrintshopIcon from "@mui/icons-material/LocalPrintshop";
 
 export default function PrintPreviewButton() {
   const { openedPR, tempReq } = useContext(PrfStateContext);
@@ -29,16 +30,10 @@ export default function PrintPreviewButton() {
             rel="noopener noreferrer"
             sx={{ textDecoration: "none" }}
           >
-            <Tooltip title="View Personnel Request" arrow>
-              <IconButton
-                type="button"
-                className="custom-iconbutton"
-                color="primary"
-              >
-                <PreviewIcon />
-              </IconButton>
+            <Fab variant="extended" size="medium" color="primary">
+              <LocalPrintshopIcon sx={{ mr: 1 }} />
               Summary of Candidates
-            </Tooltip>
+            </Fab>
           </Link>
         )}
         {openedPR === "Casual" && (
@@ -49,16 +44,10 @@ export default function PrintPreviewButton() {
             rel="noopener noreferrer"
             sx={{ textDecoration: "none" }}
           >
-            <Tooltip title="View Personnel Request" arrow>
-              <IconButton
-                type="button"
-                className="custom-iconbutton"
-                color="primary"
-              >
-                <PreviewIcon />
-              </IconButton>
+            <Fab variant="extended" size="medium" color="primary">
+              <LocalPrintshopIcon sx={{ mr: 1 }} />
               Employment Notice
-            </Tooltip>
+            </Fab>
           </Link>
         )}
         {openedPR === "Contract of Service" && (
@@ -70,16 +59,10 @@ export default function PrintPreviewButton() {
               rel="noopener noreferrer"
               sx={{ textDecoration: "none" }}
             >
-              <Tooltip title="View Personnel Request" arrow>
-                <IconButton
-                  type="button"
-                  className="custom-iconbutton"
-                  color="primary"
-                >
-                  <PreviewIcon />
-                </IconButton>
+              <Fab variant="extended" size="medium" color="primary">
+                <LocalPrintshopIcon sx={{ mr: 1 }} />
                 Notice of Employment
-              </Tooltip>
+              </Fab>
             </Link>
             <Link
               //   to={`view-prf/${it.id}`}
@@ -88,16 +71,10 @@ export default function PrintPreviewButton() {
               rel="noopener noreferrer"
               sx={{ textDecoration: "none" }}
             >
-              <Tooltip title="View Personnel Request" arrow>
-                <IconButton
-                  type="button"
-                  className="custom-iconbutton"
-                  color="primary"
-                >
-                  <PreviewIcon />
-                </IconButton>
+              <Fab variant="extended" size="medium" color="primary">
+                <LocalPrintshopIcon sx={{ mr: 1 }} />
                 Advice to Report
-              </Tooltip>
+              </Fab>
             </Link>
           </>
         )}
@@ -109,16 +86,10 @@ export default function PrintPreviewButton() {
             rel="noopener noreferrer"
             sx={{ textDecoration: "none" }}
           >
-            <Tooltip title="View Personnel Request" arrow>
-              <IconButton
-                type="button"
-                className="custom-iconbutton"
-                color="primary"
-              >
-                <PreviewIcon />
-              </IconButton>
+            <Fab variant="extended" size="medium" color="primary">
+              <LocalPrintshopIcon sx={{ mr: 1 }} />
               Job Order
-            </Tooltip>
+            </Fab>
           </Link>
         )}
       </Box>

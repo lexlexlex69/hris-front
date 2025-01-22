@@ -46,3 +46,8 @@
   padding: 0px 10px;
   overflow-y: auto;
 }
+
+.stack-hover:hover {
+  /* background-color: #315b94; */
+  background-color: #e0edff;
+}

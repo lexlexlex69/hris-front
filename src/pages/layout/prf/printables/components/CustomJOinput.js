@@ -85,6 +85,7 @@ function CustomJOinput({ title, objectName }) {
           objectName={objectName}
           objectState={objectState}
           setObjectState={setObjectState}
+          handleJobDescChange={handleJobDescChange}
           handleDeleteJobDesc={handleDeleteJobDesc}
         />
         <Button
@@ -92,6 +93,7 @@ function CustomJOinput({ title, objectName }) {
           onClick={() => {
             setOpen(true);
           }}
+          sx={{ width: "100%" }}
         >
           Edit {title}
         </Button>
@@ -106,6 +108,7 @@ const CustomModalJo = ({
   handleCloseBTN,
   objectState,
   setObjectState,
+  handleJobDescChange,
   handleDeleteJobDesc,
   objectName,
 }) => {
@@ -205,6 +208,7 @@ const CustomModalJo = ({
           </Button>
           <Button
             variant="contained"
+            color="success"
             onClick={() => {
               setPrfData((prev) => ({
                 ...prev,

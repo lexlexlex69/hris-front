@@ -1,16 +1,17 @@
-import React, { useState } from "react"
-import "./TabComponent.css" // Import the CSS file
-import DiamondIcon from "@mui/icons-material/Diamond"
-import StyleIcon from "@mui/icons-material/Style"
-import CustomInput from "./CustomInput"
-import { usePrfData } from "../context/PrintableDataProvider"
-import CustomInput2 from "./CustomInput2"
-import CustomInput3 from "./CustomInput3"
-import CustomSelect from "./CustomSelect"
-import CustomJOinput from "./CustomJOinput"
-import CustomNoeInput from "./CustomNoeInput"
-import { TabContext, TabList, TabPanel } from "@mui/lab"
-import { Box, Tab, Tabs } from "@mui/material"
+import React, { useState } from "react";
+import "./TabComponent.css"; // Import the CSS file
+import DiamondIcon from "@mui/icons-material/Diamond";
+import StyleIcon from "@mui/icons-material/Style";
+import CustomInput from "./CustomInput";
+import { usePrfData } from "../context/PrintableDataProvider";
+import CustomInput2 from "./CustomInput2";
+import CustomInput3 from "./CustomInput3";
+import CustomSelect from "./CustomSelect";
+import CustomJOinput from "./CustomJOinput";
+import CustomNoeInput from "./CustomNoeInput";
+import { TabContext, TabList, TabPanel } from "@mui/lab";
+import { Box, Tab, Tabs } from "@mui/material";
+import CustomFooterInput from "./CustomFooterInput";
 
 const TabComponent = ({ process }) => {
   const {
@@ -21,17 +22,17 @@ const TabComponent = ({ process }) => {
     forDesignFooter,
     headerImg,
     footerImg,
-  } = usePrfData()
+  } = usePrfData();
 
-  prfData && console.log("prfData", prfData)
+  prfData && console.log("prfData", prfData);
 
-  console.log("forRecommendedBy", forRecommendedBy)
+  console.log("forRecommendedBy", forRecommendedBy);
 
-  const [value, setValue] = React.useState("1")
+  const [value, setValue] = React.useState("1");
 
   const handleChange = (event, newValue) => {
-    setValue(newValue)
-  }
+    setValue(newValue);
+  };
 
   return (
     <>
@@ -63,6 +64,7 @@ const TabComponent = ({ process }) => {
             height: "84vh",
             overflow: "auto",
             borderRight: "2px solid #d1d1d1",
+            paddingBottom: "30px",
           }}
         >
           <TabPanel value="1">
@@ -114,7 +116,15 @@ const TabComponent = ({ process }) => {
 
               {/* <CustomInput title={"SALARY"} tab={"Essentials"} /> */}
               {process !== "summaryofcandid" && process !== "jo" && (
-                <CustomSelect title={"SALARY"} />
+                <>
+                  {process === "en" && (
+                    <CustomFooterInput
+                      title={"Footer Title"}
+                      defaultValue={"CHRMO.02/KJDM"}
+                    />
+                  )}
+                  <CustomSelect title={"SALARY"} />
+                </>
               )}
               {process === "jo" && (
                 <>
@@ -155,7 +165,7 @@ const TabComponent = ({ process }) => {
         </Box>
       </TabContext>
     </>
-  )
-}
+  );
+};
 
-export default TabComponent
+export default TabComponent;

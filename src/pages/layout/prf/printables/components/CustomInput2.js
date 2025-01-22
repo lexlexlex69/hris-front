@@ -5,6 +5,11 @@ import { FormControlLabel, Radio, RadioGroup } from "@mui/material";
 
 function CustomInput2({ title, forRecommendedBy, recommendedByChange }) {
   forRecommendedBy && console.log("forRecommendedBy", forRecommendedBy);
+
+  const currentSelected =
+    forRecommendedBy &&
+    forRecommendedBy.find((item) => item.rater_remark === "selected")
+      .rater_emp_id;
   return (
     <div className="PRF_CustomInput">
       <div className="PRF_CustomInput_Header">{title}</div>
@@ -12,11 +17,7 @@ function CustomInput2({ title, forRecommendedBy, recommendedByChange }) {
         <RadioGroup
           aria-labelledby="demo-controlled-radio-buttons-group"
           name="controlled-radio-buttons-group"
-          value={
-            forRecommendedBy &&
-            forRecommendedBy.find((item) => item.rater_remark === "selected")
-              .rater_emp_id
-          }
+          value={currentSelected}
           // onChange={handleChange}
           onChange={recommendedByChange}
         >
@@ -28,6 +29,12 @@ function CustomInput2({ title, forRecommendedBy, recommendedByChange }) {
                 label={` ${item.lname}
                 ${", "}
                 ${item.fname}`}
+                sx={{
+                  color:
+                    currentSelected === item.rater_emp_id
+                      ? "#1976d2"
+                      : "inherit",
+                }}
               />
             ))}
         </RadioGroup>

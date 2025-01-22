@@ -5,6 +5,7 @@ import { phpPesoIntFormater } from "../../components/export_components/ExportCom
 import moment from "moment";
 import { formatName } from "../../../customstring/CustomString";
 import PrintableTemplate from "./PrintableTemplate";
+import { Skeleton } from "@mui/material";
 
 function PrintableJo() {
   const {
@@ -40,12 +41,12 @@ function PrintableJo() {
   const lastIndex = chunkState && chunkState.length + 1;
   return (
     <>
-      {dataLoaded && (
+      {dataLoaded ? (
         <>
           <style type="text/css">
             {"@media print{@page {size: landscape}}"}
           </style>
-          {chunkState &&
+          {chunkState ? (
             chunkState.map((item, index) => (
               <React.Fragment key={index + 1}>
                 <PrintableTemplate
@@ -310,7 +311,15 @@ function PrintableJo() {
                     prfData && <JOlower data={prfData} />}
                 </PrintableTemplate>
               </React.Fragment>
-            ))}
+            ))
+          ) : (
+            <Skeleton
+              variant="rounded"
+              width={780}
+              height={1100}
+              sx={{ bgcolor: "grey.100" }}
+            />
+          )}
           {JOLastChunk && (
             <React.Fragment>
               <style type="text/css">
@@ -331,6 +340,13 @@ function PrintableJo() {
             </React.Fragment>
           )}
         </>
+      ) : (
+        <Skeleton
+          variant="rounded"
+          width={780}
+          height={1100}
+          sx={{ bgcolor: "grey.100" }}
+        />
       )}
     </>
   );

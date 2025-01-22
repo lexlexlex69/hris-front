@@ -678,6 +678,8 @@ function Indorsement({ closeModal, data }) {
                   minWidth={"65%"}
                 />
               </Box>
+              <PrintPreviewButton />
+
               {loader ? (
                 <>
                   <Skeleton
@@ -704,7 +706,6 @@ function Indorsement({ closeModal, data }) {
                     </Box>
                     <Box sx={{ flex: "1 1 auto" }} />
 
-                    <PrintPreviewButton />
                     <Tooltip title="Print Preview" placement="top" arrow>
                       <Button
                         variant="contained"

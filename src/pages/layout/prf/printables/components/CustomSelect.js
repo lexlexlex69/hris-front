@@ -66,18 +66,30 @@ function CustomSelect({ title, tab, names, value }) {
                 }}
               >
                 <Typography sx={{ fontSize: "1rem" }}>
-                  Current Salary:{" "}
-                  <p style={{ fontSize: "1rem", fontWeight: "600" }}>
-                    {phpPesoIntFormater.format(
-                      prfData &&
+                  <span style={{ display: "flex", gap: "10px" }}>
+                    Current Salary:{" "}
+                    <p
+                      style={{
+                        fontSize: "1rem",
+                        fontWeight: "600",
+                        margin: "0px",
+                      }}
+                    >
+                      {phpPesoIntFormater.format(
                         prfData &&
-                        prfData.SummaryOfCandidPrfDetails.sal_value
-                    )}
-                  </p>
-                </Typography>
-                <Typography sx={{ fontSize: "1rem" }}>
-                  Word Format:{" "}
-                  <p style={{ fontSize: "1rem", fontWeight: "600" }}>
+                          prfData &&
+                          prfData.SummaryOfCandidPrfDetails.sal_value
+                      )}
+                    </p>
+                  </span>
+                  <p
+                    style={{
+                      fontSize: ".7rem",
+                      fontWeight: "600",
+                      color: "#707070de",
+                      margin: "0px",
+                    }}
+                  >
                     {autoCapitalizeFirstLetter(
                       toWords(
                         prfData

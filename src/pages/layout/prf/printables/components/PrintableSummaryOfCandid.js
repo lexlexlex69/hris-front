@@ -4,6 +4,7 @@ import PrintableTemplate from "./PrintableTemplate";
 import { capitalizeWords } from "../Utils";
 import { arrayDisplay } from "./PrintableContent";
 import SummaryOfCandidBody1 from "./SummaryOfCandidBody1";
+import { Skeleton } from "@mui/material";
 
 function PrintableSummaryOfCandid() {
   const {
@@ -16,7 +17,7 @@ function PrintableSummaryOfCandid() {
   } = usePrfData();
   return (
     <>
-      {chunkState &&
+      {chunkState ? (
         chunkState.map((item, index) => (
           <React.Fragment key={index} className="page">
             <PrintableTemplate
@@ -137,7 +138,15 @@ function PrintableSummaryOfCandid() {
               )}
             </PrintableTemplate>
           </React.Fragment>
-        ))}
+        ))
+      ) : (
+        <Skeleton
+          variant="rounded"
+          width={780}
+          height={1100}
+          sx={{ bgcolor: "grey.100" }}
+        />
+      )}
     </>
   );
 }

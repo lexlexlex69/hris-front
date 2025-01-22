@@ -9,6 +9,7 @@ import {
   formatNameAbbreviation,
 } from "../../../customstring/CustomString";
 import PrintableTemplate from "./PrintableTemplate";
+import { Skeleton } from "@mui/material";
 
 function PrintableAtr() {
   const { prfData, forDesignHeader, forDesignFooter, designPreview } =
@@ -21,7 +22,7 @@ function PrintableAtr() {
   };
   return (
     <>
-      {prfData &&
+      {prfData ? (
         prfData.SummaryOfCandidApplicantDetails.map((item, index) => (
           <React.Fragment key={index}>
             <PrintableTemplate
@@ -161,7 +162,15 @@ function PrintableAtr() {
               </div>
             </PrintableTemplate>
           </React.Fragment>
-        ))}
+        ))
+      ) : (
+        <Skeleton
+          variant="rounded"
+          width={780}
+          height={1100}
+          sx={{ bgcolor: "grey.100" }}
+        />
+      )}
     </>
   );
 }

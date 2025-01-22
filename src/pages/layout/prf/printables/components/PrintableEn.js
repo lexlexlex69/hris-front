@@ -9,13 +9,14 @@ import {
 } from "../../../customstring/CustomString";
 import PrintableTemplate from "./PrintableTemplate";
 import { casualCheckList } from "../../documentpreparation/ProcessDocument";
+import { Skeleton } from "@mui/material";
 
 function PrintableEn() {
   const { prfData, forDesignHeader, forDesignFooter, designPreview } =
     usePrfData();
   return (
     <>
-      {prfData &&
+      {prfData ? (
         prfData.SummaryOfCandidApplicantDetails.map((item, index) => (
           <React.Fragment key={index}>
             <PrintableTemplate
@@ -149,7 +150,15 @@ function PrintableEn() {
               </div> */}
             </PrintableTemplate>
           </React.Fragment>
-        ))}
+        ))
+      ) : (
+        <Skeleton
+          variant="rounded"
+          width={780}
+          height={1100}
+          sx={{ bgcolor: "grey.100" }}
+        />
+      )}
     </>
   );
 }

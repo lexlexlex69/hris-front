@@ -38,6 +38,18 @@ export const PrfContextProvider = ({ children }) => {
 
   const [modalTitle, setModalTitle] = useState();
 
+  const [toastOpen, setToastOpen] = useState(false);
+
+  const [footerTitle, setFooterTitle] = useState("");
+
+  const handleToastClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setToastOpen(false);
+  };
+
   const handleViewClick = (title) => {
     // console.log("date", date);
     // setSelectedDate(date);
@@ -471,6 +483,7 @@ export const PrfContextProvider = ({ children }) => {
         termRequest && termRequest,
       ]);
       console.log(r1, r2, r3, r4, r5, r6, r7);
+      setToastOpen(true);
     } catch (error) {
       console.log("error for save changes: header", error);
     }
@@ -542,6 +555,11 @@ export const PrfContextProvider = ({ children }) => {
         employeeList,
         handleModalRowClick,
         saveAllchanges,
+        toastOpen,
+        setToastOpen,
+        handleToastClose,
+        footerTitle,
+        setFooterTitle,
       }}
     >
       {children}

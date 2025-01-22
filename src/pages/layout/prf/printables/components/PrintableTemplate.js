@@ -15,7 +15,7 @@ function PrintableTemplate({
   lastPage,
   lastChunkReader,
 }) {
-  const { prfData } = usePrfData();
+  const { prfData, footerTitle } = usePrfData();
   console.log("footerLabel", footerLabel);
 
   return (
@@ -65,7 +65,7 @@ function PrintableTemplate({
               PRF# {prfData && prfData.SummaryOfCandidPrfDetails.prf_no}
             </p>
             <p style={{ fontSize: "8px", marginLeft: "80px" }}>
-              CHRMO.02/KJDM{" "}
+              {footerTitle ? footerTitle : ""}{" "}
             </p>
           </>
         )}
