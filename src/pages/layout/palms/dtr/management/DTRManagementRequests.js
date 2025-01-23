@@ -79,7 +79,7 @@ export function reExecAllBioLogs(data) {
   });
 }
 ///lex test
-export function testBiofetch(data) {
+export function getExecLogs(data) {
   return axios.request({
     method: "POST",
     data: data,

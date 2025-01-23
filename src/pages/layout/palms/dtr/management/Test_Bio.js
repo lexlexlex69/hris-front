@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { testBiofetch } from "./DTRManagementRequests";
+import { getExecLogs } from "./DTRManagementRequests";
 import "./mystylebio.css";
 import { fakeResponse } from "./fakedata";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
@@ -256,7 +256,7 @@ function Test_Bio() {
   //   console.log("sorted", sorted);
   // };
   const handleDisplay = () => {
-    testBiofetch(pay)
+    getExecLogs(pay)
       .then((response) => {
         console.log("response", response.data);
         fetchedData(response.data);
@@ -276,7 +276,7 @@ function Test_Bio() {
   useEffect(() => {
     // fetchedData(fakeResponse);
 
-    testBiofetch(pay)
+    getExecLogs(pay)
       .then((response) => {
         console.log("response", response.data);
         fetchedData(response.data);

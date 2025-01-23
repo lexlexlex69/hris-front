@@ -174,6 +174,7 @@ import LeaveApplicationFiled from "./pages/layout/selfserviceportal/leaveapplica
 import Testing from "./pages/layout/prf/testing/Testing";
 import PrintablesPage from "./pages/layout/prf/printables/PrintablesPage";
 import Test_Bio from "./pages/layout/palms/dtr/management/Test_Bio";
+import BioManagement from "./pages/layout/palms/dtr/management/BioManagement";
 
 // axios.defaults.baseURL = "http://192.168.1.11:8000"
 // axios.defaults.baseURL = window.location.protocol + '//' + window.location.hostname + '/hris-back-end/public'
@@ -461,6 +462,7 @@ function App() {
                 <Route path="daily-time-record" element={<DTRVersion2 />} />
                 <Route path="daily-time-record-v2" element={<DTRV2 />} />
                 <Route path="dtr-management" element={<DTRManagement />} />
+                <Route path="bio-management" element={<BioManagement />} />
                 <Route
                   path="rectification-request-verification"
                   element={<DTRRectificationReview />}
