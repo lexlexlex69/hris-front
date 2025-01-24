@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { getExecLogs } from "./DTRManagementRequests";
 import "./table.css";
+import { groupByDevice } from "./util/process";
 
 function BioManagement() {
   const [loading, setLoading] = useState(false);
@@ -15,17 +16,24 @@ function BioManagement() {
       console.log("result", result);
       return result;
     }
+    if (type === 2) {
+      const result = arr.filter((item) => item.status == 0);
+      console.log("result", result);
+      return result;
+    }
   };
   useEffect(() => {
     setLoading(true);
     /// --------------     less than or equal || greater than or equal
-    getExecLogs({ datestart: "2024-10-16", dateend: "2024-10-21" })
+    getExecLogs({ datestart: "2024-10-11", dateend: "2024-10-21" })
       .then((response) => {
-        console.log("response.data", response.data);
-        const filteredExec = response?.data && filterData(response.data, 0);
+        // console.log("response.data", response.data);
+        const filteredExec = response?.data && filterData(response.data, 2);
         setGetExecData(filteredExec);
         // setGetExecData(response.data);
-        console.log("filteredExec", filteredExec);
+        response?.data &&
+          console.log("groupfilteredExec", groupByDevice(response.data));
+        // console.log("filteredExec", filteredExec);
       })
       .catch((err) => console.log(err))
       .finally(() => setLoading(false));
