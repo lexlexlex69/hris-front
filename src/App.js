@@ -173,8 +173,9 @@ import RegistrationLog from "./pages/layout/reports/LWOP/RegistrationLog";
 import LeaveApplicationFiled from "./pages/layout/selfserviceportal/leaveapplication/LeaveApplicationFiled";
 import Testing from "./pages/layout/prf/testing/Testing";
 import PrintablesPage from "./pages/layout/prf/printables/PrintablesPage";
-import Test_Bio from "./pages/layout/palms/dtr/management/Test_Bio";
+// import Test_Bio from "./pages/layout/palms/dtr/management/Test_Bio";
 import BioManagement from "./pages/layout/palms/dtr/management/BioManagement";
+import { BioContextProvider } from "./pages/layout/palms/dtr/management/context/BioManageProvider";
 
 // axios.defaults.baseURL = "http://192.168.1.11:8000"
 // axios.defaults.baseURL = window.location.protocol + '//' + window.location.hostname + '/hris-back-end/public'
@@ -462,7 +463,16 @@ function App() {
                 <Route path="daily-time-record" element={<DTRVersion2 />} />
                 <Route path="daily-time-record-v2" element={<DTRV2 />} />
                 <Route path="dtr-management" element={<DTRManagement />} />
-                <Route path="bio-management" element={<BioManagement />} />
+                <Route
+                  path="bio-management"
+                  element={
+                    <>
+                      <BioContextProvider>
+                        <BioManagement />
+                      </BioContextProvider>
+                    </>
+                  }
+                />
                 <Route
                   path="rectification-request-verification"
                   element={<DTRRectificationReview />}
@@ -705,7 +715,7 @@ function App() {
                   path={`fetchPersonnelSaveToLxys`}
                   element={<ApiTrigger />}
                 />
-                <Route path={`testBio`} element={<Test_Bio />} />
+                {/* <Route path={`testBio`} element={<Test_Bio />} /> */}
               </Route>
             );
           }
