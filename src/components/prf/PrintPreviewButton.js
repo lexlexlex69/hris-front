@@ -21,7 +21,7 @@ export default function PrintPreviewButton() {
   // console.log("printPreviewButton", data);
   return (
     <>
-      <Box>
+      <Box sx={{ display: "flex", justifyContent: "flex-end", gap: "10px" }}>
         {!openedPR && (
           <Link
             //   to={`view-prf/${it.id}`}

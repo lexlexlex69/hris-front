@@ -4,6 +4,7 @@ import CustomFab from "./component/BioManage/CustomFab";
 import CustomAutoComplete from "./component/BioManage/CustomAutoComplete";
 import CustomManualReExec from "./component/BioManage/CustomManualReExec";
 import { Box } from "@mui/material";
+import CustomFabHistory from "./component/BioManage/CustomFabHistory";
 
 function BioManagement() {
   return (
@@ -33,6 +34,7 @@ function BioManagement() {
             }}
           >
             <CustomManualReExec />
+            <CustomFabHistory />
             <CustomFab />
           </Box>
         </Box>

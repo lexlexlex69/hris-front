@@ -680,7 +680,7 @@ function Indorsement({ closeModal, data }) {
               </Box>
               <PrintPreviewButton />
 
-              {loader ? (
+              {/* {loader ? (
                 <>
                   <Skeleton
                     variant="text"
@@ -767,7 +767,7 @@ function Indorsement({ closeModal, data }) {
                     </Button>
                   </Box>
                 </>
-              )}
+              )} */}
             </Stack>
             <Divider sx={{ marginTop: "1rem", marginBottom: "1rem" }} />
             <Box>

@@ -28,7 +28,7 @@ function PrintableNoe() {
               forDesignFooter={forDesignFooter}
               index={index}
             >
-              <div className="prf_printable_content_page_title">
+              <div className="prf_printable_content_page_title customSpace">
                 <p>NOTICE OF EMPLOYMENT</p>
               </div>
               <p className="customSpace customFont-12">

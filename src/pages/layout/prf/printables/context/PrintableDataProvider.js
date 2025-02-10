@@ -157,6 +157,14 @@ export const PrfContextProvider = ({ children }) => {
     }
   };
 
+  const rowPageLimit = (arr) => {
+    // return prfData && prfData?.SummaryOfCandidPrfDetails?.job_desc;
+    const listMax = 30;
+    const listLength = prfData && JSON.parse(arr).length;
+    const result = Math.floor(listMax / listLength);
+    return result;
+  };
+
   const fetchJoData = async () => {
     console.log("jojojo");
     if (processType === "jo") {
@@ -286,7 +294,15 @@ export const PrfContextProvider = ({ children }) => {
       prfData && !prfData.signatory && fetchJoData();
       // const chunks =
       //   prfData && chunkArray(prfData.SummaryOfCandidApplicantDetails, 1, 2);
-      const chunks = prfData && chunkArray(fakeApplicant, 3, 4);
+
+      // console.log("rowPageLimit", rowPageLimit());
+      const chunks =
+        prfData &&
+        chunkArray(
+          fakeApplicant,
+          rowPageLimit(prfData?.SummaryOfCandidPrfDetails?.job_desc) - 1,
+          rowPageLimit(prfData?.SummaryOfCandidPrfDetails?.job_desc)
+        );
       chunks && setChunkState(chunks);
       console.log(chunks);
     } else if (
@@ -573,6 +589,7 @@ export const PrfContextProvider = ({ children }) => {
         handleToastClose,
         footerTitle,
         setFooterTitle,
+        rowPageLimit,
       }}
     >
       {children}

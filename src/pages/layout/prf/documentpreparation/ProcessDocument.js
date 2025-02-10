@@ -548,7 +548,7 @@ function ProcessDocument({ closeModal, data }) {
                 <>
                   <PrintPreviewButton />
                 </>
-                {openedPR === "Casual" && (
+                {/* {openedPR === "Casual" && (
                   <>
                     <Casual
                       applicantList={applicantList}
@@ -578,7 +578,7 @@ function ProcessDocument({ closeModal, data }) {
                       setLoader={setLoader}
                     />
                   </>
-                )}
+                )} */}
 
                 <Stack sx={{ gap: "0.5rem" }}>
                   <Alert severity="info">

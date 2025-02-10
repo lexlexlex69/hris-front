@@ -14,6 +14,7 @@ function PrintableJo() {
     forDesignHeader,
     forDesignFooter,
     designPreview,
+    rowPageLimit,
   } = usePrfData();
 
   let dataLoaded = chunkState && prfData && prfData.signatory;
@@ -37,7 +38,13 @@ function PrintableJo() {
 
   // console.log("lastChunkReader", lastChunkReader(chunkState, 2))
 
-  const JOLastChunk = chunkState && lastChunkReader(chunkState, 3, 4);
+  const JOLastChunk =
+    chunkState &&
+    lastChunkReader(
+      chunkState,
+      rowPageLimit(prfData?.SummaryOfCandidPrfDetails?.job_desc) - 1,
+      rowPageLimit(prfData?.SummaryOfCandidPrfDetails?.job_desc)
+    );
   const lastIndex = chunkState && chunkState.length + 1;
   return (
     <>

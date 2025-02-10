@@ -109,6 +109,19 @@ export const BioContextProvider = ({ children }) => {
       .then((response) => {
         console.log("responseapi", response);
         handleClick("Process added to queue successfully. ", "success");
+        if (response?.data?.pending_requests) {
+          // console.log("sadfsafsadfsadf");
+          response?.data?.pending_requests.forEach((item) => {
+            const deviceName = getExecData.find(
+              (data) => data.device_id == item.device_id
+            ).device_name;
+            handleClick(
+              `Device: ${deviceName}, Date: ${item.date} is currently in pending list`,
+              "error"
+            );
+            // console.log("response pending");
+          });
+        }
       })
       .catch((err) => console.log(err));
   };
