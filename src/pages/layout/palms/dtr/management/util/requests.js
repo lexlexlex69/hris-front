@@ -14,3 +14,9 @@ export function reExec(data) {
     url: "api/DTR/reExecBioLogs2",
   });
 }
+export function jobStatus(page) {
+  return axios.request({
+    method: "POST",
+    url: `api/DTR/jobStatus?page=${page}`,
+  });
+}

@@ -33,7 +33,7 @@ export default function CustomFab() {
       />
       <Box>
         <Fab
-          color="primary"
+          color="warning"
           aria-label="add"
           onClick={() => {
             modalOpener("Failed Fetch");

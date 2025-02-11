@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 
 import { currentMonth, currentYear, monthList } from "../util/datetimeformat";
-import { getExecLogs, reExec } from "../util/requests";
+import { getExecLogs, jobStatus, reExec } from "../util/requests";
 import CustomDialogReExec from "../component/BioManage/CustomDialogReExec";
 import CustomSnackbar from "../component/BioManage/CustomSnackBar";
 import { groupByDevice } from "../util/process";
@@ -31,6 +31,10 @@ export const BioContextProvider = ({ children }) => {
     desc: "",
     type: "",
   });
+  const [getJobStatus, setGetJobStatus] = useState();
+  const [pageNum, setPageNum] = useState(1);
+  const [pageMax, setPageMax] = useState(1);
+  const [historyLoading, setHistoryLoading] = useState(false);
 
   const handleClick = (desc, type) => {
     setSnackDetails({
@@ -109,18 +113,13 @@ export const BioContextProvider = ({ children }) => {
       .then((response) => {
         console.log("responseapi", response);
         handleClick("Process added to queue successfully. ", "success");
-        if (response?.data?.pending_requests) {
+        if (response?.data?.pending_requests.length != 0) {
           // console.log("sadfsafsadfsadf");
-          response?.data?.pending_requests.forEach((item) => {
-            const deviceName = getExecData.find(
-              (data) => data.device_id == item.device_id
-            ).device_name;
-            handleClick(
-              `Device: ${deviceName}, Date: ${item.date} is currently in pending list`,
-              "error"
-            );
-            // console.log("response pending");
-          });
+
+          handleClick(
+            `Devices and Dates already exists in pending list.`,
+            "error"
+          );
         }
       })
       .catch((err) => console.log(err));
@@ -168,6 +167,19 @@ export const BioContextProvider = ({ children }) => {
     setReExecDialog(false);
     setReExecPayload();
   };
+
+  useEffect(() => {
+    setHistoryLoading(true);
+    jobStatus(pageNum)
+      .then((response) => {
+        setGetJobStatus(response);
+        setPageMax(response.data.jobs.last_page);
+        console.log("responsehistory", response);
+      })
+      .catch((e) => console.log(e))
+      .finally(() => setHistoryLoading(false));
+  }, [pageNum]);
+
   return (
     <BioStateContext.Provider
       value={{
@@ -197,6 +209,11 @@ export const BioContextProvider = ({ children }) => {
         openSnack,
         handleCloseSnack,
         snackDetails,
+        getJobStatus,
+        historyLoading,
+        pageNum,
+        setPageNum,
+        pageMax,
       }}
     >
       <CustomDialogReExec />

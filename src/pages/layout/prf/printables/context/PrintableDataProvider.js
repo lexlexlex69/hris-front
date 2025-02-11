@@ -299,7 +299,8 @@ export const PrfContextProvider = ({ children }) => {
       const chunks =
         prfData &&
         chunkArray(
-          fakeApplicant,
+          prfData?.SummaryOfCandidApplicantDetails,
+          // fakeApplicant,
           rowPageLimit(prfData?.SummaryOfCandidPrfDetails?.job_desc) - 1,
           rowPageLimit(prfData?.SummaryOfCandidPrfDetails?.job_desc)
         );
